@@ -4,6 +4,7 @@ import confetti from "canvas-confetti";
 import { Backpack, Shield, AlertTriangle, CheckCircle2, ChevronDown, RotateCcw } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 
 import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.png";
 import carrotImg from "../../imports/морковь_ОНА_ДОЛЖНА_202604161845_(1).png";
@@ -63,6 +64,7 @@ export const BackpackGame = ({
   }, []);
 
   const handleSelectItem = (id: string) => {
+    soundEngine.clickPop();
     setSelected(selected === id ? null : id);
   };
 
@@ -71,6 +73,7 @@ export const BackpackGame = ({
     if (!item) return;
 
     if (item.type === "safe") {
+      soundEngine.clickBubble();
       setBackpackGlow("success");
       setScore((s) => s + 1);
       showMessage(`${item.name} packed! Clean energy ready.`, "success");
@@ -83,6 +86,7 @@ export const BackpackGame = ({
       removeItem(item.id);
       setTimeout(() => setBackpackGlow("neutral"), 1500);
     } else {
+      soundEngine.clickWood();
       setBackpackGlow("warning");
       setShakeBackpack(true);
       showMessage("WARNING! High protein detected. Send to Trash!", "error");
@@ -103,12 +107,14 @@ export const BackpackGame = ({
     if (!item) return;
 
     if (item.type === "unsafe") {
+      soundEngine.clickThunk();
       setQuarantineGlow("success");
       setScore((s) => s + 1);
       showMessage(`${item.name} locked away! Backpack stays clean.`, "success");
       removeItem(item.id);
       setTimeout(() => setQuarantineGlow("neutral"), 1500);
     } else {
+      soundEngine.clickWood();
       setQuarantineGlow("neutral");
       showMessage("That's clean energy! Pack it in the Backpack instead.", "error");
     }
@@ -324,6 +330,7 @@ export const BackpackGame = ({
                   exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectItem(item.id)}
+                  onMouseEnter={() => soundEngine.hoverNote()}
                   draggable
                   onDragStart={(e) => {
                     e.dataTransfer.setData("text/plain", item.id);

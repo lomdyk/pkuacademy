@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "motion/react";
 import { Backpack, MessageCircle, Rocket, Sparkles, Download, BookOpen } from "lucide-react";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 
 interface Props {
   active?: 0 | 1 | 2 | 3 | 4 | 5; 
@@ -167,7 +168,8 @@ export const TopTabBar: React.FC<Props> = () => {
             return (
               <button
                 key={code}
-                onClick={() => setLang(code)}
+                onClick={() => { setLang(code); soundEngine.clickSwitch(); }}
+                onMouseEnter={() => soundEngine.hoverNote()}
                 className="px-2.5 py-1 rounded-full uppercase tracking-[0.18em] text-[10px] transition-colors"
                 style={{
                   fontFamily: "'Space Grotesk', sans-serif",

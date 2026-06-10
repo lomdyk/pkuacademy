@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Download, FileText, Sparkles, Notebook } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 import rallyImg from "../../imports/ChatGPT_Image_Jun_3__2026__11_16_23_AM.png";
 import flightMapImg from "../../imports/image_6.png";
 
@@ -34,6 +35,7 @@ const Card: React.FC<CardProps> = ({ index, icon: Icon, tone, titleKey, descKey,
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.23, 1, 0.32, 1] }}
       className="relative group"
+      onMouseEnter={() => soundEngine.cardHover(index)}
     >
       <div
         className="absolute -inset-[1px] rounded-[24px] opacity-50 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"

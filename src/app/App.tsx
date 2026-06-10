@@ -13,6 +13,7 @@ import { MissionPrologue } from "./components/MissionPrologue";
 import { CrewGreeting } from "./components/CrewGreeting";
 import { LanguageProvider, useLang } from "./utils/i18n";
 import { GhostButton } from "./components/ui/GhostButton";
+import { SoundToggle } from "./components/ui/SoundToggle";
 
 import sortingImg from "../imports/sorting.png";
 import talkImg from "../imports/talk.png";
@@ -230,6 +231,7 @@ function AppInner() {
           </motion.div>
         )}
       </AnimatePresence>
+      <SoundToggle />
     </div>
   );
 }

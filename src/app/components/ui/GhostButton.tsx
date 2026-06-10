@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLang } from "../../utils/i18n";
+import { soundEngine } from "../../utils/audioEngine";
 
 type Tone = "cyan" | "violet" | "emerald" | "amber";
 
@@ -57,10 +58,28 @@ export const GhostButton: React.FC<Props> = ({
   return (
     <button
       {...rest}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onFocus={() => setHover(true)}
-      onBlur={() => setHover(false)}
+      onMouseEnter={(e) => {
+        setHover(true);
+        soundEngine.hoverNote();
+        if (rest.onMouseEnter) rest.onMouseEnter(e);
+      }}
+      onMouseLeave={(e) => {
+        setHover(false);
+        if (rest.onMouseLeave) rest.onMouseLeave(e);
+      }}
+      onFocus={(e) => {
+        setHover(true);
+        soundEngine.hoverNote();
+        if (rest.onFocus) rest.onFocus(e);
+      }}
+      onBlur={(e) => {
+        setHover(false);
+        if (rest.onBlur) rest.onBlur(e);
+      }}
+      onClick={(e) => {
+        soundEngine.clickPop();
+        if (rest.onClick) rest.onClick(e);
+      }}
       className={`relative inline-flex items-center gap-2 rounded-full transition-[box-shadow,background-color,border-color,color] duration-200 ${padding} ${textSize} ${caseCls} ${className}`}
       style={{
         fontFamily: "'Space Grotesk', sans-serif",
