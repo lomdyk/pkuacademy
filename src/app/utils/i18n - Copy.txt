@@ -1,0 +1,172 @@
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+
+export type Lang = "en" | "de";
+
+type Dict = Record<string, { en: string; de: string }>;
+
+export const TRANSLATIONS: Dict = {
+  // ── Top nav ────────────────────────────────────────────────
+  "nav.mission": { en: "Mission", de: "Mission" },
+  "nav.title": { en: "Sports Training Academy", de: "Sport-Trainings-Akademie" },
+  "stage.hero": { en: "Pre-Match Briefing", de: "Vor-Match-Briefing" },
+  "stage.downloads": { en: "Home Training Pack", de: "Trainingspaket für Zuhause" },
+  "stage.intro": { en: "Intro", de: "Intro" },
+  "stage.complete": { en: "Complete", de: "Abgeschlossen" },
+
+  // ── Downloads section ─────────────────────────────────────
+  "dl.heading": { en: "Training Continues at Home!", de: "Trenuj weiter zuhause!" },
+  "dl.sub": {
+    en: "Print these games and keep training at home with your family. Real champions practice every day!",
+    de: "Drucke diese Spiele aus und trainiere zuhause mit deiner Familie. Echte Champions trainieren jeden Tag!",
+  },
+  "dl.card1.title": { en: "2Day Flight Map", de: "2Day Flight Map" },
+  "dl.card1.desc": {
+    en: "A printable PDF for real-world sports preparation at home with parents.",
+    de: "Ein druckbares PDF zur sportlichen Vorbereitung zuhause mit den Eltern.",
+  },
+  "dl.card2.title": { en: "Cosmic Rally", de: "Kosmische Rallye" },
+  "dl.card2.desc": {
+    en: "A printable PDF. It is a classic dice-rolling race, but with our medical lore.",
+    de: "Ein druckbares PDF. Ein klassisches Würfel-Wettrennen – aber mit unserem medizinischen Wissen.",
+  },
+  "dl.cta": { en: "Download PDF", de: "PDF herunterladen" },
+  "dl.soon": { en: "Coming Soon", de: "Demnächst" },
+
+  // Game completion banners
+  "complete.m1.title": { en: "Backpack Packed!", de: "Rucksack gepackt!" },
+  "complete.m1.body": {
+    en: "Good food packed and ready. Time to head to the field.",
+    de: "Gutes Essen eingepackt. Zeit, aufs Feld zu gehen.",
+  },
+  "complete.m2.title": { en: "Mission Accepted!", de: "Mission angenommen!" },
+  "complete.m2.body": {
+    en: "You held your ground like a true captain. The team gets it now.",
+    de: "Du hast standgehalten wie ein echter Kapitän. Das Team versteht es jetzt.",
+  },
+  "complete.continue": { en: "Continue", de: "Weiter" },
+  "nav.lang.en": { en: "EN", de: "EN" },
+  "nav.lang.de": { en: "DE", de: "DE" },
+
+  // ── Mission 01 — Sorting ───────────────────────────────────
+  "m1.tag": { en: "Mission 01 — Pack with Luna", de: "Mission 01 — Mit Luna packen" },
+  "m1.title": { en: "Pack the Team Backpack", de: "Den Team-Rucksack packen" },
+  "m1.lore": {
+    en: "Attention, Captain! Today is match day — your team is heading to the sports field for the big tournament. Luna is already at the locker room, waiting for you. Your body works differently, so the regular cafeteria food won't keep you fast on the field. Help Luna pick the right food for the team backpack: low-Phe fruits, veggies, and your medical formula. Leave the heavy-protein snacks behind — they'll only slow your team down.",
+    de: "Achtung, Kapitän! Heute ist Spieltag — dein Team geht aufs Sportfeld zum großen Turnier. Luna wartet schon in der Umkleide auf dich. Dein Körper arbeitet anders — normales Kantinenessen hält dich auf dem Feld nicht schnell. Hilf Luna, das richtige Essen für den Team-Rucksack auszusuchen: phenylalanin-arme Früchte, Gemüse und deine medizinische Formel. Lass die proteinreichen Snacks zurück — sie bremsen das Team nur aus.",
+  },
+  "m1.cta": { en: "Pack with Luna >", de: "Mit Luna packen >" },
+
+  // ── Mission 02 — Talk ──────────────────────────────────────
+  "m2.tag": { en: "Mission 02 — Help Your Teammates", de: "Mission 02 — Hilf deinem Team" },
+  "m2.title": { en: "Speak Up for the Team", de: "Sprich für dein Team" },
+  "m2.lore": {
+    en: "You arrive at the stadium with Luna. Bo and Ela — your teammates — are warming up by the gate. They love you, but they don't fully get your diet rules yet. Before the match, they'll offer you snacks, drinks, and the team lunch — and they need your help to understand why your formula matters. Help your friends answer correctly: stay calm, stay kind, and keep your energy up.",
+    de: "Du kommst mit Luna am Stadion an. Bo und Ela — deine Teamkolleg:innen — wärmen sich am Tor auf. Sie mögen dich, verstehen aber deine Ernährungs-Regeln noch nicht ganz. Vor dem Match bieten sie dir Snacks, Getränke und das Team-Mittagessen an — und brauchen deine Hilfe, um zu verstehen, warum deine Formel wichtig ist. Hilf deinen Freund:innen, richtig zu antworten: bleib ruhig, bleib freundlich und halte deine Energie hoch.",
+  },
+  "m2.cta": { en: "Meet the Team >", de: "Team treffen >" },
+
+  // ── Mission 03 — Runner ────────────────────────────────────
+  "m3.tag": { en: "Mission 03 — Tournament Sprint", de: "Mission 03 — Turnier-Sprint" },
+  "m3.title": { en: "Sprint with the Crew", de: "Sprint mit dem Team" },
+  "m3.lore": {
+    en: "Captain, the games are on! Whether you play football, swim the relay, or sprint with your crew in PE — any sport burns your energy fast. If your energy drops to zero, your body overheats and your team has to slow down. That's your superpower: the green formula. Drink it on time, lead the crew, and break every record together!",
+    de: "Kapitän, die Spiele laufen! Ob Fußball, Staffel-Schwimmen oder mit dem Team im Sport sprinten — jeder Sport verbraucht deine Energie schnell. Fällt deine Energie auf null, überhitzt dein Körper und dein Team muss langsamer werden. Das ist deine Superkraft: die grüne Formel. Trink sie rechtzeitig, führe dein Team — und brecht gemeinsam jeden Rekord!",
+  },
+  "m3.cta": { en: "Sprint with Crew >", de: "Mit Team sprinten >" },
+
+  // ── Crew greeting ──────────────────────────────────────────
+  "crew.tag": { en: "Meet Your Crew", de: "Lerne dein Team kennen" },
+  "crew.title": { en: "Your Sports Crew", de: "Dein Sport-Team" },
+  "crew.sub": {
+    en: "Three teammates. One tournament. They're counting on you, Captain.",
+    de: "Drei Teamkolleg:innen. Ein Turnier. Sie zählen auf dich, Kapitän.",
+  },
+  "crew.luna.name": { en: "Luna", de: "Luna" },
+  "crew.luna.role": { en: "Quartermaster", de: "Ausrüsterin" },
+  "crew.luna.line": {
+    en: "\"Hey Captain! I'll help you pack the right food — your formula and the healthy snacks. Ready?\"",
+    de: "\"Hey Kapitän! Ich helfe dir, das richtige Essen einzupacken — deine Formel und die gesunden Snacks. Bereit?\"",
+  },
+  "crew.bo.name": { en: "Bo", de: "Bo" },
+  "crew.bo.role": { en: "Striker", de: "Stürmer" },
+  "crew.bo.line": {
+    en: "\"You're our Captain! Just tell us what you can eat — we've got your back at the snack bar.\"",
+    de: "\"Du bist unser Kapitän! Sag uns einfach, was du essen kannst — wir haben deinen Rücken an der Snackbar.\"",
+  },
+  "crew.ela.name": { en: "Ela", de: "Ela" },
+  "crew.ela.role": { en: "Sprint Lead", de: "Sprint-Leiterin" },
+  "crew.ela.line": {
+    en: "\"On the track I push hard — but you bring the formula and we win this together!\"",
+    de: "\"Auf der Bahn gebe ich alles — aber du bringst die Formel mit, und wir gewinnen das gemeinsam!\"",
+  },
+  "crew.cta": { en: "Brief the Crew", de: "Team einweisen" },
+
+  // ── Slide nav ──────────────────────────────────────────────
+  "slide.next": { en: "Next slide", de: "Nächste Folie" },
+  "slide.prev": { en: "Previous slide", de: "Vorherige Folie" },
+
+  // ── Game shared ─────────────────────────────────────────────
+  "btn.skip": { en: "Skip Mission", de: "Mission überspringen" },
+  "btn.skipHint": { en: "You can come back anytime", de: "Du kannst jederzeit zurück" },
+  "btn.playAgain": { en: "Play Again", de: "Nochmal spielen" },
+  "btn.restart": { en: "Restart Mission", de: "Mission neu starten" },
+  "btn.launch": { en: "Launch Mission", de: "Mission starten" },
+  "btn.exit": { en: "Exit", de: "Beenden" },
+  "game.wellDone": { en: "Well done, you did it!", de: "Gut gemacht, du hast es geschafft!" },
+
+  // Runner overlays
+  "runner.ready": { en: "Ready, Champion?", de: "Bereit, Champion?" },
+  "runner.intro": {
+    en: "Avoid the cheese and pizza on the track. Catch the green formula bottle for Super Energy Mode.",
+    de: "Weiche Käse und Pizza auf der Strecke aus. Fang die grüne Formel-Flasche für den Super-Energie-Modus.",
+  },
+  "runner.distance": { en: "Distance", de: "Distanz" },
+  "runner.best": { en: "Best", de: "Bester" },
+  "runner.energy": { en: "Energy", de: "Energie" },
+  "runner.tap": { en: "Tap / Space to Jump", de: "Tippen / Leertaste zum Springen" },
+  "runner.bestRun": { en: "Best run", de: "Bester Lauf" },
+  "runner.distanceLabel": { en: "Distance", de: "Distanz" },
+};
+
+interface Ctx {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: (key: keyof typeof TRANSLATIONS | string) => string;
+}
+
+const LangCtx = createContext<Ctx>({
+  lang: "en",
+  setLang: () => {},
+  t: (k) => String(k),
+});
+
+export const LanguageProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  const [lang, setLang] = useState<Lang>("en");
+  const t = useCallback(
+    (key: string) => {
+      const entry = (TRANSLATIONS as Dict)[key];
+      if (!entry) return key;
+      return entry[lang] ?? entry.en ?? key;
+    },
+    [lang],
+  );
+  const value = useMemo(
+    () => ({ lang, setLang, t }),
+    [lang, t],
+  );
+  return (
+    <LangCtx.Provider value={value}>
+      {children}
+    </LangCtx.Provider>
+  );
+};
+
+export const useLang = () => useContext(LangCtx);

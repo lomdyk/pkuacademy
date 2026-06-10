@@ -1,0 +1,546 @@
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Play, RotateCcw, Zap, Trophy } from "lucide-react";
+import { GhostButton } from "./ui/GhostButton";
+import { useLang } from "../utils/i18n";
+
+import runnerGif from "../../imports/ezgif.com-crop.gif";
+import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
+import pizzaImg from "../../imports/Untitled_(1).png";
+import formulaImg from "../../imports/Untitled.png";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+const GAME_HEIGHT = 360;
+const GROUND_Y = 60;
+const PLAYER_X = 80;
+const PLAYER_SIZE = 84;
+const GRAVITY = 2600;
+const JUMP_V = 950;
+const BASE_SPEED = 360;
+const BOOST_SPEED = 600;
+const POWER_DURATION = 5;
+const OBSTACLE_IMGS = [cheeseImg, pizzaImg];
+const ENCOURAGEMENTS = [
+  "Nice Run!",
+  "Great Flight!",
+  "Stellar Effort!",
+  "Cosmic Try!",
+  "Well Played!",
+  "Almost There!",
+  "Keep Going!",
+  "Out of This World!",
+];
+
+type Kind = "obstacle" | "powerup";
+interface Entity {
+  id: number;
+  kind: Kind;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  img: string;
+  node?: HTMLDivElement;
+}
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  rot: number;
+  vrot: number;
+  node: HTMLDivElement;
+}
+type GameState = "idle" | "playing" | "over";
+
+function collides(playerY: number, e: Entity) {
+  const px1 = PLAYER_X + 16, px2 = PLAYER_X + PLAYER_SIZE - 16;
+  const py1 = playerY + 10, py2 = playerY + PLAYER_SIZE - 6;
+  const ex1 = e.x + 8, ex2 = e.x + e.w - 8;
+  const ey1 = e.y + 6, ey2 = e.y + e.h - 6;
+  return px1 < ex2 && px2 > ex1 && py1 < ey2 && py2 > ey1;
+}
+
+export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const entitiesLayerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+  const playerGlowRef = useRef<HTMLDivElement>(null);
+  const playerImgRef = useRef<HTMLImageElement>(null);
+
+  const [state, setState] = useState<GameState>("idle");
+  const [score, setScore] = useState(0);
+  const [best, setBest] = useState(0);
+  const [powerLeft, setPowerLeft] = useState(0);
+  const [encouragement, setEncouragement] = useState(ENCOURAGEMENTS[0]);
+
+  const stateRef = useRef<GameState>("idle");
+  const fieldWidthRef = useRef(800);
+  const lastTimeRef = useRef<number | null>(null);
+  const playerYRef = useRef(0);
+  const velYRef = useRef(0);
+  const entitiesRef = useRef<Entity[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
+  const idRef = useRef(0);
+  const spawnTimerRef = useRef(0);
+  const powerTimerRef = useRef(0);
+  const distanceRef = useRef(0);
+
+  useEffect(() => { stateRef.current = state; }, [state]);
+
+  useEffect(() => {
+    const update = () => {
+      if (fieldRef.current) fieldWidthRef.current = fieldRef.current.clientWidth;
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const jump = useCallback(() => {
+    if (stateRef.current !== "playing") return;
+    if (playerYRef.current <= 0.5) velYRef.current = JUMP_V;
+  }, []);
+
+  const clearEntities = () => {
+    if (entitiesLayerRef.current) entitiesLayerRef.current.innerHTML = "";
+    entitiesRef.current = [];
+    particlesRef.current = [];
+  };
+
+  const startGame = useCallback(() => {
+    clearEntities();
+    playerYRef.current = 0;
+    velYRef.current = 0;
+    spawnTimerRef.current = 0.9;
+    powerTimerRef.current = 0;
+    distanceRef.current = 0;
+    lastTimeRef.current = null;
+    setScore(0);
+    setPowerLeft(0);
+    setState("playing");
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === "Space" || e.code === "ArrowUp") {
+        e.preventDefault();
+        if (stateRef.current === "playing") jump();
+        else if (stateRef.current === "idle") startGame();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [jump, startGame]);
+
+  const spawnEntity = () => {
+    const fieldW = fieldWidthRef.current;
+    const id = ++idRef.current;
+    const recent = entitiesRef.current[entitiesRef.current.length - 1];
+    const recentClose = recent && recent.x > fieldW - 260;
+    const wantPower = Math.random() < 0.22;
+    let entity: Entity;
+    if (wantPower && !recentClose) {
+      entity = {
+        id, kind: "powerup",
+        x: fieldW + 40,
+        y: 110 + Math.random() * 50,
+        w: 54, h: 70, img: formulaImg,
+      };
+    } else {
+      const img = OBSTACLE_IMGS[Math.floor(Math.random() * OBSTACLE_IMGS.length)];
+      const big = Math.random() < 0.3;
+      const w = big ? 78 : 60;
+      const h = big ? 78 : 60;
+      entity = { id, kind: "obstacle", x: fieldW + 40, y: 0, w, h, img };
+    }
+
+    const node = document.createElement("div");
+    node.style.position = "absolute";
+    node.style.left = "0";
+    node.style.bottom = `${GROUND_Y + entity.y}px`;
+    node.style.width = `${entity.w}px`;
+    node.style.height = `${entity.h}px`;
+    node.style.transform = `translate3d(${entity.x}px,0,0)`;
+    node.style.willChange = "transform";
+    node.style.pointerEvents = "none";
+
+    const img = document.createElement("img");
+    img.src = entity.img;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "contain";
+    img.draggable = false;
+
+    if (entity.kind === "powerup") {
+      node.style.filter = "drop-shadow(0 0 14px #34d399) drop-shadow(0 0 28px #10b981)";
+      img.style.animation = "runner-bob 1.2s ease-in-out infinite";
+    } else {
+      node.style.filter = "drop-shadow(0 6px 10px rgba(0,0,0,0.55))";
+    }
+    node.appendChild(img);
+    entity.node = node;
+    entitiesLayerRef.current?.appendChild(node);
+    entitiesRef.current.push(entity);
+  };
+
+  // main loop
+  useEffect(() => {
+    let rafId = 0;
+    const loop = (t: number) => {
+      rafId = requestAnimationFrame(loop);
+      if (stateRef.current !== "playing") {
+        lastTimeRef.current = t;
+        return;
+      }
+      const last = lastTimeRef.current ?? t;
+      const dt = Math.min((t - last) / 1000, 0.05);
+      lastTimeRef.current = t;
+
+      const invincible = powerTimerRef.current > 0;
+      const speed = invincible ? BOOST_SPEED : BASE_SPEED;
+
+      // physics
+      velYRef.current -= GRAVITY * dt;
+      playerYRef.current += velYRef.current * dt;
+      if (playerYRef.current < 0) { playerYRef.current = 0; velYRef.current = 0; }
+
+      // distance
+      distanceRef.current += speed * dt;
+      const newScore = Math.floor(distanceRef.current / 10);
+
+      // power
+      if (powerTimerRef.current > 0) {
+        powerTimerRef.current = Math.max(0, powerTimerRef.current - dt);
+      }
+
+      // spawn
+      spawnTimerRef.current -= dt;
+      if (spawnTimerRef.current <= 0) {
+        spawnEntity();
+        const min = invincible ? 0.45 : 0.7;
+        spawnTimerRef.current = min + Math.random() * 0.7;
+      }
+
+      // update player position via DOM
+      if (playerRef.current) {
+        playerRef.current.style.transform = `translate3d(0, ${-playerYRef.current}px, 0)`;
+      }
+
+      // update entities
+      let gameOver = false;
+      let powerHit = false;
+      const surviving: Entity[] = [];
+      for (const e of entitiesRef.current) {
+        e.x -= speed * dt;
+        if (e.node) e.node.style.transform = `translate3d(${e.x}px,0,0)`;
+        if (e.x + e.w < -30) {
+          e.node?.remove();
+          continue;
+        }
+        if (collides(playerYRef.current, e)) {
+          if (e.kind === "powerup") {
+            powerHit = true;
+            e.node?.remove();
+            continue;
+          } else if (!invincible) {
+            gameOver = true;
+          } else {
+            // Эффект разрушения на кусочки!
+            if (e.node) e.node.remove();
+            
+            const numParticles = 6 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < numParticles; i++) {
+              const pNode = document.createElement("div");
+              const size = 16 + Math.random() * 12;
+              pNode.style.position = "absolute";
+              pNode.style.width = `${size}px`;
+              pNode.style.height = `${size}px`;
+              pNode.style.backgroundImage = `url("${e.img}")`;
+              pNode.style.backgroundSize = "contain";
+              pNode.style.backgroundRepeat = "no-repeat";
+              pNode.style.backgroundPosition = "center";
+              pNode.style.left = "0";
+              pNode.style.bottom = `${GROUND_Y}px`;
+              pNode.style.pointerEvents = "none";
+              pNode.style.willChange = "transform, opacity";
+              pNode.style.borderRadius = Math.random() > 0.5 ? "4px" : "50%";
+              
+              entitiesLayerRef.current?.appendChild(pNode);
+              
+              const life = 0.4 + Math.random() * 0.3;
+              particlesRef.current.push({
+                id: ++idRef.current,
+                x: e.x + e.w / 2 - size / 2,
+                y: e.y + e.h / 2 - size / 2,
+                vx: (Math.random() - 0.2) * 600,
+                vy: Math.random() * 600 + 200,
+                life,
+                maxLife: life,
+                node: pNode,
+                rot: Math.random() * 360,
+                vrot: (Math.random() - 0.5) * 1000
+              });
+            }
+            continue;
+          }
+        }
+        surviving.push(e);
+      }
+      entitiesRef.current = surviving;
+
+      // update particles
+      const survivingParticles: Particle[] = [];
+      for (const p of particlesRef.current) {
+        p.life -= dt;
+        if (p.life <= 0) {
+          p.node.remove();
+          continue;
+        }
+        p.vy -= GRAVITY * dt * 0.8;
+        p.x -= speed * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.rot += p.vrot * dt;
+        
+        p.node.style.transform = `translate3d(${p.x}px, ${-p.y}px, 0) rotate(${p.rot}deg)`;
+        p.node.style.opacity = (p.life / p.maxLife).toString();
+        
+        survivingParticles.push(p);
+      }
+      particlesRef.current = survivingParticles;
+
+      if (powerHit) powerTimerRef.current = POWER_DURATION;
+
+      setScore((p) => (p !== newScore ? newScore : p));
+      setPowerLeft((p) => {
+        const v = powerTimerRef.current;
+        if (v === 0 && p !== 0) return 0;
+        return Math.abs(p - v) > 0.05 ? v : p;
+      });
+
+      if (gameOver) {
+        setBest((b) => Math.max(b, newScore));
+        setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]);
+        setState("over");
+      }
+    };
+    rafId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const invincible = powerLeft > 0;
+  const energyPct = Math.max(0, Math.min(1, powerLeft / POWER_DURATION)) * 100;
+  const { t } = useLang();
+
+  const handleTap = (e: React.PointerEvent) => {
+    e.preventDefault();
+    if (stateRef.current === "playing") jump();
+    else if (stateRef.current === "idle") startGame();
+  };
+
+  return (
+    <section className="relative w-full py-20 md:py-28 px-4 md:px-8">
+      <style>{`
+        @keyframes runner-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes runner-ground { from { background-position: 0 0; } to { background-position: -200px 0; } }
+        @keyframes runner-pulse-aura { 0%,100% { opacity:0.55; transform:scale(1);} 50% { opacity:0.85; transform:scale(1.12);} }
+      `}</style>
+
+      <div className="max-w-5xl mx-auto">
+        {/* HUD */}
+        <div className="flex items-center justify-between gap-3 mb-3 px-1 flex-wrap">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 backdrop-blur-md">
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/50 mr-2">{t("runner.distance")}</span>
+              <span className="text-cyan-200 tabular-nums">{String(score).padStart(5, "0")}</span>
+            </div>
+            <div className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 backdrop-blur-md flex items-center gap-1.5">
+              <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/50 mr-1">{t("runner.best")}</span>
+              <span className="text-amber-200 tabular-nums">{String(best).padStart(5, "0")}</span>
+            </div>
+          </div>
+          <div className="flex-1 min-w-[180px] max-w-[260px] ml-auto">
+            <div className="flex items-center gap-2 mb-1">
+              <Zap className={`w-3.5 h-3.5 ${invincible ? "text-emerald-300" : "text-white/30"}`} />
+              <span className="text-[10px] uppercase tracking-[0.18em] text-white/50">{t("runner.energy")}</span>
+              {invincible && (
+                <span className="text-[10px] text-emerald-300 ml-auto tabular-nums">{powerLeft.toFixed(1)}s</span>
+              )}
+            </div>
+            <div className="h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{
+                  background: "linear-gradient(90deg,#34d399,#10b981,#22d3ee)",
+                  boxShadow: invincible ? "0 0 14px #34d399, 0 0 28px #10b98180" : "none",
+                }}
+                animate={{ width: `${energyPct}%` }}
+                transition={{ type: "tween", duration: 0.15 }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Game field */}
+        <div
+          ref={fieldRef}
+          onPointerDown={handleTap}
+          className="relative w-full select-none rounded-2xl overflow-hidden border border-cyan-400/20 backdrop-blur-xl cursor-pointer touch-none"
+          style={{
+            height: GAME_HEIGHT,
+            background:
+              "linear-gradient(180deg, rgba(8,14,34,0.65) 0%, rgba(13,22,52,0.85) 60%, rgba(5,10,24,0.95) 100%)",
+            boxShadow:
+              "inset 0 0 80px rgba(34,211,238,0.08), 0 30px 80px -40px rgba(34,211,238,0.4)",
+          }}
+        >
+          {/* starfield decoration */}
+          <div
+            className="absolute inset-0 opacity-30 pointer-events-none"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 30%, #ffffff 0.5px, transparent 1px), radial-gradient(circle at 70% 60%, #a5f3fc 0.5px, transparent 1px), radial-gradient(circle at 40% 80%, #ffffff 0.5px, transparent 1px)",
+              backgroundSize: "180px 120px, 240px 160px, 200px 140px",
+            }}
+          />
+          {/* horizon */}
+          <div
+            className="absolute left-0 right-0 pointer-events-none"
+            style={{
+              bottom: GROUND_Y - 1,
+              height: 1,
+              background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.6), transparent)",
+              boxShadow: "0 0 18px rgba(34,211,238,0.5)",
+            }}
+          />
+          {/* ground texture */}
+          <div
+            className="absolute left-0 right-0 pointer-events-none"
+            style={{
+              bottom: 0,
+              height: GROUND_Y,
+              background:
+                "linear-gradient(180deg, rgba(34,211,238,0.08) 0%, rgba(5,10,24,0) 100%), repeating-linear-gradient(90deg, rgba(167,139,250,0.18) 0 2px, transparent 2px 80px)",
+              animation: state === "playing" ? "runner-ground 0.6s linear infinite" : "none",
+            }}
+          />
+
+          {/* entities */}
+          <div ref={entitiesLayerRef} className="absolute inset-0 pointer-events-none" />
+
+          {/* player */}
+          <div
+            ref={playerRef}
+            className="absolute pointer-events-none"
+            style={{
+              left: PLAYER_X,
+              bottom: GROUND_Y,
+              width: PLAYER_SIZE,
+              height: PLAYER_SIZE,
+              willChange: "transform",
+            }}
+          >
+            {invincible && (
+              <div
+                ref={playerGlowRef}
+                className="absolute inset-[-18px] rounded-full pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(52,211,153,0.55) 0%, rgba(52,211,153,0) 70%)",
+                  filter: "blur(6px)",
+                  animation: "runner-pulse-aura 0.8s ease-in-out infinite",
+                }}
+              />
+            )}
+            <img
+              ref={playerImgRef}
+              src={runnerGif}
+              alt="Astronaut"
+              draggable={false}
+              className="relative w-full h-full object-contain"
+              style={{
+                filter: invincible
+                  ? "none"
+                  : "drop-shadow(0 8px 14px rgba(0,0,0,0.6))",
+              }}
+            />
+          </div>
+
+          {state === "playing" && (
+            <div className="absolute top-3 right-4 text-[10px] uppercase tracking-[0.2em] text-white/40 pointer-events-none">
+              {t("runner.tap")}
+            </div>
+          )}
+
+          <AnimatePresence>
+            {state === "idle" && (
+              <Overlay key="idle">
+                <h3 className="text-white mb-2" style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: "28px" }}>
+                  {t("runner.ready")}
+                </h3>
+                <p className="text-white/60 mb-5 text-center max-w-sm px-4" style={{ fontSize: "14px" }}>
+                  {t("runner.intro")}
+                </p>
+                <GhostButton
+                  tone="cyan"
+                  size="md"
+                  icon={<Play className="w-4 h-4" />}
+                  onClick={(e) => { e.stopPropagation(); startGame(); }}
+                >
+                  {t("btn.launch")}
+                </GhostButton>
+              </Overlay>
+            )}
+            {state === "over" && (
+              <Overlay key="over">
+                <div className="text-emerald-300 uppercase tracking-[0.3em] text-xs mb-2">{encouragement}</div>
+                <h3 className="text-white mb-1" style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: "32px" }}>
+                  {t("runner.distanceLabel")}: <span className="text-cyan-300 tabular-nums">{score}</span>
+                </h3>
+                <p className="text-white/50 mb-3 text-sm">{t("runner.bestRun")}: <span className="text-amber-200 tabular-nums">{best}</span></p>
+                <p className="text-white/60 mb-5 text-center font-['Space_Grotesk']">{t("game.wellDone")}</p>
+                
+                <div className="flex flex-col items-center justify-center gap-4 relative z-50">
+                  <GhostButton
+                    tone="emerald"
+                    size="lg"
+                    onClick={(e) => { e.stopPropagation(); onClose(); }}
+                  >
+                    {t("complete.continue")}
+                  </GhostButton>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); startGame(); }}
+                    className="text-white/40 hover:text-white/70 flex items-center gap-1.5 text-sm transition-colors mt-2"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    {t("btn.restart")}
+                  </button>
+                </div>
+              </Overlay>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Overlay: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.25 }}
+    className="absolute inset-0 flex flex-col items-center justify-center backdrop-blur-md"
+    style={{ background: "radial-gradient(circle at center, rgba(5,10,24,0.5), rgba(5,10,24,0.85))" }}
+  >
+    {children}
+  </motion.div>
+);
+
+export default RunnerGame;
