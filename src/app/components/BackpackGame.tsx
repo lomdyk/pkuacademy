@@ -10,6 +10,8 @@ import carrotImg from "../../imports/морковь_ОНА_ДОЛЖНА_20260416
 import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
 import formulaImg from "../../imports/Untitled.png";
 import pizzaImg from "../../imports/Untitled_(1).png";
+import closedBackpackImg from "../../imports/closed.png";
+import openedBackpackImg from "../../imports/opened.png";
 
 type FoodType = "safe" | "unsafe";
 
@@ -44,6 +46,7 @@ export const BackpackGame = ({
   const [, setScore] = useState(0);
   const [shakeBackpack, setShakeBackpack] = useState(false);
   const [backpackGlow, setBackpackGlow] = useState<"neutral" | "success" | "warning">("neutral");
+  const [backpackHovered, setBackpackHovered] = useState(false);
   const [quarantineGlow, setQuarantineGlow] = useState<"neutral" | "success">("neutral");
   const { t } = useLang();
 
@@ -60,9 +63,8 @@ export const BackpackGame = ({
     setSelected(selected === id ? null : id);
   };
 
-  const handleDropToBackpack = () => {
-    if (!selected) return;
-    const item = items.find((i) => i.id === selected);
+  const handleDropItemToBackpack = (id: string) => {
+    const item = items.find((i) => i.id === id);
     if (!item) return;
 
     if (item.type === "safe") {
@@ -86,12 +88,15 @@ export const BackpackGame = ({
         setShakeBackpack(false);
       }, 1500);
     }
-    setSelected(null);
+    if (selected === id) setSelected(null);
   };
 
-  const handleDropToQuarantine = () => {
-    if (!selected) return;
-    const item = items.find((i) => i.id === selected);
+  const handleDropToBackpack = () => {
+    if (selected) handleDropItemToBackpack(selected);
+  };
+
+  const handleDropItemToQuarantine = (id: string) => {
+    const item = items.find((i) => i.id === id);
     if (!item) return;
 
     if (item.type === "unsafe") {
@@ -104,7 +109,11 @@ export const BackpackGame = ({
       setQuarantineGlow("neutral");
       showMessage("That's clean energy! Pack it in the Backpack instead.", "error");
     }
-    setSelected(null);
+    if (selected === id) setSelected(null);
+  };
+
+  const handleDropToQuarantine = () => {
+    if (selected) handleDropItemToQuarantine(selected);
   };
 
   const removeItem = (id: string) => {
@@ -195,14 +204,23 @@ export const BackpackGame = ({
         <div className="flex items-center justify-center gap-6 md:gap-16 w-full max-w-3xl">
           <motion.button
             onClick={handleDropToBackpack}
+            onDragOver={(e) => { e.preventDefault(); setBackpackHovered(true); }}
+            onDragLeave={() => setBackpackHovered(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setBackpackHovered(false);
+              const id = e.dataTransfer.getData("text/plain");
+              if (id) handleDropItemToBackpack(id);
+            }}
+            onMouseEnter={() => setBackpackHovered(true)}
+            onMouseLeave={() => setBackpackHovered(false)}
             animate={shakeBackpack ? { x: [0, -8, 8, -8, 8, 0] } : {}}
             transition={{ duration: 0.4 }}
-            disabled={!selected}
             className={`
               relative flex flex-col items-center justify-center
               w-40 h-40 md:w-56 md:h-56 rounded-2xl md:rounded-3xl
               border-2 transition-all duration-300 cursor-pointer
-              ${!selected ? "opacity-50 cursor-not-allowed" : "opacity-100"}
+              ${backpackHovered ? "scale-105 border-cyan-400 bg-cyan-500/20" : ""}
               ${backpackGlow === "success"
                 ? "border-emerald-400 bg-emerald-500/15 shadow-[0_0_50px_rgba(16,185,129,0.4)]"
                 : backpackGlow === "warning"
@@ -213,7 +231,11 @@ export const BackpackGame = ({
             `}
           >
             <div className="absolute inset-3 rounded-xl md:rounded-2xl border border-dashed border-cyan-400/20 animate-[spin_20s_linear_infinite]" />
-            <Backpack className={`w-10 h-10 md:w-14 md:h-14 mb-2 ${backpackGlow === "success" ? "text-emerald-400" : backpackGlow === "warning" ? "text-red-400" : "text-cyan-400"}`} />
+            <img 
+              src={backpackHovered || backpackGlow === "success" ? openedBackpackImg : closedBackpackImg} 
+              alt="Backpack"
+              className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${backpackGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : backpackGlow === "warning" ? "drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" : ""}`}
+            />
             <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>BACKPACK</span>
             <span className="font-['Space_Grotesk'] text-[10px] text-cyan-300/60 mt-1 tracking-wider">CLEAN ENERGY</span>
           </motion.button>
@@ -226,15 +248,19 @@ export const BackpackGame = ({
 
           <motion.button
             onClick={handleDropToQuarantine}
-            disabled={!selected}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const id = e.dataTransfer.getData("text/plain");
+              if (id) handleDropItemToQuarantine(id);
+            }}
             className={`
               relative flex flex-col items-center justify-center
               w-40 h-40 md:w-56 md:h-56 rounded-2xl md:rounded-3xl
               border-2 transition-all duration-300 cursor-pointer
-              ${!selected ? "opacity-50 cursor-not-allowed" : "opacity-100"}
               ${quarantineGlow === "success"
                 ? "border-emerald-400 bg-emerald-500/15 shadow-[0_0_50px_rgba(16,185,129,0.4)]"
-                : "border-amber-500/30 bg-amber-500/5 shadow-[0_0_30px_rgba(245,158,11,0.1)]"
+                : "border-amber-500/30 bg-amber-500/5 shadow-[0_0_30px_rgba(245,158,11,0.1)] hover:border-amber-400 hover:bg-amber-500/10"
               }
               backdrop-blur-sm
             `}
@@ -286,8 +312,17 @@ export const BackpackGame = ({
                   exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectItem(item.id)}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("text/plain", item.id);
+                    // Make it look grabbed
+                    e.currentTarget.style.opacity = "0.5";
+                  }}
+                  onDragEnd={(e) => {
+                    e.currentTarget.style.opacity = "1";
+                  }}
                   className={`
-                    relative flex flex-col items-center p-2 md:p-3 rounded-xl border-2 transition-all duration-200
+                    relative flex flex-col items-center p-2 md:p-3 rounded-xl border-2 transition-all duration-200 cursor-grab active:cursor-grabbing
                     ${selected === item.id
                       ? "border-cyan-400 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
                       : "border-white/[0.08] bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"

@@ -70,21 +70,26 @@ export const MissionPrologue: React.FC<Props> = ({
       pin: true,
       scrub: true,
       onUpdate: (self) => {
+        const newStep = self.progress < 0.4 ? 0 : 1;
+        setStep(prev => prev !== newStep ? newStep : prev);
+
         if (progressCircleRef.current) {
-          const offset = 50.265 * (1 - self.progress);
+          const progressInStep1 = Math.max(0, (self.progress - 0.4) / 0.6);
+          const offset = 50.265 * (1 - progressInStep1);
           gsap.set(progressCircleRef.current, { strokeDashoffset: offset });
         }
         if (progressContainerRef.current) {
-          progressContainerRef.current.style.opacity = self.progress >= 0.99 ? "0" : "1";
+          progressContainerRef.current.style.opacity = (self.progress >= 0.99 || self.progress < 0.4) ? "0" : "1";
         }
         
-        if (self.progress >= 0.5 && !isCompletedRef.current && !overlayShownRef.current) {
+        // Trigger overlay only at the very end of the section
+        if (self.progress >= 0.95 && !isCompletedRef.current && !overlayShownRef.current) {
           overlayShownRef.current = true;
           setShowOverlay(true);
         }
       }
     });
-  }, { scope: sectionRef, dependencies: [isCompleted] });
+  }, { scope: sectionRef, dependencies: [] });
 
   useEffect(() => {
     if (showOverlay) {
@@ -210,15 +215,12 @@ export const MissionPrologue: React.FC<Props> = ({
         </AnimatePresence>
       </div>
       
-      <div className="pt-2 w-full max-w-sm relative">
+      <div className="pt-2 w-full max-w-sm relative min-h-[60px] flex items-center">
         {step === 0 ? (
-          <GhostButton
-            tone={tone}
-            size="lg"
-            onClick={() => setStep(1)}
-          >
-            Read Briefing &gt;
-          </GhostButton>
+          <div className="flex items-center gap-3 text-white/40 text-[11px] tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+            <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Scroll down to continue</span>
+          </div>
         ) : (
           <GhostButton
             tone={tone}
