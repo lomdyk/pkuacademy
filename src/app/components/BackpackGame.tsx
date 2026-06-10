@@ -85,7 +85,7 @@ export const BackpackGame = ({
     } else {
       setBackpackGlow("warning");
       setShakeBackpack(true);
-      showMessage("WARNING! High protein detected. Send to Lockbox!", "error");
+      showMessage("WARNING! High protein detected. Send to Trash!", "error");
       setTimeout(() => {
         setBackpackGlow("neutral");
         setShakeBackpack(false);
@@ -199,7 +199,7 @@ export const BackpackGame = ({
           </h2>
           <p className="text-slate-400 font-['Space_Grotesk'] text-sm md:text-base">
             {selected
-              ? "Tap the Backpack for clean energy, or Lockbox for high-protein items"
+              ? "Tap the Backpack for clean energy, or Trash for high-protein items"
               : "Tap an item below to pick it up"}
           </p>
         </motion.div>
@@ -276,10 +276,10 @@ export const BackpackGame = ({
             <div className="absolute inset-3 rounded-xl md:rounded-2xl border border-dashed border-amber-400/20 animate-[spin_25s_linear_infinite_reverse]" />
             <img 
               src={quarantineHovered || quarantineGlow === "success" ? openedBoxImg : closedBoxImg} 
-              alt="Lockbox"
+              alt="Trash"
               className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${quarantineGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : ""}`}
             />
-            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>LOCKBOX</span>
+            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>TRASH</span>
             <span className="font-['Space_Grotesk'] text-[10px] text-amber-300/60 mt-1 tracking-wider">HIGH PROTEIN</span>
           </motion.button>
         </div>
