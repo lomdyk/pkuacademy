@@ -79,8 +79,8 @@ export const MissionPrologue: React.FC<Props> = ({
         setStep(prev => prev !== newStep ? newStep : prev);
 
         if (progressCircleRef.current) {
-          const progressInStep1 = Math.max(0, (self.progress - 0.4) / 0.6);
-          const offset = 50.265 * (1 - progressInStep1);
+          const skipProgress = Math.max(0, (self.progress - 0.85) / 0.15);
+          const offset = 50.265 * (1 - skipProgress);
           gsap.set(progressCircleRef.current, { strokeDashoffset: offset });
         }
         
@@ -233,7 +233,7 @@ export const MissionPrologue: React.FC<Props> = ({
         <div 
           ref={progressContainerRef}
           className="absolute bottom-8 left-0 w-full z-10 pointer-events-none flex items-center justify-center gap-2 transition-opacity duration-300"
-          style={{ opacity: scrollProgress >= 0.95 && scrollProgress < 0.99 ? 1 : 0 }}
+          style={{ opacity: scrollProgress >= 0.85 && scrollProgress < 0.99 ? 1 : 0 }}
         >
           <div className="text-[10px] uppercase tracking-widest text-white/40">
             Scroll to skip to next section
