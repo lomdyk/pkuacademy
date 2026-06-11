@@ -13,42 +13,59 @@ export const ScrollRevealText: React.FC<Props> = ({
   accentColor, 
   className = "" 
 }) => {
-  const words = useMemo(() => text.split(" "), [text]);
+  const { charsMap, totalLength } = useMemo(() => {
+    const words = text.split(" ");
+    let totalChars = 0;
+    const charsMap = words.map(word => {
+      const chars = word.split("");
+      const result = chars.map((char) => {
+        const globalIndex = totalChars++;
+        return { char, globalIndex };
+      });
+      totalChars++; // Count the space
+      return result;
+    });
+    return { charsMap, totalLength: totalChars };
+  }, [text]);
 
   return (
     <p className={`m-0 ${className}`}>
-      {words.map((w, i) => {
-        const p = i / words.length;
-        const diff = progress - p;
-        
-        let color = "rgba(255,255,255,0.2)"; // Dim background layer
-        let textShadow = "none";
-        
-        // If word is just revealed (within 15% window), it flashes in accent color
-        if (diff > 0 && diff < 0.2) {
-          color = accentColor;
-          textShadow = `0 0 16px ${accentColor}`;
-        } 
-        // Once scroll moves past the flash window, it cools down to saturated white
-        else if (diff >= 0.2) {
-          color = "#ffffff";
-        }
+      {charsMap.map((wordChars, i) => (
+        <span key={i} className="inline-block mr-[0.25em] whitespace-nowrap">
+          {wordChars.map((item, j) => {
+            const p = item.globalIndex / totalLength;
+            const diff = progress - p;
+            
+            let color = "rgba(255,255,255,0.15)";
+            let textShadow = "none";
+            let scale = 1;
+            
+            // Tighter flash window for per-character smoothness
+            if (diff > 0 && diff < 0.1) {
+              color = accentColor;
+              textShadow = `0 0 16px ${accentColor}`;
+            } 
+            else if (diff >= 0.1) {
+              color = "#ffffff";
+            }
 
-        return (
-          <span 
-            key={i} 
-            className="inline-block mr-[0.25em]"
-            style={{ 
-              color, 
-              textShadow, 
-              transition: "color 0.2s ease-out, text-shadow 0.2s ease-out",
-              willChange: "color, text-shadow"
-            }}
-          >
-            {w}
-          </span>
-        );
-      })}
+            return (
+              <span 
+                key={j} 
+                className="inline-block"
+                style={{ 
+                  color, 
+                  textShadow, 
+                  transition: "color 0.15s ease-out, text-shadow 0.15s ease-out",
+                  willChange: "color, text-shadow"
+                }}
+              >
+                {item.char}
+              </span>
+            );
+          })}
+        </span>
+      ))}
     </p>
   );
 };

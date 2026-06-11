@@ -115,12 +115,14 @@ export const MissionPrologue: React.FC<Props> = ({
       transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
       className="relative w-full max-w-md mx-auto"
     >
-      <img
+      <motion.img
         src={image}
         alt={imageAlt}
         draggable={false}
-        className="block w-full h-auto select-none drop-shadow-2xl"
-        style={{ aspectRatio: "1/1", objectFit: "cover" }}
+        animate={{ y: [0, -15, 0] }}
+        transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
+        className="block w-full h-auto select-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+        style={{ objectFit: "contain", maxHeight: "450px" }}
       />
     </motion.div>
   );
@@ -134,12 +136,7 @@ export const MissionPrologue: React.FC<Props> = ({
       className="flex flex-col items-start gap-5 max-w-xl"
     >
       <div className="flex flex-col items-start leading-none tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-        {t(tagKey).match(/\d+/) && (
-          <span className="text-white/40 text-[13px] md:text-[15px] uppercase tracking-[0.2em] font-bold mb-3 block">
-            Mission {t(tagKey).match(/\d+/)?.[0]}
-          </span>
-        )}
-        <h2 className="text-white font-bold text-4xl md:text-5xl lg:text-6xl mt-1 leading-[1.05] tracking-tight">
+        <h2 className="text-white font-bold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
           {t(titleKey)}
         </h2>
       </div>
@@ -163,9 +160,9 @@ export const MissionPrologue: React.FC<Props> = ({
                 )}
                 <ScrollRevealText 
                   text={`"${t(dialogueKey)}"`}
-                  progress={Math.min(1, scrollProgress / 0.4)}
+                  progress={Math.min(1, scrollProgress / 0.45)}
                   accentColor={a.color}
-                  className="text-[18px] md:text-[20px] font-['Space_Grotesk'] leading-[1.6] italic"
+                  className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] italic"
                 />
               </div>
             </motion.div>
@@ -184,9 +181,9 @@ export const MissionPrologue: React.FC<Props> = ({
                 </span>
                 <ScrollRevealText 
                   text={t(objectiveKey)}
-                  progress={Math.min(1, Math.max(0, scrollProgress - 0.4) / 0.55)}
+                  progress={Math.min(1, Math.max(0, scrollProgress - 0.45) / 0.50)}
                   accentColor={a.color}
-                  className="text-[18px] md:text-[20px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
+                  className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
                 />
               </div>
             </motion.div>
@@ -230,6 +227,7 @@ export const MissionPrologue: React.FC<Props> = ({
         <div 
           ref={progressContainerRef}
           className="absolute bottom-8 left-0 w-full z-10 pointer-events-none flex items-center justify-center gap-2 transition-opacity duration-300"
+          style={{ opacity: scrollProgress > 0.8 && scrollProgress < 0.99 ? 1 : 0 }}
         >
           <div className="text-[10px] uppercase tracking-widest text-white/40">
             Scroll to skip to next section
