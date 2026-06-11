@@ -134,10 +134,27 @@ export const HeroStory = () => {
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const engineGlowRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const scrollHintRef = useRef<HTMLDivElement>(null);
   const autoScrolledRef = useRef(false);
 
   useGSAP(() => {
     const isMobile = window.innerWidth < 768;
+
+    // Intro animation (Play once on mount, independently of scroll)
+    gsap.fromTo(shipRef.current, 
+      { y: isMobile ? 180 : 260, x: isMobile ? 0 : 400, scale: 0.2, opacity: 0 },
+      { y: 0, x: 0, scale: 1, opacity: 1, duration: 1.2, ease: "power3.out" }
+    );
+    
+    gsap.fromTo(panelRefs.current[0], 
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1, delay: 0.4, ease: "power2.out" }
+    );
+
+    gsap.fromTo(scrollHintRef.current, 
+      { opacity: 0, y: -10 },
+      { opacity: 1, y: 0, duration: 1, delay: 1.2, ease: "power2.out" }
+    );
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -150,55 +167,48 @@ export const HeroStory = () => {
       },
     });
 
-    // Ship flies in — from below on mobile, from side on desktop
-    tl.fromTo(
-      shipRef.current,
-      {
-        x: isMobile ? 0 : 400,
-        y: isMobile ? 180 : 260,
-        scale: 0.2,
-        opacity: 0,
-      },
-      { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.08, ease: "power2.out" }
-    );
+    // Fade out scroll hint immediately when scrolling starts
+    tl.to(scrollHintRef.current, { opacity: 0, duration: 0.02 }, 0);
 
     // Story panels
     const panelDur = 0.11;
     panelRefs.current.forEach((panel, i) => {
       if (!panel) return;
-      const start = 0.08 + i * panelDur;
+      const start = i * panelDur; // Panel 0 is visible at 0. Panel 1 starts at 0.11.
       const bobAmt = isMobile ? 7 : 13;
 
-      let shipAnim = {};
-      switch(i) {
-        case 0:
-          // Вираж влево, отдаление
-          shipAnim = { x: isMobile ? -30 : -100, y: isMobile ? -10 : -30, rotation: -15, scale: 0.85, duration: panelDur, ease: "sine.inOut" };
-          break;
-        case 1:
-          // Подлет вправо, крупнее
-          shipAnim = { x: isMobile ? 40 : 120, y: isMobile ? 20 : 50, rotation: 20, scale: 1.15, duration: panelDur, ease: "sine.inOut" };
-          break;
-        case 2:
-          // Мертвая петля в центре (360 градусов), отдаление
-          shipAnim = { x: 0, y: isMobile ? -30 : -60, rotation: 360, scale: 0.6, duration: panelDur, ease: "power1.inOut" };
-          break;
-        case 3:
-          // Возврат в исходную для гиперпрыжка
-          shipAnim = { x: 0, y: 0, rotation: 360, scale: 1, duration: panelDur, ease: "back.out(1.2)" };
-          break;
-        default:
-          shipAnim = { y: i % 2 === 0 ? -bobAmt : bobAmt, duration: panelDur, ease: "sine.inOut" };
+      if (i > 0) {
+        let shipAnim = {};
+        switch(i) {
+          case 1:
+            // Вираж влево, отдаление
+            shipAnim = { x: isMobile ? -30 : -100, y: isMobile ? -10 : -30, rotation: -15, scale: 0.85, duration: panelDur, ease: "sine.inOut" };
+            break;
+          case 2:
+            // Подлет вправо, крупнее
+            shipAnim = { x: isMobile ? 40 : 120, y: isMobile ? 20 : 50, rotation: 20, scale: 1.15, duration: panelDur, ease: "sine.inOut" };
+            break;
+          case 3:
+            // Мертвая петля в центре (360 градусов), отдаление
+            shipAnim = { x: 0, y: isMobile ? -30 : -60, rotation: 360, scale: 0.6, duration: panelDur, ease: "power1.inOut" };
+            break;
+          case 4:
+            // Возврат в исходную для гиперпрыжка
+            shipAnim = { x: 0, y: 0, rotation: 360, scale: 1, duration: panelDur, ease: "back.out(1.2)" };
+            break;
+          default:
+            shipAnim = { y: i % 2 === 0 ? -bobAmt : bobAmt, duration: panelDur, ease: "sine.inOut" };
+        }
+        tl.to(shipRef.current, shipAnim, start);
+
+        tl.fromTo(
+          panel,
+          { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 },
+          { opacity: 1, x: 0, y: 0, duration: 0.04, ease: "power2.out" },
+          start
+        );
       }
 
-      tl.to(shipRef.current, shipAnim, start);
-
-      tl.fromTo(
-        panel,
-        { opacity: 0, x: isMobile ? 0 : -30, y: isMobile ? 20 : 0 },
-        { opacity: 1, x: 0, y: 0, duration: 0.04, ease: "power2.out" },
-        start
-      );
       if (i < STORY_PANELS.length - 1) {
         tl.to(
           panel,
@@ -209,7 +219,7 @@ export const HeroStory = () => {
     });
 
     // Zoom into engine — smaller values on mobile
-    const zoomStart = 0.08 + (STORY_PANELS.length - 1) * panelDur + 0.05;
+    const zoomStart = (STORY_PANELS.length - 1) * panelDur + 0.05;
 
     // Auto-scroll instantly when zoom animation finishes (only when scrolling forward)
     tl.add(() => {
@@ -279,7 +289,7 @@ export const HeroStory = () => {
               key={i}
               ref={(el) => { panelRefs.current[i] = el; }}
               className="absolute inset-0 flex items-center"
-              style={{ opacity: 0 }}
+              style={{ opacity: i === 0 ? 1 : 0 }}
             >
               <div className="w-full max-w-lg">
                 <h2
@@ -309,7 +319,6 @@ export const HeroStory = () => {
             ref={shipRef}
             className="relative w-36 sm:w-44 md:w-64 lg:w-80 xl:w-96 aspect-square"
             style={{ 
-              opacity: 0, 
               filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
               willChange: "transform, opacity, filter" 
             }}
@@ -334,9 +343,13 @@ export const HeroStory = () => {
       />
 
       {/* Scroll hint */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 animate-bounce">
+      <div 
+        ref={scrollHintRef}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+        style={{ opacity: 0 }}
+      >
         <p className="text-[10px] text-slate-500 tracking-[0.2em] uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Scroll to begin</p>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <svg className="animate-bounce" width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M10 4v12m0 0l-4-4m4 4l4-4" stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
