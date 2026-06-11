@@ -39,16 +39,16 @@ export const ScrollRevealText: React.FC<Props> = ({
               text-shadow: 0 0 16px ${accentColor}; 
             }
             100% { 
-              color: #ffffff; 
+              color: inherit; 
               text-shadow: none; 
             }
           }
-          .reveal-char {
+          .char-${animationName} {
             color: rgba(255,255,255,0.15);
-            transition: color 0.1s ease-out; /* fast fade out when scrubbing backwards */
+            transition: color 0.1s ease-out;
           }
-          .reveal-char.revealed {
-            color: #ffffff; /* final state */
+          .char-${animationName}.revealed {
+            color: inherit;
             animation: ${animationName} 0.8s ease-out forwards;
           }
         `}
@@ -63,7 +63,7 @@ export const ScrollRevealText: React.FC<Props> = ({
               return (
                 <span 
                   key={j} 
-                  className={`reveal-char ${isRevealed ? 'revealed' : ''}`}
+                  className={`char-${animationName} ${isRevealed ? 'revealed' : ''}`}
                 >
                   {item.char}
                 </span>
