@@ -57,6 +57,8 @@ function AppInner() {
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+    
+    (window as any).lenis = lenis;
 
     lenis.on('scroll', ScrollTrigger.update);
 
@@ -68,6 +70,7 @@ function AppInner() {
 
     return () => {
       lenis.destroy();
+      delete (window as any).lenis;
     };
   }, []);
 

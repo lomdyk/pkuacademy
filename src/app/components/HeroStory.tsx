@@ -1,11 +1,10 @@
 import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useGSAP } from "@gsap/react";
 import { AnimatedShip } from "./AnimatedShip";
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 import { useLang } from "../utils/i18n";
 
@@ -219,12 +218,12 @@ export const HeroStory = () => {
       if (st.progress >= zoomStart - 0.02) {
         autoScrolledRef.current = true;
         gsap.ticker.remove(checkZoomZone);
-        // Let GSAP ScrollToPlugin resolve the pinned offset of the next section
-        gsap.to(window, {
-          scrollTo: "#crew-greeting",
-          duration: 1.4,
-          ease: "power2.inOut",
-        });
+        // Use lenis directly to teleport instantly, bypassing any conflicts
+        if ((window as any).lenis) {
+          (window as any).lenis.scrollTo("#crew-greeting", { immediate: true });
+        } else {
+          document.getElementById("crew-greeting")?.scrollIntoView(true);
+        }
       }
     }
     gsap.ticker.add(checkZoomZone);
@@ -232,7 +231,7 @@ export const HeroStory = () => {
     tl.to(
       shipRef.current,
       {
-        scale: isMobile ? 30 : 70,
+        scale: isMobile ? 12 : 20,
         x: isMobile ? 0 : -300,
         y: isMobile ? -80 : -100,
         opacity: 0,
@@ -315,7 +314,11 @@ export const HeroStory = () => {
           <AnimatedShip
             ref={shipRef}
             className="relative w-36 sm:w-44 md:w-64 lg:w-80 xl:w-96 aspect-square"
-            style={{ opacity: 0, filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))" }}
+            style={{ 
+              opacity: 0, 
+              filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
+              willChange: "transform, opacity, filter" 
+            }}
           />
         </div>
       </div>
