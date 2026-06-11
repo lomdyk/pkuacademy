@@ -41,7 +41,10 @@ export const ScrollRevealText: React.FC<Props> = ({
             let scale = 1;
             
             // Tighter flash window for per-character smoothness
-            if (diff > 0 && diff < 0.1) {
+            if (progress >= 0.99) {
+              color = "#ffffff";
+              textShadow = "none";
+            } else if (diff > 0 && diff < 0.1) {
               color = accentColor;
               textShadow = `0 0 16px ${accentColor}`;
             } 

@@ -141,7 +141,7 @@ export const MissionPrologue: React.FC<Props> = ({
         </h2>
       </div>
 
-      <div className="relative w-full min-h-[140px]">
+      <div className="grid grid-cols-1 grid-rows-1 w-full min-h-[140px]">
         <AnimatePresence mode="wait">
           {step === 0 ? (
             <motion.div
@@ -150,7 +150,7 @@ export const MissionPrologue: React.FC<Props> = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0"
+              className="col-start-1 row-start-1 w-full"
             >
               <div className="pl-0">
                 {speakerKey && (
@@ -173,7 +173,7 @@ export const MissionPrologue: React.FC<Props> = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-0"
+              className="col-start-1 row-start-1 w-full"
             >
               <div className="pl-0">
                 <span className="text-xs uppercase tracking-[0.2em] font-bold text-white/30 mb-2 block">
@@ -227,7 +227,7 @@ export const MissionPrologue: React.FC<Props> = ({
         <div 
           ref={progressContainerRef}
           className="absolute bottom-8 left-0 w-full z-10 pointer-events-none flex items-center justify-center gap-2 transition-opacity duration-300"
-          style={{ opacity: scrollProgress > 0.8 && scrollProgress < 0.99 ? 1 : 0 }}
+          style={{ opacity: scrollProgress >= 0.95 && scrollProgress < 0.99 ? 1 : 0 }}
         >
           <div className="text-[10px] uppercase tracking-widest text-white/40">
             Scroll to skip to next section
