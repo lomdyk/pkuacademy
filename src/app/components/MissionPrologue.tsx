@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Gamepad2, X } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
+import { ScrollRevealText } from "./ui/ScrollRevealText";
 import { useLang } from "../utils/i18n";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -32,6 +33,7 @@ interface Props {
   isLocked?: boolean;
   warningImg?: string;
   warningKey?: string;
+  speakerKey?: string;
 }
 
 export const MissionPrologue: React.FC<Props> = ({
@@ -49,6 +51,7 @@ export const MissionPrologue: React.FC<Props> = ({
   isLocked = false,
   warningImg,
   warningKey,
+  speakerKey,
 }) => {
   const { t } = useLang();
   const a = ACCENT[tone];
@@ -58,6 +61,7 @@ export const MissionPrologue: React.FC<Props> = ({
   const overlayShownRef = useRef(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [step, setStep] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const isCompletedRef = useRef(isCompleted);
   isCompletedRef.current = isCompleted;
@@ -70,6 +74,7 @@ export const MissionPrologue: React.FC<Props> = ({
       pin: true,
       scrub: true,
       onUpdate: (self) => {
+        setScrollProgress(self.progress);
         const newStep = self.progress < 0.4 ? 0 : 1;
         setStep(prev => prev !== newStep ? newStep : prev);
 
@@ -110,30 +115,13 @@ export const MissionPrologue: React.FC<Props> = ({
       transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
       className="relative w-full max-w-md mx-auto"
     >
-      <div
-        className="absolute -inset-6 rounded-[32px] pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, ${a.rgba} 0%, transparent 65%)`,
-          filter: "blur(24px)",
-          opacity: 0.6,
-        }}
+      <img
+        src={image}
+        alt={imageAlt}
+        draggable={false}
+        className="block w-full h-auto select-none drop-shadow-2xl"
+        style={{ aspectRatio: "1/1", objectFit: "cover" }}
       />
-      <div
-        className="relative rounded-[28px] overflow-hidden border backdrop-blur-md"
-        style={{
-          borderColor: a.rgba,
-          background: a.rgbaSoft,
-          boxShadow: `0 30px 80px -40px ${a.rgba}, inset 0 0 40px rgba(255,255,255,0.03)`,
-        }}
-      >
-        <img
-          src={image}
-          alt={imageAlt}
-          draggable={false}
-          className="block w-full h-auto select-none"
-          style={{ aspectRatio: "1/1", objectFit: "cover" }}
-        />
-      </div>
     </motion.div>
   );
 
@@ -145,33 +133,16 @@ export const MissionPrologue: React.FC<Props> = ({
       transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
       className="flex flex-col items-start gap-5 max-w-xl"
     >
-      <div
-        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border backdrop-blur-md"
-        style={{ borderColor: a.rgba, background: a.rgbaSoft }}
-      >
-        <span
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: a.color, boxShadow: `0 0 10px ${a.color}` }}
-        />
-        <span
-          className="text-[10px] uppercase tracking-[0.28em]"
-          style={{ color: a.color, fontFamily: "'Space Grotesk', sans-serif" }}
-        >
-          {t(tagKey)}
-        </span>
+      <div className="flex flex-col items-start leading-none tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+        {t(tagKey).match(/\d+/) && (
+          <span className="text-white/40 text-[13px] md:text-[15px] uppercase tracking-[0.2em] font-bold mb-3 block">
+            Mission {t(tagKey).match(/\d+/)?.[0]}
+          </span>
+        )}
+        <h2 className="text-white font-bold text-4xl md:text-5xl lg:text-6xl mt-1 leading-[1.05] tracking-tight">
+          {t(titleKey)}
+        </h2>
       </div>
-      <h2
-        className="text-white"
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 700,
-          fontSize: "clamp(28px, 5vw, 48px)",
-          lineHeight: 1.1,
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {t(titleKey)}
-      </h2>
 
       <div className="relative w-full min-h-[140px]">
         <AnimatePresence mode="wait">
@@ -184,14 +155,18 @@ export const MissionPrologue: React.FC<Props> = ({
               transition={{ duration: 0.3 }}
               className="absolute inset-0"
             >
-              <div className="pl-4 border-l-2" style={{ borderColor: a.rgba }}>
-                <span className="text-xs uppercase tracking-widest text-white/50 mb-2 block">Dialogue</span>
-                <p
-                  className="text-white/80 italic"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "17px", lineHeight: 1.6 }}
-                >
-                  "{t(dialogueKey)}"
-                </p>
+              <div className="pl-0">
+                {speakerKey && (
+                  <span className="text-xs uppercase tracking-[0.2em] font-bold mb-2 block" style={{ color: a.color }}>
+                    {t(speakerKey)}
+                  </span>
+                )}
+                <ScrollRevealText 
+                  text={`"${t(dialogueKey)}"`}
+                  progress={Math.min(1, scrollProgress / 0.4)}
+                  accentColor={a.color}
+                  className="text-[18px] md:text-[20px] font-['Space_Grotesk'] leading-[1.6] italic"
+                />
               </div>
             </motion.div>
           ) : (
@@ -203,25 +178,24 @@ export const MissionPrologue: React.FC<Props> = ({
               transition={{ duration: 0.3 }}
               className="absolute inset-0"
             >
-               <span className="text-xs uppercase tracking-widest text-white/50 mb-2 block">Objective</span>
-               <p
-                className="text-white/90"
-                style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: "17px", lineHeight: 1.6 }}
-              >
-                {t(objectiveKey)}
-              </p>
+              <div className="pl-0">
+                <span className="text-xs uppercase tracking-[0.2em] font-bold text-white/30 mb-2 block">
+                  Objective
+                </span>
+                <ScrollRevealText 
+                  text={t(objectiveKey)}
+                  progress={Math.min(1, Math.max(0, scrollProgress - 0.4) / 0.55)}
+                  accentColor={a.color}
+                  className="text-[18px] md:text-[20px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
       
       <div className="pt-2 w-full max-w-sm relative min-h-[60px] flex items-center">
-        {step === 0 ? (
-          <div className="flex items-center gap-3 text-white/40 text-[11px] tracking-widest uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-            <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Scroll down to continue</span>
-          </div>
-        ) : (
+        {step === 0 ? null : (
           <GhostButton
             tone={tone}
             size="lg"

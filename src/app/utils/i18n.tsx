@@ -93,6 +93,7 @@ export const TRANSLATIONS: Dict = {
   },
   "m1.cta": { en: "Pack with Luna >", de: "Mit Luna packen >" },
   "m1.warning": { en: "Hey Captain, we haven't packed our sports backpack yet! Let's get our gear ready.", de: "Hey Kapitän, wir haben unseren Sportrucksack noch nicht gepackt! Lass uns unsere Ausrüstung bereitlegen." },
+  "m1.speaker": { en: "Luna", de: "Luna" },
 
   // ── Mission 02 — Talk ──────────────────────────────────────
   "m2.tag": { en: "Mission 02 - The Stadium Tunnel", de: "Mission 02 - Der Stadiontunnel" },
@@ -107,6 +108,7 @@ export const TRANSLATIONS: Dict = {
   },
   "m2.cta": { en: "Meet the Team >", de: "Team treffen >" },
   "m2.warning": { en: "Wait! Someone is offering a strange snack. We need to figure out what to say!", de: "Warte! Jemand bietet einen seltsamen Snack an. Wir müssen überlegen, was wir sagen!" },
+  "m2.speaker": { en: "Stranger", de: "Fremder" },
 
   // ── Mission 03 — Runner ────────────────────────────────────
   "m3.tag": { en: "Mission 03 - The Match", de: "Mission 03 - Das Spiel" },
@@ -121,6 +123,7 @@ export const TRANSLATIONS: Dict = {
   },
   "m3.cta": { en: "Sprint with Crew >", de: "Mit Team sprinten >" },
   "m3.warning": { en: "Captain, the match is starting! We need to step onto the field!", de: "Kapitän, das Spiel beginnt! Wir müssen aufs Feld gehen!" },
+  "m3.speaker": { en: "Coach", de: "Trainer" },
 
   // ── Captains Logs (Additional Info) ────────────────────────
   "stage.logs": { en: "Additional Info", de: "Zusatzinfos" },
