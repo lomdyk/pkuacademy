@@ -53,19 +53,20 @@ export const ScrollRevealText: React.FC<Props> = ({
             
             let color = "rgba(255,255,255,0.15)";
             let textShadow = "none";
-            let transition = "color 0.15s ease-out, text-shadow 0.15s ease-out";
+            let transition = "color 0.2s ease-out, text-shadow 0.2s ease-out";
             
             if (diff > 0) {
               if (progress >= 0.99) {
                 color = "#ffffff";
-              } else if (diff < 0.3 && isScrolling) {
-                const intensity = Math.max(0, 1 - (diff / 0.3));
+              } else if (diff < 0.2 && isScrolling) {
+                const intensity = Math.max(0, 1 - (diff / 0.2));
                 color = `color-mix(in srgb, ${accentColor} ${intensity * 100}%, #ffffff)`;
                 textShadow = `0 0 ${16 * intensity}px ${accentColor}`;
-                transition = "color 0.1s linear, text-shadow 0.1s linear";
+                // CRITICAL: Zero transition while syncing with GSAP progress to prevent massive render lag
+                transition = "none";
               } else {
                 color = "#ffffff";
-                transition = "color 0.6s ease-out, text-shadow 0.6s ease-out";
+                transition = "color 0.8s ease-out, text-shadow 0.8s ease-out";
               }
             }
 
