@@ -55,6 +55,12 @@ export const MissionPrologue: React.FC<Props> = ({
 }) => {
   const { t } = useLang();
   const a = ACCENT[tone];
+
+  const rawTitle = t(titleKey);
+  const titleWords = rawTitle.split(" ");
+  const lastTitleWord = titleWords.pop();
+  const restTitle = titleWords.join(" ");
+
   const sectionRef = useRef<HTMLElement>(null);
   const progressCircleRef = useRef<SVGCircleElement>(null);
   const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -79,7 +85,7 @@ export const MissionPrologue: React.FC<Props> = ({
         setStep(prev => prev !== newStep ? newStep : prev);
 
         if (progressCircleRef.current) {
-          const skipProgress = Math.max(0, (self.progress - 0.85) / 0.15);
+          const skipProgress = Math.max(0, (self.progress - 0.8) / 0.2);
           const offset = 50.265 * (1 - skipProgress);
           gsap.set(progressCircleRef.current, { strokeDashoffset: offset });
         }
@@ -134,7 +140,8 @@ export const MissionPrologue: React.FC<Props> = ({
     >
       <div className="flex flex-col items-start leading-none tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
         <h2 className="text-white font-bold text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
-          {t(titleKey)}
+          {restTitle}{" "}
+          <span style={{ color: a.color }}>{lastTitleWord}</span>
         </h2>
       </div>
 
@@ -157,7 +164,7 @@ export const MissionPrologue: React.FC<Props> = ({
                 )}
                 <ScrollRevealText 
                   text={`"${t(dialogueKey)}"`}
-                  progress={Math.min(1, scrollProgress / 0.45)}
+                  progress={Math.min(1, scrollProgress / 0.4)}
                   accentColor={a.color}
                   className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] italic"
                 />
@@ -178,7 +185,7 @@ export const MissionPrologue: React.FC<Props> = ({
                 </span>
                 <ScrollRevealText 
                   text={t(objectiveKey)}
-                  progress={Math.min(1, Math.max(0, scrollProgress - 0.45) / 0.50)}
+                  progress={Math.min(1, Math.max(0, scrollProgress - 0.4) / 0.4)}
                   accentColor={a.color}
                   className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
                 />
@@ -190,7 +197,7 @@ export const MissionPrologue: React.FC<Props> = ({
       
       <div className="pt-2 w-full max-w-sm relative min-h-[60px] flex items-center">
         <AnimatePresence>
-          {scrollProgress > 0.85 && (
+          {step === 1 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -215,7 +222,7 @@ export const MissionPrologue: React.FC<Props> = ({
   return (
     <>
       <section ref={sectionRef} className="relative w-full px-4 md:px-8 py-16 md:py-24">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center pb-20">
           {imageSide === "left" ? (
             <>
               <div className="md:order-1">{Image}</div>
@@ -233,7 +240,7 @@ export const MissionPrologue: React.FC<Props> = ({
         <div 
           ref={progressContainerRef}
           className="absolute bottom-8 left-0 w-full z-10 pointer-events-none flex items-center justify-center gap-2 transition-opacity duration-300"
-          style={{ opacity: scrollProgress >= 0.85 && scrollProgress < 0.99 ? 1 : 0 }}
+          style={{ opacity: scrollProgress >= 0.8 && scrollProgress < 0.99 ? 1 : 0 }}
         >
           <div className="text-[10px] uppercase tracking-widest text-white/40">
             Scroll to skip to next section
