@@ -126,7 +126,6 @@ export const TRANSLATIONS: Dict = {
   "m3.speaker": { en: "Coach", de: "Trainer" },
 
   // ── Captains Logs (Additional Info) ────────────────────────
-  "stage.logs": { en: "Additional Info", de: "Zusatzinfos" },
   "logs.title": { en: "Captains Logs", de: "Kapitänslogbücher" },
   "logs.sub": {
     en: "Messages from other star athletes. Read their tips for staying fast and strong!",
