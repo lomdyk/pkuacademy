@@ -41,24 +41,23 @@ function ThrusterFlames() {
 
     particles.forEach((pItem, i) => {
       // speed up the particles drastically
-      pItem.t += delta * pItem.speed * (1 + (hyperjumpMultiplier - 1) * 0.5);
+      pItem.t += delta * pItem.speed * (1 + (hyperjumpMultiplier - 1) * 0.3);
       if (pItem.t >= 1) {
         pItem.t = 0;
         pItem.angle = Math.random() * Math.PI * 2;
-        // make them spread out more during hyperjump
-        pItem.radius = Math.random() * 0.15 * (1 + hyperjumpMultiplier * 0.5);
+        pItem.radius = Math.random() * 0.15;
       }
 
-      // Widen slightly as it falls
-      const spread = 1 + pItem.t * 3;
-      const x = Math.cos(pItem.angle) * pItem.radius * spread;
-      const z = Math.sin(pItem.angle) * pItem.radius * spread;
-      // Downwards velocity
-      const y = -pItem.t * 5 * ignition * hyperjumpMultiplier; 
+      // Widen as it falls to create a massive exhaust cone
+      const spread = 1 + pItem.t * 6;
+      const x = Math.cos(pItem.angle) * pItem.radius * spread * (1 + (hyperjumpMultiplier - 1) * 0.8);
+      const z = Math.sin(pItem.angle) * pItem.radius * spread * (1 + (hyperjumpMultiplier - 1) * 0.8);
+      // Downwards velocity goes further during hyperjump
+      const y = -pItem.t * 8 * ignition * hyperjumpMultiplier; 
 
-      // Shrink scale
-      const scaleInit = 0.8;
-      const scale = Math.max(0, (1 - pItem.t) * scaleInit * ignition * Math.max(1, hyperjumpMultiplier * 0.3));
+      // Grow scale instead of shrinking, so it fills the screen
+      const scaleBase = 0.3 + pItem.t * 3.5;
+      const scale = scaleBase * ignition * (1 + (hyperjumpMultiplier - 1) * 1.2);
 
       dummy.position.set(x, y, z);
       // add a bit of rotation to the particles
@@ -189,6 +188,15 @@ function AnimatedModel() {
     // Smooth dampening during real scroll
     target.position.lerp(targetPos, 5 * delta);
     target.quaternion.slerp(targetQuat, 5 * delta);
+
+    // HYPERJUMP Shake Effect
+    if (p > 0.83) {
+      const hyperP = Math.max(0, Math.min(1, (p - 0.83) / (0.91 - 0.83)));
+      const intensity = Math.pow(hyperP, 3) * 0.4; // up to 0.4 units of shake
+      target.position.x += (Math.random() - 0.5) * intensity;
+      target.position.y += (Math.random() - 0.5) * intensity;
+      target.position.z += (Math.random() - 0.5) * intensity;
+    }
   });
 
   return (
