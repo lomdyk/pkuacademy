@@ -53,22 +53,22 @@ function ThrusterFlames() {
       const spread = 1 + pItem.t * 5; // Increased spread for a wider cone that covers the screen
       const x = Math.cos(pItem.angle) * pItem.radius * spread;
       const z = Math.sin(pItem.angle) * pItem.radius * spread;
-      // Downwards velocity - limit the stretch so particles don't create gaps
+      // Downwards velocity - stretch slightly based on hyperjump
       const yMultiplier = 1 + Math.log(Math.max(1, hyperjumpMultiplier)) * 1.5;
-      const y = -pItem.t * 6 * ignition * yMultiplier; 
+      const y = -pItem.t * 7 * ignition * yMultiplier; 
 
-      // Shrink scale so it tapers off like real fire
-      const scaleInit = 0.8; // Increased from 0.6 for fuller coverage
-      // Boost base scale slightly during hyperjump, but keep tapering
-      const scale = Math.max(0, (1 - pItem.t) * scaleInit * ignition * (1 + (hyperjumpMultiplier - 1) * 0.1));
+      // Teardrop shape: starts small, grows to peak, then tapers off
+      const shape = Math.sin(pItem.t * Math.PI) + 0.2 * (1 - pItem.t);
+      const scaleInit = 1.2; // overall size of the flame
+      const scale = Math.max(0, shape * scaleInit * ignition * (1 + (hyperjumpMultiplier - 1) * 0.1));
 
       dummy.position.set(x, y, z);
       
-      // Keep rotation mostly upright so vertical stretching works
-      dummy.rotation.set(0, pItem.t * Math.PI * 2, 0);
+      // Chaotic rotation for a turbulent fire look
+      dummy.rotation.set(pItem.t * Math.PI, pItem.t * Math.PI * 2, pItem.t * Math.PI * 3);
       
-      // Stretch the particles vertically to fill in any gaps in the trail
-      dummy.scale.set(scale, scale * 2.5, scale);
+      // Uniform scale for overlapping low-poly chunks
+      dummy.scale.setScalar(scale);
       dummy.updateMatrix();
       
       meshRef.current!.setMatrixAt(i, dummy.matrix);
