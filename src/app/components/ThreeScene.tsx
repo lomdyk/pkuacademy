@@ -43,7 +43,7 @@ function ThrusterFlames() {
       // speed up the particles drastically
       pItem.t += delta * pItem.speed * (1 + (hyperjumpMultiplier - 1) * 0.5);
       if (pItem.t >= 1) {
-        pItem.t = 0;
+        pItem.t %= 1;
         pItem.angle = Math.random() * Math.PI * 2;
         // make them spread out more during hyperjump
         pItem.radius = Math.random() * 0.15 * (1 + hyperjumpMultiplier * 0.5);
