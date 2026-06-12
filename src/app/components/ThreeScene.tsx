@@ -82,11 +82,10 @@ function ThrusterFlames() {
           color.lerp(new THREE.Color(0xff3300), (pItem.t - 0.2) / 0.8); // To red-orange
       }
       
-      // During hyperjump, shift colors to blinding cyan/white
+      // During hyperjump, shift colors to blinding white
       if (hyperjumpMultiplier > 1) {
           const hyperRatio = (hyperjumpMultiplier - 1) / 20; // 0 to 1
-          color.lerp(new THREE.Color(0x00ffff), hyperRatio * 0.5);
-          color.lerp(new THREE.Color(0xffffff), hyperRatio * 0.5);
+          color.lerp(new THREE.Color(0xffffff), hyperRatio);
       }
 
       meshRef.current!.setColorAt(i, color);
