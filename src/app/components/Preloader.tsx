@@ -54,11 +54,32 @@ export const Preloader = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex pointer-events-none overflow-hidden">
       
-      {/* Background Columns Layer */}
+      {/* Trailing Colorful Columns Layer (Underneath) */}
       <div className="absolute inset-0 flex z-0 w-[105vw] -ml-[2.5vw]">
         {Array.from({ length: COLUMNS }).map((_, i) => (
           <motion.div
-            key={i}
+            key={`color-${i}`}
+            initial={{ y: 0 }}
+            animate={isDone ? { y: "-100%" } : { y: 0 }}
+            transition={{
+              duration: 1.2,
+              ease: [0.76, 0, 0.24, 1],
+              delay: i * 0.08 + 0.12, // Delayed so it follows the dark layer
+            }}
+            className="flex-1 h-[120vh] bg-gradient-to-b from-cyan-400 to-blue-600 rounded-b-[60px] md:rounded-b-[100px]"
+            style={{ 
+              marginLeft: i !== 0 ? "-2px" : "0",
+              marginRight: "-2px",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main Dark Background Columns Layer (Top) */}
+      <div className="absolute inset-0 flex z-[1] w-[105vw] -ml-[2.5vw]">
+        {Array.from({ length: COLUMNS }).map((_, i) => (
+          <motion.div
+            key={`dark-${i}`}
             initial={{ y: 0 }}
             animate={isDone ? { y: "-100%" } : { y: 0 }}
             transition={{
