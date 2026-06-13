@@ -22,8 +22,10 @@ export const HeroStory = () => {
           <span style={{
             color: "#22d3ee",
             textShadow: "0 0 32px rgba(34,211,238,0.9)",
-            borderBottom: "3px solid #22d3ee",
-            paddingBottom: "4px",
+            textDecoration: "underline",
+            textDecorationColor: "#22d3ee",
+            textDecorationThickness: "3px",
+            textUnderlineOffset: "6px",
           }}>
             {t("welcome.title")}
           </span>
@@ -105,21 +107,22 @@ export const HeroStory = () => {
       titleEl: (
         <>
           {t("ui.timeTo")}{" "}
-          <span style={{
-            color: "#22d3ee",
-            textShadow: "0 0 30px rgba(34,211,238,1)",
-            letterSpacing: "0.02em",
-          }}>
-            {t("ui.train")}
-          </span>
-          {" "}
-          <span style={{
-            fontSize: "0.7em",
-            color: "#22d3ee",
-            marginLeft: "4px",
-            opacity: 0.9,
-          }}>
-            →
+          <span className="whitespace-nowrap">
+            <span style={{
+              color: "#22d3ee",
+              textShadow: "0 0 30px rgba(34,211,238,1)",
+              letterSpacing: "0.02em",
+            }}>
+              {t("ui.train")}
+            </span>
+            <span style={{
+              fontSize: "0.7em",
+              color: "#22d3ee",
+              marginLeft: "6px",
+              opacity: 0.9,
+            }}>
+              →
+            </span>
           </span>
         </>
       ),
