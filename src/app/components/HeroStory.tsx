@@ -136,6 +136,7 @@ export const HeroStory = () => {
   const engineGlowRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
+  const mobileShipRef = useRef<HTMLDivElement>(null);
 
   const [isMobileScreen, setIsMobileScreen] = React.useState(
     typeof window !== 'undefined' ? window.innerWidth < 768 : false
@@ -195,6 +196,39 @@ export const HeroStory = () => {
       }
     });
 
+    // 2D Mobile Ship Animation
+    if (isMobile) {
+      // 1. Initial state (start lower)
+      gsap.set(mobileShipRef.current, { y: 200, scale: 0.8 });
+      
+      // 2. Take off (move to center during first scroll)
+      tl.to(mobileShipRef.current, {
+        y: -50,
+        scale: 1,
+        duration: 0.1,
+        ease: "power1.out",
+      }, 0);
+
+      // 3. Flight (slowly drift up and sway)
+      tl.to(mobileShipRef.current, {
+        y: -150,
+        rotation: 5,
+        duration: 0.3,
+        ease: "none",
+      }, 0.1);
+
+      // 4. Hyperjump preparation (shake)
+      tl.to(mobileShipRef.current, {
+        x: "+=10",
+        y: "+=10",
+        rotation: -5,
+        duration: 0.05,
+        yoyo: true,
+        repeat: 3,
+        ease: "rough({ template: none.out, strength: 1, points: 20, taper: none, randomize: true, clamp: false })"
+      }, 0.4);
+    }
+
     const zoomStart = 0.08 + (STORY_PANELS.length - 1) * panelDur + 0.05;
 
     // Auto-scroll instantly when zoom animation finishes (only when scrolling forward)
@@ -215,6 +249,17 @@ export const HeroStory = () => {
       zoomStart
     );
     
+    // Zoom in the 2D ship at the end
+    if (isMobile) {
+      tl.to(mobileShipRef.current, {
+        scale: 10,
+        y: 500,
+        opacity: 0,
+        duration: 0.1,
+        ease: "power2.in",
+      }, zoomStart);
+    }
+
     // Completely fade out the scroll hint at the end
     tl.to(scrollHintRef.current, { opacity: 0, scale: 0, duration: 0.06 }, zoomStart);
     tl.fromTo(
@@ -236,8 +281,8 @@ export const HeroStory = () => {
 
   return (
     <div ref={containerRef} className="relative w-full h-screen overflow-hidden">
-      {/* 3D Scene Background runs everywhere now */}
-      <ThreeScene />
+      {/* 3D Scene Background on Desktop, 2D on Mobile */}
+      {!isMobileScreen && <ThreeScene />}
 
       {/* Nebula glows */}
       <div className="absolute inset-0 pointer-events-none z-[1]">
@@ -275,7 +320,17 @@ export const HeroStory = () => {
           ))}
         </div>
 
-
+        {/* 2D Ship specifically for mobile to save battery */}
+        {isMobileScreen && (
+          <div ref={mobileShipRef} className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+            <AnimatedShip
+              className="relative w-48 sm:w-64 aspect-square opacity-80"
+              style={{
+                filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Engine glow */}
