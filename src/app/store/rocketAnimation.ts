@@ -3,6 +3,7 @@ import keyframesJson from '../utils/rocketKeyframes.json';
 
 export const scrollState = proxy({
   progress: 0,
+  isGameActive: false,
 });
 
 export interface Keyframe {

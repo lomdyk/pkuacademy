@@ -220,6 +220,7 @@ function AnimatedModel() {
 export function ThreeScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  const { isGameActive } = useSnapshot(scrollState);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -239,7 +240,7 @@ export function ThreeScene() {
     <div ref={containerRef} className="absolute inset-0 z-0 h-full w-full pointer-events-none drop-shadow-[0_30px_30px_rgba(0,0,0,0.8)]">
       <Canvas 
         camera={{ position: [0, 0, 8], fov: 45 }}
-        frameloop={inView ? "always" : "never"}
+        frameloop={(inView && !isGameActive) ? "always" : "never"}
       >
         <ambientLight intensity={0.8} />
         <directionalLight position={[10, 10, 5]} intensity={1} />

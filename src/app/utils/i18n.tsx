@@ -43,7 +43,7 @@ export const TRANSLATIONS: Dict = {
   "complete.m1.title": { en: "Backpack Packed!", de: "Rucksack gepackt!" },
   "complete.m1.body": {
     en: "Good food packed and ready. Time to head to the field.",
-    de: "Gutes Essen eingepackt. Zeit, aufs Feld zu gehen.",
+    de: "Perfekt gepackt! Auf geht's zum Spielfeld!",
   },
   "complete.m2.title": { en: "Mission Accepted!", de: "Mission angenommen!" },
   "complete.m2.body": {
@@ -191,6 +191,21 @@ export const TRANSLATIONS: Dict = {
   "btn.launch": { en: "Launch Mission", de: "Mission starten" },
   "btn.exit": { en: "Exit", de: "Beenden" },
   "game.wellDone": { en: "Well done, you did it!", de: "Gut gemacht, du hast es geschafft!" },
+
+  // Backpack Game specific
+  "game.bp.title.pick": { en: "Pick a food item", de: "Wähle ein Lebensmittel" },
+  "game.bp.title.put": { en: "Now choose where to put it", de: "Jetzt wähle, wohin damit" },
+  "game.bp.sub.pick": { en: "Tap an item below to pick it up", de: "Tippe auf ein Item, um es auszuwählen" },
+  "game.bp.sub.put": { en: "Tap the Backpack for clean energy, or Trash for high-protein items", de: "Tippe auf den Rucksack für saubere Energie, oder auf den Müll für proteinreiche Snacks" },
+  "game.bp.backpack": { en: "BACKPACK", de: "RUCKSACK" },
+  "game.bp.cleanEnergy": { en: "CLEAN ENERGY", de: "SAUBERE ENERGIE" },
+  "game.bp.trash": { en: "TRASH", de: "MÜLLEIMER" },
+  "game.bp.highProtein": { en: "HIGH PROTEIN", de: "VIEL PROTEIN" },
+  "game.bp.or": { en: "OR", de: "ODER" },
+  "game.bp.msg.safe": { en: "packed! Clean energy ready.", de: "eingepackt! Saubere Energie ist bereit." },
+  "game.bp.msg.unsafe": { en: "WARNING! High protein detected. Send to Trash!", de: "ACHTUNG! Viel Protein entdeckt. Ab in den Müll!" },
+  "game.bp.msg.safeToTrash": { en: "That's clean energy! Pack it in the Backpack instead.", de: "Das ist saubere Energie! Packe es stattdessen in den Rucksack." },
+  "game.bp.msg.unsafeToTrash": { en: "locked away! Backpack stays clean.", de: "entsorgt! Der Rucksack bleibt sauber." },
 
   // Runner overlays
   "runner.ready": { en: "Ready, Champion?", de: "Bereit, Champion?" },

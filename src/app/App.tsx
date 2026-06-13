@@ -18,6 +18,7 @@ import { SoundToggle } from "./components/ui/SoundToggle";
 import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { scrollState } from "./store/rocketAnimation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,13 +38,18 @@ function AppInner() {
 
   // Lock body scroll when a game is active
   useEffect(() => {
+    scrollState.isGameActive = activeScene !== "main";
+    
     if (activeScene !== "main") {
       document.body.style.overflow = "hidden";
+      if ((window as any).lenis) (window as any).lenis.stop();
     } else {
       document.body.style.overflow = "";
+      if ((window as any).lenis) (window as any).lenis.start();
     }
     return () => {
       document.body.style.overflow = "";
+      if ((window as any).lenis) (window as any).lenis.start();
     };
   }, [activeScene]);
 

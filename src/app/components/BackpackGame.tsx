@@ -76,7 +76,7 @@ export const BackpackGame = ({
       soundEngine.clickBubble();
       setBackpackGlow("success");
       setScore((s) => s + 1);
-      showMessage(`${item.name} packed! Clean energy ready.`, "success");
+      showMessage(`${item.name} ${t("game.bp.msg.safe")}`, "success");
       confetti({
         particleCount: 40,
         spread: 50,
@@ -89,7 +89,7 @@ export const BackpackGame = ({
       soundEngine.clickWood();
       setBackpackGlow("warning");
       setShakeBackpack(true);
-      showMessage("WARNING! High protein detected. Send to Trash!", "error");
+      showMessage(t("game.bp.msg.unsafe"), "error");
       setTimeout(() => {
         setBackpackGlow("neutral");
         setShakeBackpack(false);
@@ -110,13 +110,13 @@ export const BackpackGame = ({
       soundEngine.clickThunk();
       setQuarantineGlow("success");
       setScore((s) => s + 1);
-      showMessage(`${item.name} locked away! Backpack stays clean.`, "success");
+      showMessage(`${item.name} ${t("game.bp.msg.unsafeToTrash")}`, "success");
       removeItem(item.id);
       setTimeout(() => setQuarantineGlow("neutral"), 1500);
     } else {
       soundEngine.clickWood();
       setQuarantineGlow("neutral");
-      showMessage("That's clean energy! Pack it in the Backpack instead.", "error");
+      showMessage(t("game.bp.msg.safeToTrash"), "error");
     }
     if (selected === id) setSelected(null);
   };
@@ -201,12 +201,10 @@ export const BackpackGame = ({
           className="text-center"
         >
           <h2 className="text-2xl md:text-4xl text-white font-['Space_Grotesk'] tracking-tight mb-2" style={{ fontWeight: 700 }}>
-            {selected ? "Now choose where to put it" : "Pick a food item"}
+            {selected ? t("game.bp.title.put") : t("game.bp.title.pick")}
           </h2>
           <p className="text-slate-400 font-['Space_Grotesk'] text-sm md:text-base">
-            {selected
-              ? "Tap the Backpack for clean energy, or Trash for high-protein items"
-              : "Tap an item below to pick it up"}
+            {selected ? t("game.bp.sub.put") : t("game.bp.sub.pick")}
           </p>
         </motion.div>
 
@@ -223,8 +221,8 @@ export const BackpackGame = ({
             }}
             onMouseEnter={() => setBackpackHovered(true)}
             onMouseLeave={() => setBackpackHovered(false)}
-            animate={shakeBackpack ? { x: [0, -8, 8, -8, 8, 0] } : {}}
-            transition={{ duration: 0.4 }}
+            animate={shakeBackpack ? { x: [0, -8, 8, -8, 8, 0] } : selected ? { scale: [1, 1.05, 1] } : {}}
+            transition={selected && !shakeBackpack ? { duration: 1.5, repeat: Infinity } : { duration: 0.4 }}
             className={`
               relative flex flex-col items-center justify-center
               w-40 h-40 md:w-56 md:h-56 rounded-2xl md:rounded-3xl
@@ -239,19 +237,20 @@ export const BackpackGame = ({
               backdrop-blur-sm
             `}
           >
+            {selected && <div className="absolute -inset-2 bg-cyan-400/20 blur-xl rounded-full opacity-50 animate-pulse" />}
             <div className="absolute inset-3 rounded-xl md:rounded-2xl border border-dashed border-cyan-400/20 animate-[spin_20s_linear_infinite]" />
             <img 
               src={backpackHovered || backpackGlow === "success" ? openedBackpackImg : closedBackpackImg} 
               alt="Backpack"
               className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${backpackGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : backpackGlow === "warning" ? "drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" : ""}`}
             />
-            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>BACKPACK</span>
-            <span className="font-['Space_Grotesk'] text-[10px] text-cyan-300/60 mt-1 tracking-wider">CLEAN ENERGY</span>
+            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>{t("game.bp.backpack")}</span>
+            <span className="font-['Space_Grotesk'] text-[10px] text-cyan-300/60 mt-1 tracking-wider">{t("game.bp.cleanEnergy")}</span>
           </motion.button>
 
           <div className="flex flex-col items-center gap-2">
             <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-            <span className="text-white/20 font-['Space_Grotesk'] text-xs" style={{ fontWeight: 600 }}>OR</span>
+            <span className="text-white/20 font-['Space_Grotesk'] text-xs" style={{ fontWeight: 600 }}>{t("game.bp.or")}</span>
             <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
           </div>
 
@@ -267,6 +266,8 @@ export const BackpackGame = ({
             }}
             onMouseEnter={() => setQuarantineHovered(true)}
             onMouseLeave={() => setQuarantineHovered(false)}
+            animate={selected ? { scale: [1, 1.05, 1] } : {}}
+            transition={selected ? { duration: 1.5, repeat: Infinity, delay: 0.2 } : { duration: 0.4 }}
             className={`
               relative flex flex-col items-center justify-center
               w-40 h-40 md:w-56 md:h-56 rounded-2xl md:rounded-3xl
@@ -279,14 +280,15 @@ export const BackpackGame = ({
               backdrop-blur-sm
             `}
           >
+            {selected && <div className="absolute -inset-2 bg-amber-400/20 blur-xl rounded-full opacity-50 animate-pulse" />}
             <div className="absolute inset-3 rounded-xl md:rounded-2xl border border-dashed border-amber-400/20 animate-[spin_25s_linear_infinite_reverse]" />
             <img 
               src={quarantineHovered || quarantineGlow === "success" ? openedBoxImg : closedBoxImg} 
               alt="Trash"
               className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${quarantineGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : ""}`}
             />
-            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>TRASH</span>
-            <span className="font-['Space_Grotesk'] text-[10px] text-amber-300/60 mt-1 tracking-wider">HIGH PROTEIN</span>
+            <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>{t("game.bp.trash")}</span>
+            <span className="font-['Space_Grotesk'] text-[10px] text-amber-300/60 mt-1 tracking-wider">{t("game.bp.highProtein")}</span>
           </motion.button>
         </div>
 
