@@ -4,6 +4,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  useEffect,
 } from "react";
 
 export type Lang = "en" | "de";
