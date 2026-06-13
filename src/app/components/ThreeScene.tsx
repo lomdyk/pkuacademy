@@ -49,21 +49,20 @@ function ThrusterFlames() {
         pItem.radius = Math.random() * 0.15 * (1 + hyperjumpMultiplier * 0.5);
       }
 
-      // Organic spread with chaotic drift
-      const spread = 1 + Math.pow(pItem.t, 1.2) * 4; 
-      const driftX = Math.sin(pItem.t * 15 + pItem.angle) * 0.8 * pItem.t;
-      const driftZ = Math.cos(pItem.t * 15 + pItem.angle) * 0.8 * pItem.t;
-      
-      const x = Math.cos(pItem.angle) * pItem.radius * spread + driftX;
-      const z = Math.sin(pItem.angle) * pItem.radius * spread + driftZ;
+      // Widen slightly as it falls
+      const spread = 1 + pItem.t * 5; // Increased spread for a wider cone that covers the screen
+      const x = Math.cos(pItem.angle) * pItem.radius * spread;
+      const z = Math.sin(pItem.angle) * pItem.radius * spread;
       
       // Downwards velocity - stretch slightly based on hyperjump
+      // Use pItem.speed (which is random per particle) to vary the max depth
+      // This shatters the "flat pyramid base" effect because particles die at different Y levels!
       const yMultiplier = 1 + Math.log(Math.max(1, hyperjumpMultiplier)) * 1.5;
-      const y = -Math.pow(pItem.t, 1.2) * 8 * ignition * yMultiplier; 
+      const y = -pItem.t * (4 + pItem.speed) * ignition * yMultiplier; 
 
-      // Shape: taper off very smoothly at the end so there's no hard wall
-      const shape = Math.sin(pItem.t * Math.PI) * Math.pow(1 - pItem.t, 0.8);
-      const scaleInit = 1.4; // slightly bigger chunks
+      // Teardrop shape: starts small, grows to peak, then tapers off
+      const shape = Math.sin(pItem.t * Math.PI) + 0.2 * (1 - pItem.t);
+      const scaleInit = 1.2; // overall size of the flame
       const scale = Math.max(0, shape * scaleInit * ignition * (1 + (hyperjumpMultiplier - 1) * 0.1));
 
       dummy.position.set(x, y, z);
