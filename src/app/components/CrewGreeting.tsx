@@ -22,8 +22,8 @@ const ACCENT: Record<Tone, { color: string; rgba: (a: number) => string }> = {
 
 const CREW = [
   { index: 0, gif: lunaGif, nameKey: "crew.luna.name", roleKey: "crew.luna.role", lineKey: "crew.luna.line", tone: "cyan" as Tone },
-  { index: 1, gif: boGif, nameKey: "crew.bo.name", roleKey: "crew.bo.role", lineKey: "crew.bo.line", tone: "violet" as Tone },
-  { index: 2, gif: elaGif, nameKey: "crew.ela.name", roleKey: "crew.ela.role", lineKey: "crew.ela.line", tone: "emerald" as Tone },
+  { index: 1, gif: boGif, nameKey: "crew.bo.name", roleKey: "crew.bo.role", lineKey: "crew.bo.line", tone: "emerald" as Tone },
+  { index: 2, gif: elaGif, nameKey: "crew.ela.name", roleKey: "crew.ela.role", lineKey: "crew.ela.line", tone: "violet" as Tone },
 ];
 
 interface Props {
@@ -51,8 +51,8 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
     // Fade out title as we start scrolling
     tl.to(titleRef.current, { opacity: 0, y: -20, duration: 0.5, ease: "power2.inOut" }, 0);
 
-    const cardDur = 1;
-    const overlap = 0.4;
+    const cardDur = 0.8;
+    const overlap = 1.0; // 1.0 means no overlap, ensuring GSAP tweens don't conflict and overwrite each other
 
     CREW.forEach((_, i) => {
       const card = cardsRef.current[i];
@@ -146,9 +146,9 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
               <div
                 key={c.index}
                 ref={(el) => { cardsRef.current[i] = el; }}
-                className="absolute flex flex-col md:flex-row items-center justify-center gap-10 md:gap-14 p-8 md:p-12 rounded-[40px] border pointer-events-none w-[90%] md:w-full"
+                className="absolute flex flex-col md:flex-row items-center justify-center gap-10 md:gap-14 p-8 md:p-12 rounded-[40px] border pointer-events-none w-[90%] md:w-full will-change-transform"
                 style={{
-                  transform: "translateY(200vh)", // Hidden below screen initially
+                  transform: "translateY(150vh)", // Hidden below screen initially
                   // SOLID dark background with high blur prevents text bleed-through!
                   backgroundColor: "rgba(5, 12, 30, 0.85)",
                   backdropFilter: "blur(24px)",
