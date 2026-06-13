@@ -165,6 +165,8 @@ function AppInner() {
       className="bg-[#050a18] min-h-screen text-white selection:bg-cyan-500/30 selection:text-cyan-200 relative"
       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
     >
+      <h1 className="sr-only">PKU Academy - Interactive Space Adventure and Dietary Training</h1>
+      
       <Preloader />
       <StarField />
 

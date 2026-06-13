@@ -222,6 +222,12 @@ export const LanguageProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [lang, setLang] = useState<Lang>("en");
+
+  // Dynamically update the html lang attribute for SEO and accessibility
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   const t = useCallback(
     (key: string) => {
       const entry = (TRANSLATIONS as Dict)[key];

@@ -161,12 +161,12 @@ export const Preloader = () => {
 
         <div className="relative z-10 flex flex-col items-center">
           {/* Solid Number Countdown */}
-          <motion.h1
+          <motion.div
             className="text-[120px] md:text-[200px] font-bold text-white leading-none select-none drop-shadow-[0_0_30px_rgba(34,211,238,0.4)]"
             
           >
             {roundedProgress}
-          </motion.h1>
+          </motion.div>
 
           <div className="mt-4 text-cyan-400 text-sm tracking-[0.3em] font-bold uppercase" >
             {isDone ? "Systems Online" : "Loading Assets"}
