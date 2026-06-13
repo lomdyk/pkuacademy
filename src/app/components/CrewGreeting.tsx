@@ -38,8 +38,6 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const isMobile = window.innerWidth < 768;
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
@@ -50,38 +48,43 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
       }
     });
 
-    // Fade out title
+    // Fade out title as we start scrolling
     tl.to(titleRef.current, { opacity: 0, y: -20, duration: 0.5, ease: "power2.inOut" }, 0);
 
-    // Sequence the cards
-    const enterDur = 0.8;
-    const holdDur = 0.8;
-    const exitDur = 0.6;
-    const totalCycle = enterDur + holdDur + exitDur;
+    const cardDur = 1;
+    const overlap = 0.4;
 
     CREW.forEach((_, i) => {
       const card = cardsRef.current[i];
       if (!card) return;
-      const start = 0.5 + i * totalCycle;
+      
+      const start = 0.5 + i * cardDur * overlap;
 
-      // Card flies in
+      // New card flies in from below
       tl.fromTo(card, 
-        { opacity: 0, scale: 0.8, y: 50, x: isMobile ? 0 : (i % 2 === 0 ? 100 : -100) },
-        { opacity: 1, scale: 1, y: 0, x: 0, duration: enterDur, ease: "back.out(1.5)" },
+        { opacity: 0, y: 300, scale: 0.8 },
+        { opacity: 1, y: 0, scale: 1, duration: cardDur, ease: "back.out(1.2)" },
         start
       );
 
-      // Card fades out completely before the next one starts entering
-      if (i < CREW.length - 1) {
-        tl.to(card, { opacity: 0, scale: 0.9, y: -50, duration: exitDur, ease: "power2.in" }, start + enterDur + holdDur);
-      } else {
-        // Last card moves up slightly to make room for CTA
-        tl.to(card, { y: -80, duration: 0.8, ease: "power2.inOut" }, start + enterDur + holdDur);
+      // As subsequent cards enter, this card gets pushed UP and scales DOWN (creating a visual stack)
+      // We do NOT fade it out to 0, so it remains in the stack.
+      for (let j = i + 1; j < CREW.length; j++) {
+        const nextStart = 0.5 + j * cardDur * overlap;
+        const pushDistance = j - i;
+        
+        tl.to(card, {
+          y: -pushDistance * 40,    // Move up
+          scale: 1 - pushDistance * 0.05, // Scale down slightly
+          opacity: 1 - pushDistance * 0.15, // Dim slightly but remain visible
+          duration: cardDur,
+          ease: "power2.inOut"
+        }, nextStart);
       }
     });
 
-    // Bring in CTA at the end
-    const ctaStart = 0.5 + (CREW.length - 1) * totalCycle + enterDur + holdDur;
+    // Bring in CTA at the very end. The stack remains visible!
+    const ctaStart = 0.5 + (CREW.length - 1) * cardDur * overlap + cardDur;
     tl.fromTo(ctaRef.current,
       { opacity: 0, y: 50, scale: 0.8 },
       { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(2)", pointerEvents: "auto" },
@@ -93,9 +96,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
   return (
     <section ref={containerRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center pointer-events-none">
       
-      {/* NO background ambient glow to prevent seams with HeroStory */}
-
-      <div className="relative z-10 w-full max-w-5xl px-4 flex flex-col items-center justify-center h-full">
+      <div className="relative z-10 w-full max-w-6xl px-4 flex flex-col items-center justify-center h-full">
         
         {/* Title */}
         <div ref={titleRef} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
@@ -137,37 +138,41 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
           </p>
         </div>
 
-        {/* Cards container - absolutely positioned to overlay each other */}
-        <div className="relative w-full max-w-4xl aspect-[21/9] flex items-center justify-center mt-10">
+        {/* Cards Container */}
+        <div className="relative w-full max-w-4xl flex items-center justify-center mt-10 min-h-[500px]">
           {CREW.map((c, i) => {
             const a = ACCENT[c.tone];
             return (
               <div
                 key={c.index}
                 ref={(el) => { cardsRef.current[i] = el; }}
-                className="absolute flex flex-col md:flex-row items-center justify-center gap-10 p-10 md:p-14 rounded-[40px] border backdrop-blur-2xl pointer-events-none w-[90%] md:w-full"
+                className="absolute flex flex-col md:flex-row items-center justify-center gap-10 md:gap-14 p-8 md:p-12 rounded-[40px] border pointer-events-none w-[90%] md:w-full"
                 style={{
-                  opacity: 0, // GSAP will animate this
+                  opacity: 0,
+                  // SOLID dark background with high blur prevents text bleed-through!
+                  backgroundColor: "rgba(5, 12, 30, 0.85)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
                   borderColor: a.rgba(0.4),
-                  background: `linear-gradient(160deg, rgba(10, 15, 30, 0.85) 0%, rgba(5, 10, 20, 0.95) 100%)`,
-                  boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 30px ${a.rgba(0.15)}`,
+                  boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 40px ${a.rgba(0.1)}`,
+                  zIndex: i, // Higher index means it renders ON TOP of previous cards
                 }}
               >
-                {/* GIF */}
-                <div className="relative w-48 h-48 md:w-80 md:h-80 shrink-0">
+                {/* GIANT Character GIF */}
+                <div className="relative w-56 h-56 md:w-80 md:h-80 shrink-0">
                   <img
                     src={c.gif}
                     alt={t(c.nameKey)}
                     draggable={false}
-                    className="block w-full h-full object-contain select-none filter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+                    className="block w-full h-full object-contain select-none filter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]"
                     onLoad={() => ScrollTrigger.refresh()}
                   />
                 </div>
 
-                {/* Text */}
+                {/* Text Content */}
                 <div className="text-center md:text-left flex flex-col items-center md:items-start flex-1">
                   <span
-                    className="relative text-xs uppercase tracking-[0.3em] mb-3 font-bold"
+                    className="relative text-sm uppercase tracking-[0.3em] mb-4 font-bold"
                     style={{ color: a.color, fontFamily: "'Space Grotesk', sans-serif" }}
                   >
                     {t(c.roleKey)}
@@ -178,7 +183,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                       fontFamily: "'Space Grotesk', sans-serif",
                       fontWeight: 800,
                       lineHeight: 1.1,
-                      textShadow: `0 0 20px ${a.rgba(0.4)}`
+                      textShadow: `0 0 24px ${a.rgba(0.5)}`
                     }}
                   >
                     {t(c.nameKey)}
@@ -196,7 +201,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
         </div>
 
         {/* CTA */}
-        <div ref={ctaRef} className="absolute bottom-16 left-1/2 -translate-x-1/2 pointer-events-none" style={{ opacity: 0 }}>
+        <div ref={ctaRef} className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none" style={{ opacity: 0 }}>
           <GhostButton tone="cyan" size="lg" icon={<Gamepad2 className="w-5 h-5" />} onClick={onContinue}>
             Enter Locker Room
           </GhostButton>
