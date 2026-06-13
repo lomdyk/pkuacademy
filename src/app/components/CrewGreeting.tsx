@@ -144,7 +144,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
               <div
                 key={c.index}
                 ref={(el) => { cardsRef.current[i] = el; }}
-                className="glass-panel absolute flex flex-col md:flex-row items-center justify-center gap-10 md:gap-14 p-8 md:p-12 pointer-events-none w-[90%] md:w-full will-change-transform"
+                className="glass-panel !transition-none absolute flex flex-col md:flex-row items-center justify-center gap-10 md:gap-14 p-8 md:p-12 pointer-events-none w-[90%] md:w-full will-change-transform"
                 style={{
                   transform: "translateY(150vh)", // Hidden below screen initially
                   borderColor: a.rgba(0.4),
