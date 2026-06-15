@@ -144,14 +144,31 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
               <div
                 key={c.index}
                 ref={(el) => { cardsRef.current[i] = el; }}
-                className="glass-panel !transition-none absolute flex flex-col md:flex-row items-center justify-center gap-6 md:gap-14 p-6 md:p-12 pointer-events-none w-[90%] md:w-full will-change-transform"
+                className="absolute w-[90%] md:w-full pointer-events-auto will-change-transform"
                 style={{
                   transform: "translateY(150vh)", // Hidden below screen initially
-                  borderColor: a.rgba(0.4),
-                  boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 40px ${a.rgba(0.1)}`,
                   zIndex: i, // Higher index means it renders ON TOP of previous cards
+                  perspective: "1000px"
                 }}
               >
+                <div
+                  className="glass-panel !transition-none w-full h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-14 p-6 md:p-12 transition-transform duration-200 ease-out"
+                  style={{
+                    borderColor: a.rgba(0.4),
+                    boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 40px ${a.rgba(0.1)}`,
+                  }}
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -5;
+                    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
+                    e.currentTarget.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+                  }}
+                >
                 {/* GIANT Character GIF */}
                 <div className="relative w-48 h-48 md:w-80 md:h-80 shrink-0 flex items-center justify-center">
                   <img
@@ -188,6 +205,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                     "{t(c.lineKey)}"
                   </p>
                 </div>
+                </div>
               </div>
             );
           })}
@@ -196,7 +214,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
         {/* CTA */}
         <div ref={ctaRef} className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 pointer-events-none z-[20]" style={{ opacity: 0 }}>
           <GhostButton tone="cyan" size="lg" icon={<Gamepad2 className="w-5 h-5" />} onClick={onContinue}>
-            Enter Locker Room
+            {t("btn.enterLocker")}
           </GhostButton>
         </div>
 

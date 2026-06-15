@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Play, RotateCcw, Zap, Trophy } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 
 import runnerGif from "../../imports/ezgif.com-crop.gif";
 import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
@@ -20,16 +21,7 @@ const BASE_SPEED = 360;
 const BOOST_SPEED = 600;
 const POWER_DURATION = 5;
 const OBSTACLE_IMGS = [cheeseImg, pizzaImg];
-const ENCOURAGEMENTS = [
-  "Nice Run!",
-  "Great Flight!",
-  "Stellar Effort!",
-  "Cosmic Try!",
-  "Well Played!",
-  "Almost There!",
-  "Keep Going!",
-  "Out of This World!",
-];
+
 
 type Kind = "obstacle" | "powerup";
 interface Entity {
@@ -75,7 +67,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
   const [powerLeft, setPowerLeft] = useState(0);
-  const [encouragement, setEncouragement] = useState(ENCOURAGEMENTS[0]);
+  const [encouragement, setEncouragement] = useState("");
 
   const stateRef = useRef<GameState>("idle");
   const fieldWidthRef = useRef(800);
@@ -102,7 +94,10 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const jump = useCallback(() => {
     if (stateRef.current !== "playing") return;
-    if (playerYRef.current <= 0.5) velYRef.current = JUMP_V;
+    if (playerYRef.current <= 0.5) {
+      velYRef.current = JUMP_V;
+      soundEngine.clickPop();
+    }
   }, []);
 
   const clearEntities = () => {
@@ -244,10 +239,12 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         if (collides(playerYRef.current, e)) {
           if (e.kind === "powerup") {
             powerHit = true;
+            soundEngine.clickBubble();
             e.node?.remove();
             continue;
           } else if (!invincible) {
             gameOver = true;
+            soundEngine.clickThunk();
           } else {
             // Эффект разрушения на 4 куска (разрыв)!
             if (e.node) e.node.remove();
@@ -324,7 +321,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
       if (gameOver) {
         setBest((b) => Math.max(b, newScore));
-        setEncouragement(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]);
+        setEncouragement(`runner.encourage.${Math.floor(Math.random() * 8)}`);
         setState("over");
       }
     };
@@ -490,7 +487,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                   tone="cyan"
                   size="md"
                   icon={<Play className="w-4 h-4" />}
-                  onClick={(e) => { e.stopPropagation(); startGame(); }}
+                  onClick={(e) => { e.stopPropagation(); soundEngine.clickSwitch(); startGame(); }}
+                  onMouseEnter={() => soundEngine.hoverNote()}
                 >
                   {t("btn.launch")}
                 </GhostButton>
@@ -498,7 +496,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             )}
             {state === "over" && (
               <Overlay key="over">
-                <div className="text-emerald-300 uppercase tracking-[0.3em] text-xs mb-2">{encouragement}</div>
+                <div className="text-emerald-300 uppercase tracking-[0.3em] text-xs mb-2">{t(encouragement)}</div>
                 <h3 className="text-white mb-1" style={{ fontWeight: 700, fontSize: "32px" }}>
                   {t("runner.distanceLabel")}: <span className="text-cyan-300 tabular-nums">{score}</span>
                 </h3>
@@ -514,7 +512,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     {t("complete.continue")}
                   </GhostButton>
                   <button
-                    onClick={(e) => { e.stopPropagation(); startGame(); }}
+                    onClick={(e) => { e.stopPropagation(); soundEngine.clickSwitch(); startGame(); }}
+                    onMouseEnter={() => soundEngine.hoverNote()}
                     className="text-white/40 hover:text-white/70 flex items-center gap-1.5 text-sm transition-colors mt-2"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />

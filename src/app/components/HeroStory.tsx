@@ -171,7 +171,7 @@ export const HeroStory = () => {
     // Move the 'Scroll to begin' down and shrink it so it stays visible as an indicator
     tl.to(scrollHintRef.current, {
       top: "90%",
-      scale: 0.5,
+      scale: 0.7,
       opacity: 0.5,
       duration: 0.1,
       ease: "power2.out",
@@ -358,10 +358,10 @@ export const HeroStory = () => {
         className="absolute left-0 w-full px-4 -translate-y-1/2 z-[30] flex flex-col items-center gap-4"
         style={{ top: "50%" }}
       >
-        <p className="text-3xl sm:text-5xl text-white font-bold uppercase tracking-widest text-center leading-tight" >
+        <p className="text-lg sm:text-2xl text-white font-bold uppercase tracking-[0.2em] text-center leading-tight" >
           {t("ui.scrollBegin")}
         </p>
-        <svg className="animate-bounce" width="40" height="40" viewBox="0 0 20 20" fill="none">
+        <svg className="animate-bounce" width="28" height="28" viewBox="0 0 20 20" fill="none">
           <path d="M10 4v12m0 0l-4-4m4 4l4-4" stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>

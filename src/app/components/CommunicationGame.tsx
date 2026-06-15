@@ -6,6 +6,7 @@ import {
 import confetti from "canvas-confetti";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 
 import npcGif from "../../imports/npc.gif";
 import lunaGif from "../../imports/luNA-ezgif.com-crop.gif";
@@ -217,7 +218,7 @@ export const CommunicationGame = ({
   onClose: () => void;
   imgKey?: number;
 }) => {
-  const { lang } = useLang();
+  const { lang, t } = useLang();
   const [phase, setPhase]           = useState<"intro" | "game" | "complete">("intro");
   const [scenarioIdx, setScenarioIdx] = useState(0);
   const [chatPhase, setChatPhase]   = useState<"npc" | "choosing" | "feedback">("npc");
@@ -302,12 +303,16 @@ export const CommunicationGame = ({
 
   const handleAnswer = useCallback((optionIdx: number) => {
     if (chatPhase !== "choosing") return;
+    soundEngine.clickSwitch();
     const option = SCENARIOS[scenarioIdx].options[optionIdx];
     setSelectedOption(optionIdx);
     setChatPhase("feedback");
     setMessages((p) => [...p, { id: `player-${Date.now()}`, from: "player", text: option.text, grade: option.grade }]);
     if (option.grade === "boss") {
+      soundEngine.clickBubble();
       window.setTimeout(() => confetti({ particleCount: 80, spread: 85, origin: { x: 0.5, y: 0.45 }, colors: ["#22d3ee", "#34d399", "#a78bfa"] }), 300);
+    } else {
+      soundEngine.clickThunk();
     }
   }, [chatPhase, scenarioIdx]);
 
@@ -408,7 +413,7 @@ export const CommunicationGame = ({
                 </div>
                 <div>
                   <p style={{ fontWeight: 600, fontSize: 15, color: "#fcd34d" }}>
-                    Nebula Nick
+                    {t("npc.name")}
                   </p>
                   <p style={{ fontSize: 12, color: "rgba(148,163,184,0.8)" }}>
                     {copy.nickRole}
@@ -483,10 +488,10 @@ export const CommunicationGame = ({
                     <GifImg src={npcGif} alt="Nick" imgKey={imgKey} className="w-full h-full object-cover object-center" />
                   </div>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: 14, color: "#fff" }}>Nebula Nick</p>
+                    <p style={{ fontWeight: 600, fontSize: 14, color: "#fff" }}>{t("npc.name")}</p>
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span style={{ fontSize: 11, color: "rgba(52,211,153,0.7)" }}>online</span>
+                      <span style={{ fontSize: 11, color: "rgba(52,211,153,0.7)" }}>{t("ui.online")}</span>
                     </div>
                   </div>
                 </div>
@@ -650,7 +655,7 @@ export const CommunicationGame = ({
                   {copy.doneText}
                 </p>
                 <p className="text-white/60 mb-8 font-['Space_Grotesk']">
-                  {lang === "de" ? "Gut gemacht, du hast es geschafft!" : "Well done, you did it!"}
+                  {t("game.wellDone")}
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center gap-4">
@@ -659,14 +664,15 @@ export const CommunicationGame = ({
                   size="lg"
                   onClick={onClose}
                 >
-                  {lang === "de" ? "Weiter" : "Continue"}
+                  {t("complete.continue")}
                 </GhostButton>
                 <button
-                  onClick={handleRestart}
+                  onClick={() => { soundEngine.clickSwitch(); handleRestart(); }}
+                  onMouseEnter={() => soundEngine.hoverNote()}
                   className="text-white/40 hover:text-white/70 flex items-center gap-1.5 text-sm transition-colors mt-2"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  {lang === "de" ? "Mission neu starten" : "Restart Mission"}
+                  {t("btn.restart")}
                 </button>
               </div>
             </motion.div>

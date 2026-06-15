@@ -6,82 +6,33 @@ import {
   Heart, BookOpen, Users, Lightbulb, Shield,
   ChevronRight, Sparkles, Brain, Apple, FlaskConical, RefreshCcw, RotateCcw
 } from "lucide-react";
+import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 
 // ─── PKU Facts ────────────────────────────────────────────────────────────────
 
 const PKU_FACTS = [
-  {
-    icon: Brain,
-    title: "What Happens Inside",
-    short: "Your body's engine works differently.",
-    text: "In PKU, your body is missing a part of its engine. It can't process an amino acid called Phe found in regular protein. That's why managing your sports fuel is so important!",
-    color: "#a78bfa",
-    emoji: "🧠",
-  },
-  {
-    icon: FlaskConical,
-    title: "Early Detection",
-    short: "Caught from the start.",
-    text: "PKU is detected early on. This means you get to start your special sports diet right away, giving you the best chance to become a strong athlete.",
-    color: "#22d3ee",
-    emoji: "🔬",
-  },
-  {
-    icon: Apple,
-    title: "Your Special Diet",
-    short: "Fruits, veggies, formula = power.",
-    text: "Most fruits, vegetables, and special low-protein foods are your safe energy. PKU formula gives you all the essential building blocks for sports without the heavy Phe.",
-    color: "#34d399",
-    emoji: "🍎",
-  },
-  {
-    icon: Users,
-    title: "A Global Community",
-    short: "1 in 10,000 — you are not alone.",
-    text: "About 1 in 10,000 babies worldwide are born with PKU. You are part of a massive team of athletes training every day!",
-    color: "#f59e0b",
-    emoji: "🌍",
-  },
-  {
-    icon: Lightbulb,
-    title: "Science is Helping",
-    short: "New discoveries every year.",
-    text: "Sports scientists and researchers are always finding new ways to help athletes with PKU get the best out of their training!",
-    color: "#22d3ee",
-    emoji: "💡",
-  },
-  {
-    icon: Shield,
-    title: "Stay Consistent",
-    short: "Routine is your superpower.",
-    text: "Keeping your energy stable is the key. Sticking to your diet and taking your formula every day is your superpower routine on and off the field.",
-    color: "#34d399",
-    emoji: "🛡️",
-  },
+  { icon: Brain, titleKey: "fact.0.title", shortKey: "fact.0.short", textKey: "fact.0.text", color: "#a78bfa", emoji: "🧠" },
+  { icon: FlaskConical, titleKey: "fact.1.title", shortKey: "fact.1.short", textKey: "fact.1.text", color: "#22d3ee", emoji: "🔬" },
+  { icon: Apple, titleKey: "fact.2.title", shortKey: "fact.2.short", textKey: "fact.2.text", color: "#34d399", emoji: "🍎" },
+  { icon: Users, titleKey: "fact.3.title", shortKey: "fact.3.short", textKey: "fact.3.text", color: "#f59e0b", emoji: "🌍" },
+  { icon: Lightbulb, titleKey: "fact.4.title", shortKey: "fact.4.short", textKey: "fact.4.text", color: "#22d3ee", emoji: "💡" },
+  { icon: Shield, titleKey: "fact.5.title", shortKey: "fact.5.short", textKey: "fact.5.text", color: "#34d399", emoji: "🛡️" },
 ];
 
 const HERO_STORIES = [
-  {
-    name: "Captain's Log #1",
-    quote: "Managing PKU doesn't make you different — it makes you disciplined. Every meal is a choice, and every good choice fuels your sports journey.",
-  },
-  {
-    name: "Captain's Log #2",
-    quote: "Someone offered me protein snacks once. I just told them I have my own special sports fuel. Now they cheer for me when I drink it!",
-  },
-  {
-    name: "Captain's Log #3",
-    quote: "Keep lots of low-Phe fruits in your bag. Apples and bananas are perfect for quick stamina during half time.",
-  },
+  { nameKey: "hero.0.name", quoteKey: "hero.0.quote" },
+  { nameKey: "hero.1.name", quoteKey: "hero.1.quote" },
+  { nameKey: "hero.2.name", quoteKey: "hero.2.quote" },
 ];
 
-const TIPS = [
-  "Always carry your sports formula when you go out to train",
-  "Learn to read nutrition labels — they are your game plans",
-  "Take your formula at the exact same time every day",
-  "Keep a food diary to track your sports energy",
-  "Don't be afraid to explain your diet to teammates — knowledge is power",
-  "Celebrate your wins — every good meal choice is a victory on the field",
+const TIPS_KEYS = [
+  "tip.0",
+  "tip.1",
+  "tip.2",
+  "tip.3",
+  "tip.4",
+  "tip.5",
 ];
 
 // ─── Animated reveal text ─────────────────────────────────────────────────────
@@ -103,9 +54,10 @@ const FlipCard = ({
   fact,
   index,
 }: {
-  fact: typeof PKU_FACTS[0];
+  fact: any;
   index: number;
 }) => {
+  const { t } = useLang();
   const [flipped, setFlipped] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -124,7 +76,7 @@ const FlipCard = ({
       // Height stays fixed so the card doesn't collapse
       style={{ perspective: "800px", height: "200px" }}
       className="w-full cursor-pointer"
-      onClick={() => setFlipped((f) => !f)}
+      onClick={() => { setFlipped((f) => !f); soundEngine.clickSwitch(); }}
     >
       {/* Inner rotating container */}
       <div
@@ -182,7 +134,7 @@ const FlipCard = ({
               className="text-white mb-1"
               style={{ fontWeight: 700, fontSize: 15 }}
             >
-              {fact.title}
+              {t(fact.titleKey)}
             </h4>
 
             {/* Short teaser */}
@@ -193,7 +145,7 @@ const FlipCard = ({
                 fontWeight: 500,
               }}
             >
-              {fact.short}
+              {t(fact.shortKey)}
             </p>
           </div>
 
@@ -204,7 +156,7 @@ const FlipCard = ({
               className="text-[10px] uppercase tracking-wider"
               style={{ color: fact.color + "60", }}
             >
-              tap to read
+              {t("footer.tapRead")}
             </span>
           </div>
         </div>
@@ -232,7 +184,7 @@ const FlipCard = ({
               className="text-xs uppercase tracking-wider mb-3"
               style={{ color: fact.color, fontWeight: 600 }}
             >
-              {fact.title}
+              {t(fact.titleKey)}
             </p>
             <p
               className="text-slate-200"
@@ -241,7 +193,7 @@ const FlipCard = ({
                 lineHeight: 1.7,
               }}
             >
-              {fact.text}
+              {t(fact.textKey)}
             </p>
           </div>
 
@@ -252,7 +204,7 @@ const FlipCard = ({
               className="text-[10px] uppercase tracking-wider"
               style={{ color: fact.color + "60", }}
             >
-              tap to flip back
+              {t("footer.tapFlip")}
             </span>
           </div>
         </div>
@@ -263,7 +215,16 @@ const FlipCard = ({
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
+export const Footer = ({ 
+  onRestart, 
+  onShowPostTest,
+  isPostTestCompleted
+}: { 
+  onRestart?: () => void,
+  onShowPostTest?: () => void,
+  isPostTestCompleted?: boolean
+}) => {
+  const { t } = useLang();
   return (
     <footer className="relative w-full text-white overflow-hidden">
 
@@ -286,17 +247,16 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
             className="text-3xl md:text-5xl tracking-tight text-white"
             style={{ fontWeight: 700, }}
           >
-            Mission{" "}
+            {t("footer.mission")}{" "}
             <span className="text-cyan-400" style={{ textShadow: "0 0 28px rgba(34,211,238,0.7)" }}>
-              Complete
+              {t("footer.complete")}
             </span>
           </h2>
           <p
             className="text-slate-300 text-lg max-w-xl"
             style={{ lineHeight: 1.8, }}
           >
-            You've proven yourself as a skilled sports champion.
-            But the journey doesn't end here — there's so much more to learn about PKU.
+            {t("footer.missionDesc")}
           </p>
         </motion.div>
       </section>
@@ -310,9 +270,9 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                 className="text-2xl md:text-4xl tracking-tight text-white mb-3"
                 style={{ fontWeight: 700, }}
               >
-                Your Sports{" "}
+                {t("footer.energyTitle")}{" "}
                 <span className="text-cyan-400" style={{ textShadow: "0 0 20px rgba(34,211,238,0.5)" }}>
-                  Energy
+                  {t("footer.energyWord")}
                 </span>
               </h3>
             </RevealText>
@@ -324,7 +284,7 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
               className="text-slate-400"
               
             >
-              Tap any card to flip it and learn more
+              {t("footer.tapCard")}
             </motion.p>
           </div>
 
@@ -345,9 +305,9 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                 className="text-2xl md:text-4xl tracking-tight text-white mb-3"
                 style={{ fontWeight: 700, }}
               >
-                Captain's{" "}
+                {t("footer.logsTitle1")}{" "}
                 <span className="text-violet-400" style={{ textShadow: "0 0 20px rgba(167,139,250,0.5)" }}>
-                  Logs
+                  {t("footer.logsTitle2")}
                 </span>
               </h3>
             </RevealText>
@@ -359,7 +319,7 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
               className="text-slate-400"
               
             >
-              Messages from fellow travelers on the same journey
+              {t("footer.logsDesc")}
             </motion.p>
           </div>
         </div>
@@ -418,7 +378,7 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                         fontWeight: 600
                       }}
                     >
-                      {story.name}
+                      {t(story.nameKey)}
                     </span>
                   </div>
                   <p
@@ -427,7 +387,7 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                       lineHeight: 1.8,
                       }}
                   >
-                    "{story.quote}"
+                    "{t(story.quoteKey)}"
                   </p>
                   <div
                     className="mt-6 h-0.5 rounded-full"
@@ -452,15 +412,15 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                 className="text-2xl md:text-4xl tracking-tight text-white mb-3"
                 style={{ fontWeight: 700, }}
               >
-                Captain's{" "}
+                {t("footer.tipsTitle1")}{" "}
                 <span className="text-emerald-400" style={{ textShadow: "0 0 20px rgba(52,211,153,0.5)" }}>
-                  Training Tips
+                  {t("footer.tipsTitle2")}
                 </span>
               </h3>
             </RevealText>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {TIPS.map((tip, i) => (
+            {TIPS_KEYS.map((tip, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 14 }}
@@ -472,7 +432,7 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
               >
                 <ChevronRight className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <p className="text-sm text-slate-300" >
-                  {tip}
+                  {t(tip)}
                 </p>
               </motion.div>
             ))}
@@ -489,16 +449,16 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                 className="text-2xl md:text-4xl tracking-tight text-white mb-6"
                 style={{ fontWeight: 700, }}
               >
-                You Are{" "}
+                {t("footer.extra1")}{" "}
                 <span className="text-cyan-400" style={{ textShadow: "0 0 24px rgba(34,211,238,0.65)" }}>
-                  Extraordinary
+                  {t("footer.extra2")}
                 </span>
               </h3>
             </RevealText>
             <div className="space-y-4 text-slate-300" style={{ lineHeight: 1.8, }}>
               {[
-                "Having PKU doesn't limit who you can become. Athletes, artists, scientists, and explorers with PKU are out there right now, living amazing lives.",
-                "Your discipline with diet is a superpower most people don't have. Every time you choose the right food, you're training yourself to be stronger, smarter, and more resilient.",
+                t("footer.extraP1"),
+                t("footer.extraP2"),
               ].map((para, i) => (
                 <motion.p key={i}
                   initial={{ opacity: 0, x: -20 }}
@@ -515,11 +475,11 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: 0.3, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
               >
-                Remember: you're not just managing a diet — you're{" "}
+                {t("footer.extraP3")}{" "}
                 <span className="text-cyan-300" style={{ textShadow: "0 0 12px rgba(103,232,249,0.5)" }}>
-                  leading your sports team
+                  {t("footer.extraP4")}
                 </span>
-                . And you're doing an incredible job.
+                {t("footer.extraP5")}
               </motion.p>
             </div>
           </div>
@@ -549,24 +509,36 @@ export const Footer = ({ onRestart }: { onRestart?: () => void }) => {
             transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
             className="inline-block mb-14"
           >
-            <GhostButton
-              tone="cyan"
-              size="md"
-              icon={<RefreshCcw className="w-4 h-4" />}
-              onClick={() => onRestart?.()}
-            >
-              Restart Mission
-            </GhostButton>
+            {isPostTestCompleted ? (
+              <GhostButton
+                tone="cyan"
+                size="md"
+                icon={<RefreshCcw className="w-4 h-4" />}
+                onClick={() => onRestart?.()}
+              >
+                {t("btn.restart")}
+              </GhostButton>
+            ) : (
+              <GhostButton
+                tone="emerald"
+                size="md"
+                icon={<Sparkles className="w-4 h-4" />}
+                onClick={() => onShowPostTest?.()}
+                className="shadow-[0_0_30px_rgba(52,211,153,0.3)] animate-pulse hover:animate-none"
+              >
+                Finish Simulation & Evaluate
+              </GhostButton>
+            )}
           </motion.div>
 
           <div className="border-t border-white/[0.05] pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-slate-500 text-xs" >
               <span>&copy; {new Date().getFullYear()}</span>
               <span className="text-white/10">|</span>
-              <span>PKU Academy — Educational Project</span>
+              <span>{t("footer.eduProject")}</span>
             </div>
             <div className="flex items-center gap-1 text-slate-500 text-xs" >
-              Made with <Heart className="w-3 h-3 text-red-400/60 mx-1" /> for young athletes with PKU
+              {t("footer.madeWith")} <Heart className="w-3 h-3 text-red-400/60 mx-1" /> {t("footer.forAthletes")}
             </div>
           </div>
         </div>

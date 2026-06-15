@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { motion } from "motion/react";
 import { Download, FileText, Sparkles, Notebook } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
@@ -35,9 +35,24 @@ const Card: React.FC<CardProps> = ({ index, icon: Icon, tone, titleKey, descKey,
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.23, 1, 0.32, 1] }}
       className="relative group"
-      onMouseEnter={() => soundEngine.cardHover(index)}
+      style={{ perspective: "1000px" }}
     >
       <div
+        className="h-full transition-transform duration-200 ease-out"
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -5;
+          const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
+          e.currentTarget.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0px)";
+        }}
+        onMouseEnter={() => soundEngine.cardHover(index)}
+      >
+        <div
         className="absolute -inset-[1px] rounded-[24px] opacity-50 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{
           background: `linear-gradient(135deg, ${color}55, transparent 50%, ${color}22)`,
@@ -135,6 +150,7 @@ const Card: React.FC<CardProps> = ({ index, icon: Icon, tone, titleKey, descKey,
             </div>
           )}
         </div>
+      </div>
       </div>
     </motion.div>
   );

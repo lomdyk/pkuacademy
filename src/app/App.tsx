@@ -15,6 +15,10 @@ import { LanguageProvider, useLang } from "./utils/i18n";
 import { GhostButton } from "./components/ui/GhostButton";
 import { Preloader } from "./components/Preloader";
 import { SoundToggle } from "./components/ui/SoundToggle";
+import { PreTestModal } from "./components/PreTestModal";
+import { PostTestModal } from "./components/PostTestModal";
+import { metricsState, metricsActions } from "./store/metricsStore";
+import { useSnapshot } from 'valtio';
 import Lenis from "lenis";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -34,13 +38,16 @@ function AppInner() {
   const [gameKey, setGameKey] = useState(0);
   const [completed, setCompleted] = useState({ m1: false, m2: false, m3: false });
   const [scrollTarget, setScrollTarget] = useState<{ id: string; behavior: ScrollBehavior } | null>(null);
+  const [showPostTest, setShowPostTest] = useState(false);
   const { t } = useLang();
+  const session = useSnapshot(metricsState);
 
-  // Lock body scroll when a game is active
+  // Lock body scroll when a game is active or Pre-test is active
   useEffect(() => {
-    scrollState.isGameActive = activeScene !== "main";
+    const isOverlayActive = activeScene !== "main" || !session.id;
+    scrollState.isGameActive = isOverlayActive;
     
-    if (activeScene !== "main") {
+    if (isOverlayActive) {
       document.body.style.overflow = "hidden";
       if ((window as any).lenis) (window as any).lenis.stop();
     } else {
@@ -51,7 +58,7 @@ function AppInner() {
       document.body.style.overflow = "";
       if ((window as any).lenis) (window as any).lenis.start();
     };
-  }, [activeScene]);
+  }, [activeScene, session.id]);
 
   // Handle scrolling to a target when returning to main scene
   useEffect(() => {
@@ -81,6 +88,7 @@ function AppInner() {
     };
   }, []);
 
+  // Handle scrolling to a target when returning to main scene
   useEffect(() => {
     if (activeScene === "main" && scrollTarget) {
       // Small delay to ensure overlay animation started exiting
@@ -90,7 +98,36 @@ function AppInner() {
         setScrollTarget(null);
       }, 100);
     }
+    
+    // Sync active mission for metrics
+    let missionId: 'main' | 'm1' | 'm2' | 'm3' = 'main';
+    if (activeScene === 'backpack') missionId = 'm1';
+    else if (activeScene === 'communication') missionId = 'm2';
+    else if (activeScene === 'runner') missionId = 'm3';
+    
+    metricsActions.setActiveMission(missionId);
   }, [activeScene, scrollTarget]);
+
+  // Track scroll depth
+  useEffect(() => {
+    if (!session.id) return;
+    const sections = ['crew-greeting', 'mission-1', 'mission-2', 'mission-3', 'downloads', 'footer'];
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          metricsActions.updateScrollDepth(entry.target.id);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [session.id]);
 
   const handleRestart = useCallback(() => {
     setGameKey((k) => k + 1);
@@ -102,6 +139,8 @@ function AppInner() {
   const handleCloseGame = useCallback((action: "exit" | "continue" = "exit", missionId?: "m1" | "m2" | "m3") => {
     if (action === "continue" && missionId) {
       setCompleted(prev => ({ ...prev, [missionId]: true }));
+      metricsActions.recordGameComplete(missionId);
+      
       let target = null;
       if (missionId === "m1") target = "mission-2";
       else if (missionId === "m2") target = "mission-3";
@@ -114,17 +153,20 @@ function AppInner() {
     setActiveScene("main");
   }, [activeScene]);
 
-  const handleStartGame1 = useCallback(() => {
+  const handleStartGame1 = useCallback((method: 'overlay' | 'text_button') => {
+    metricsActions.recordGameStart('m1', method);
     setGameKey((k) => k + 1);
     setActiveScene("backpack");
   }, []);
 
-  const handleStartGame2 = useCallback(() => {
+  const handleStartGame2 = useCallback((method: 'overlay' | 'text_button') => {
+    metricsActions.recordGameStart('m2', method);
     setGameKey((k) => k + 1);
     setActiveScene("communication");
   }, []);
 
-  const handleStartGame3 = useCallback(() => {
+  const handleStartGame3 = useCallback((method: 'overlay' | 'text_button') => {
+    metricsActions.recordGameStart('m3', method);
     setGameKey((k) => k + 1);
     setActiveScene("runner");
   }, []);
@@ -171,9 +213,31 @@ function AppInner() {
       className="bg-[#050a18] min-h-screen text-white selection:bg-cyan-500/30 selection:text-cyan-200 relative"
       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
     >
-      <h1 className="sr-only">PKU Academy - Interactive Space Adventure and Dietary Training</h1>
+      <h1 className="sr-only">{t("app.title")}</h1>
       
       <Preloader />
+      
+      <AnimatePresence>
+        {!session.id && (
+          <PreTestModal 
+            key="pretest"
+            onSubmit={(age, knowledge) => {
+              metricsActions.initSession(age, knowledge, navigator.language || 'en');
+            }} 
+          />
+        )}
+        
+        {showPostTest && (
+          <PostTestModal 
+            key="posttest"
+            onClose={() => setShowPostTest(false)}
+            onSubmit={async (design, clarity, learned, feedback) => {
+              await metricsActions.finishSession(design, clarity, learned, feedback);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <StarField />
 
       {/* Main Content ALWAYS mounted to preserve GSAP ScrollTriggers */}
@@ -257,7 +321,13 @@ function AppInner() {
             <OfflineDownloads />
           </div>
 
-          <Footer onRestart={handleRestart} />
+          <div id="footer">
+            <Footer 
+              onRestart={handleRestart} 
+              onShowPostTest={() => setShowPostTest(true)}
+              isPostTestCompleted={session.completed}
+            />
+          </div>
         </main>
       </div>
 

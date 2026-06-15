@@ -4,6 +4,7 @@ import { Gamepad2, X } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { ScrollRevealText } from "./ui/ScrollRevealText";
 import { useLang } from "../utils/i18n";
+import { soundEngine } from "../utils/audioEngine";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -27,7 +28,7 @@ interface Props {
   objectiveKey: string;
   ctaKey: string;
   tone?: Tone;
-  onStart: () => void;
+  onStart: (method: 'overlay' | 'text_button') => void;
   imageSide?: "left" | "right";
   isCompleted?: boolean;
   isLocked?: boolean;
@@ -211,7 +212,7 @@ export const MissionPrologue: React.FC<Props> = ({
                 tone={tone}
                 size="lg"
                 icon={<Gamepad2 className="w-5 h-5" />}
-                onClick={onStart}
+                onClick={() => onStart('text_button')}
               >
                 {t(ctaKey)}
               </GhostButton>
@@ -306,7 +307,8 @@ export const MissionPrologue: React.FC<Props> = ({
                 >
                   {/* Close Button on Bubble Border */}
                   <button 
-                    onClick={() => setShowOverlay(false)}
+                    onClick={() => { setShowOverlay(false); soundEngine.clickSwitch(); }}
+                    onMouseEnter={() => soundEngine.hoverNote()}
                     className="absolute -top-3 -right-3 md:-top-5 md:-right-5 p-2 text-white/70 hover:text-white transition-colors rounded-full border bg-slate-900 shadow-xl"
                     style={{ borderColor: a.rgba }}
                   >
@@ -322,7 +324,7 @@ export const MissionPrologue: React.FC<Props> = ({
                       tone={tone} 
                       size="lg" 
                       icon={<Gamepad2 className="w-6 h-6"/>} 
-                      onClick={() => { setShowOverlay(false); onStart(); }}
+                      onClick={() => { setShowOverlay(false); onStart('overlay'); }}
                     >
                       {t(ctaKey)}
                     </GhostButton>

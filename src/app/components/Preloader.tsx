@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { motion, animate, useMotionValue, useTransform } from "motion/react";
 import { useProgress } from "@react-three/drei";
+import { useLang } from "../utils/i18n";
 
 export const Preloader = () => {
   const { progress: realProgress } = useProgress();
+  const { t } = useLang();
   const [show, setShow] = useState(true);
   const [isDone, setIsDone] = useState(false);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
@@ -17,6 +19,14 @@ export const Preloader = () => {
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
   const animatedProgress = useMotionValue(0);
+  const [visualProgress, setVisualProgress] = useState(0);
+
+  useEffect(() => {
+    return animatedProgress.on("change", (latest) => {
+      setVisualProgress(Math.round(latest));
+    });
+  }, [animatedProgress]);
+
   const roundedProgress = useTransform(animatedProgress, (latest) => Math.round(latest));
 
   useEffect(() => {
@@ -53,8 +63,9 @@ export const Preloader = () => {
   }, [activeProgress, animatedProgress]);
 
   useEffect(() => {
-    // If progress is 100% AND min time has passed, we are done
-    if (activeProgress === 100 && minTimeElapsed) {
+    // If VISUAL progress is 100% AND min time has passed, we are done.
+    // This ensures the animation is always seen even if loading blocks the thread.
+    if (visualProgress === 100 && minTimeElapsed) {
       setIsDone(true);
       // Wait for column slide animation to finish before unmounting completely
       const timer = setTimeout(() => {
@@ -62,7 +73,7 @@ export const Preloader = () => {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [activeProgress, minTimeElapsed]);
+  }, [activeProgress, minTimeElapsed, visualProgress]);
 
   // Lock body scroll while loading
   useEffect(() => {
@@ -84,9 +95,9 @@ export const Preloader = () => {
 
   if (!show) return null;
 
-  const COLUMNS = 5;
-  // Match the exact colors of the 5 app sections
-  const STAGE_COLORS = ["#22d3ee", "#a78bfa", "#34d399", "#fbbf24", "#f472b6"];
+  const COLUMNS = 6;
+  // Using 4 accent colors (cyan, violet, emerald, amber) distributed symmetrically
+  const STAGE_COLORS = ["#22d3ee", "#a78bfa", "#34d399", "#fbbf24", "#34d399", "#a78bfa"];
 
   return (
     <div className="fixed inset-0 z-[9999] flex pointer-events-none overflow-hidden">
@@ -169,7 +180,7 @@ export const Preloader = () => {
           </motion.div>
 
           <div className="mt-4 text-cyan-400 text-sm tracking-[0.3em] font-bold uppercase" >
-            {isDone ? "Systems Online" : "Loading Assets"}
+            {isDone ? t("preloader.online") : t("preloader.loading")}
           </div>
         </div>
       </motion.div>

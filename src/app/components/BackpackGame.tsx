@@ -76,7 +76,7 @@ export const BackpackGame = ({
       soundEngine.clickBubble();
       setBackpackGlow("success");
       setScore((s) => s + 1);
-      showMessage(`${item.name} ${t("game.bp.msg.safe")}`, "success");
+      showMessage(`${t(`food.${item.id}.name`)} ${t("game.bp.msg.safe")}`, "success");
       confetti({
         particleCount: 40,
         spread: 50,
@@ -110,7 +110,7 @@ export const BackpackGame = ({
       soundEngine.clickThunk();
       setQuarantineGlow("success");
       setScore((s) => s + 1);
-      showMessage(`${item.name} ${t("game.bp.msg.unsafeToTrash")}`, "success");
+      showMessage(`${t(`food.${item.id}.name`)} ${t("game.bp.msg.unsafeToTrash")}`, "success");
       removeItem(item.id);
       setTimeout(() => setQuarantineGlow("neutral"), 1500);
     } else {
@@ -172,7 +172,8 @@ export const BackpackGame = ({
               {t("complete.continue")}
             </GhostButton>
             <button
-              onClick={handleRestart}
+              onClick={() => { soundEngine.clickSwitch(); handleRestart(); }}
+              onMouseEnter={() => soundEngine.hoverNote()}
               className="text-white/40 hover:text-white/70 flex items-center gap-1.5 text-sm transition-colors mt-2"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -357,9 +358,9 @@ export const BackpackGame = ({
                       className="max-w-full max-h-full object-contain drop-shadow-lg pointer-events-none"
                     />
                   </div>
-                  <span className="text-[11px] text-white/80 font-['Space_Grotesk'] mt-1">{item.name}</span>
+                  <span className="text-[11px] text-white/80 font-['Space_Grotesk'] mt-1">{t(`food.${item.id}.name`)}</span>
                   <span className={`text-[9px] font-['Space_Grotesk'] mt-0.5 ${item.type === "safe" ? "text-cyan-400/60" : "text-amber-400/60"}`}>
-                    {item.label}
+                    {t(`food.${item.id}.label`)}
                   </span>
                   {selected === item.id && (
                     <motion.div

@@ -7,10 +7,13 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { useSnapshot } from 'valtio';
 import { scrollState, keyframes } from "../store/rocketAnimation";
 
-function ThrusterFlames() {
+function ThrusterFlames({ targetRef }: { targetRef: React.MutableRefObject<THREE.Group | null> }) {
   const count = 800;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   
+  const prevWorldPos = useRef(new THREE.Vector3());
+  const smoothedVelocity = useRef(new THREE.Vector3());
+
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const color = useMemo(() => new THREE.Color(), []);
   
@@ -23,9 +26,33 @@ function ThrusterFlames() {
     }));
   }, [count]);
 
-  useFrame((_, delta) => {
-    if (!meshRef.current) return;
+  useFrame((state, delta) => {
+    if (!meshRef.current || !targetRef.current) return;
     
+    // --- PHYSICS BENDING (Scroll Trail) ---
+    // Track world position of the ship's center (targetRef). 
+    // This avoids the glitch caused by rotation swinging an offset point.
+    const currentWorldPos = new THREE.Vector3();
+    targetRef.current.getWorldPosition(currentWorldPos);
+
+    if (prevWorldPos.current.lengthSq() === 0) {
+      prevWorldPos.current.copy(currentWorldPos);
+    }
+    
+    const dt = delta || 0.016;
+    const worldVel = new THREE.Vector3().subVectors(currentWorldPos, prevWorldPos.current).divideScalar(dt);
+    prevWorldPos.current.copy(currentWorldPos);
+
+    // Transform world velocity into the fire's local space so it bends correctly regardless of ship orientation!
+    const localVel = worldVel.clone();
+    // Remove translations from the fire's world matrix to just get rotation/scale, then invert
+    const inverseWorldMatrix = meshRef.current.matrixWorld.clone().invert();
+    localVel.transformDirection(inverseWorldMatrix);
+    
+    // Smooth it to act like a springy tail
+    smoothedVelocity.current.lerp(localVel, 0.1);
+    // ---------------------------------------
+
     // Scale fire based on scroll progress so it "ignites" when user starts scrolling
     const p = scrollState.progress;
     let ignition = Math.max(0.2, Math.min(p * 10, 1)); 
@@ -51,8 +78,8 @@ function ThrusterFlames() {
 
       // Widen slightly as it falls
       const spread = 1 + pItem.t * 5; // Increased spread for a wider cone that covers the screen
-      const x = Math.cos(pItem.angle) * pItem.radius * spread;
-      const z = Math.sin(pItem.angle) * pItem.radius * spread;
+      let x = Math.cos(pItem.angle) * pItem.radius * spread;
+      let z = Math.sin(pItem.angle) * pItem.radius * spread;
       
       // Downwards velocity - stretch slightly based on hyperjump
       // Use pItem.speed (which is random per particle) to vary the max depth
@@ -64,6 +91,23 @@ function ThrusterFlames() {
       const shape = Math.sin(pItem.t * Math.PI) + 0.2 * (1 - pItem.t);
       const scaleInit = 1.2; // overall size of the flame
       const scale = Math.max(0, shape * scaleInit * ignition * (1 + (hyperjumpMultiplier - 1) * 0.1));
+
+      // ----------------------------------------------------
+      // High-frequency flutter (wind turbulence)
+      // Different phase for each particle based on its angle, modified by time
+      const flutterX = Math.sin(pItem.t * 15 + state.clock.elapsedTime * 25 + pItem.angle) * 0.08 * pItem.t;
+      const flutterZ = Math.cos(pItem.t * 15 + state.clock.elapsedTime * 25 + pItem.angle) * 0.08 * pItem.t;
+      x += flutterX;
+      z += flutterZ;
+
+      // Organic Trail Curve: The further from the engine (pItem.t), the more it bends
+      // We use a quadratic curve (t * t) so the base stays attached but the tip lags heavily
+      // We subtract local velocity because the exhaust trails OPPOSITE to movement
+      const bendFactor = pItem.t * pItem.t * 0.5;
+      x += -smoothedVelocity.current.x * bendFactor;
+      z += -smoothedVelocity.current.z * bendFactor;
+      // Note: We don't bend Y (which is the length of the fire), only X and Z cross-sections
+      // ----------------------------------------------------
 
       dummy.position.set(x, y, z);
       
@@ -121,7 +165,8 @@ function AnimatedModel() {
     }
   });
 
-  const [target, setTarget] = useState<THREE.Group | null>(null);
+  const targetRef = useRef<THREE.Group>(null);
+  const parallaxGroupRef = useRef<THREE.Group>(null);
 
   useMemo(() => {
     scene.traverse((child) => {
@@ -149,7 +194,8 @@ function AnimatedModel() {
   }, [scene]);
 
   useFrame((state, delta) => {
-    if (!target) return;
+    if (!targetRef.current) return;
+    const target = targetRef.current;
     
     // Scale down on mobile to fit the narrow viewport
     const isMobile = window.innerWidth < 768;
@@ -205,14 +251,26 @@ function AnimatedModel() {
       target.position.y += (Math.random() - 0.5) * intensity;
       target.position.z += (Math.random() - 0.5) * intensity;
     }
+
+    // Interactive Mouse Parallax (Tilts the whole ship towards the mouse)
+    if (parallaxGroupRef.current) {
+      // state.pointer is normalized -1 to +1
+      const targetRotX = state.pointer.y * -0.3; // tilt up/down
+      const targetRotY = state.pointer.x * 0.3;  // turn left/right
+      
+      parallaxGroupRef.current.rotation.x = THREE.MathUtils.lerp(parallaxGroupRef.current.rotation.x, targetRotX, 4 * delta);
+      parallaxGroupRef.current.rotation.y = THREE.MathUtils.lerp(parallaxGroupRef.current.rotation.y, targetRotY, 4 * delta);
+    }
   });
 
   return (
-    <group ref={setTarget}>
-      <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.4}>
-        <primitive object={scene} scale={4} position={[0, -1, 0]} rotation={[0, 0, Math.PI / 2]} />
-        <ThrusterFlames />
-      </Float>
+    <group ref={parallaxGroupRef}>
+      <group ref={targetRef}>
+        <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.4}>
+          <primitive object={scene} scale={4} position={[0, -1, 0]} rotation={[0, 0, Math.PI / 2]} />
+          <ThrusterFlames targetRef={targetRef} />
+        </Float>
+      </group>
     </group>
   );
 }
