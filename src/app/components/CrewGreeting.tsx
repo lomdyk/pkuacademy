@@ -96,7 +96,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
   return (
     <section ref={containerRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center pointer-events-none">
       
-      <div className="relative z-10 bg-slate-900/40 backdrop-blur-md w-full max-w-4xl mx-auto rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 lg:p-16 border border-white/5 shadow-2xl flex flex-col justify-center min-h-[400px] md:min-h-[500px] overflow-hidden">
+      <div className="relative z-10 w-full max-w-6xl px-4 flex flex-col items-center justify-center h-full">
         
         {/* Title */}
         <div ref={titleRef} className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
@@ -136,7 +136,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
         </div>
 
         {/* Cards Container */}
-        <div className="relative w-full max-w-4xl flex items-center justify-center mt-10 min-h-[500px]">
+        <div className="relative w-full max-w-4xl flex items-center justify-center mt-10 min-h-[400px] md:min-h-[500px]">
           {CREW.map((c, i) => {
             const a = ACCENT[c.tone];
             return (
