@@ -10,6 +10,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 import { useLang } from "../utils/i18n";
 import { scrollState } from "../store/rocketAnimation";
+import { useSnapshot } from 'valtio';
+
+const AdminProgressDisplay = () => {
+  const snap = useSnapshot(scrollState);
+  return (
+    <div className="text-white font-mono text-xs mb-2 bg-black/40 p-2 rounded border border-white/10 text-center">
+      P (Progress): <span className="text-green-400 font-bold">{snap.progress.toFixed(3)}</span>
+    </div>
+  );
+};
 
 // ─── Per-panel creative titles ────────────────────────────────────────────────
 export const HeroStory = () => {
@@ -395,6 +405,7 @@ export const HeroStory = () => {
       {showAdmin && (
         <div className="fixed bottom-4 left-4 z-[9999] bg-slate-900/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl flex flex-col gap-3 pointer-events-auto">
           <div className="text-white/50 text-[10px] font-bold uppercase tracking-widest mb-1 border-b border-white/10 pb-2">Admin Animation Controls</div>
+          <AdminProgressDisplay />
           <button onClick={() => window.scrollTo({ top: containerRef.current?.offsetTop || 0, behavior: 'smooth'})} className="text-left text-sm text-cyan-400 hover:text-cyan-300 transition-colors">1. Welcome</button>
           <button onClick={() => window.scrollTo({ top: (containerRef.current?.offsetTop || 0) + 0.25 * 5.5 * window.innerHeight, behavior: 'smooth'})} className="text-left text-sm text-purple-400 hover:text-purple-300 transition-colors">2. PKU Build</button>
           <button onClick={() => window.scrollTo({ top: (containerRef.current?.offsetTop || 0) + 0.45 * 5.5 * window.innerHeight, behavior: 'smooth'})} className="text-left text-sm text-amber-500 hover:text-amber-400 transition-colors">3. Heavy Food 🍕</button>
