@@ -63,18 +63,18 @@ export const TRANSLATIONS: Dict = {
   },
   "pku.title": { en: "The Broken Hammer", de: "Der kaputte Hammer" },
   "pku.desc": { 
-    en: "In PKU, your body's engine is missing a specific 'hammer' to break down a protein part called Phe. If you don't manage it, Phe builds up like toxic dust.", 
-    de: "Bei PKU fehlt dem Motor deines Körpers ein bestimmter 'Hammer', um ein Proteinteil namens Phe abzubauen. Wenn du es nicht kontrollierst, baut sich Phe wie giftiger Staub auf." 
+    en: "In PKU, your body's engine is missing a specific 'hammer' to break down a protein part called Phe. If you don't manage it, Phe builds up like toxic dust and affects your brain function.", 
+    de: "Bei PKU fehlt dem Motor deines Körpers ein bestimmter 'Hammer', um ein Proteinteil namens Phe abzubauen. Wenn du es nicht kontrollierst, baut sich Phe wie giftiger Staub auf und beeinträchtigt deine Gehirnfunktion." 
   },
   "fuel.clean": { en: "Formula Power", de: "Formel-Kraft" },
   "fuel.cleanDesc": { 
-    en: "Fruits, veggies, and your PKU formula are your Formula Power. Your formula is like a magic potion—no toxic Phe, but packed with Tyrosine to keep your muscles strong!", 
-    de: "Obst, Gemüse und deine PKU-Formel sind dein Super-Treibstoff. Deine Formel ist wie ein Zaubertrank — ohne giftiges Phe, aber voller Tyrosin, um deine Muskeln stark zu halten!" 
+    en: "Fruits, veggies, and your PKU formula are your Formula Power. Remember: your formula does NOT break down excess Phe—it provides safe amino acids (like Tyrosine) your brain and muscles need!", 
+    de: "Obst, Gemüse und deine PKU-Formel sind dein Super-Treibstoff. Denk dran: Deine Formel baut überschüssiges Phe NICHT ab — sie liefert sichere Aminosäuren (wie Tyrosin), die dein Gehirn und deine Muskeln brauchen!" 
   },
   "fuel.heavy": { en: "Heavy Food", de: "Schweres Essen" },
   "fuel.heavyDesc": { 
-    en: "Meat, cheese, and regular milk are heavy. They take away your sports energy and make you feel slow.", 
-    de: "Fleisch, Käse und normale Milch sind schwer. Sie rauben dir deine Sportenergie und machen dich langsam." 
+    en: "Meat, cheese, and regular milk are heavy. They are full of Phe! A toxic buildup affects your brain function, causing brain fog and slowing down your reflexes.", 
+    de: "Fleisch, Käse und normale Milch sind schwer. Sie sind voller Phe! Eine toxische Ansammlung beeinträchtigt deine Gehirnfunktion, verursacht Gehirnnebel und verlangsamt deine Reflexe." 
   },
   "ship.enter": { 
     en: "Time to meet your team! But before we fly to the stadium, a true athlete must pack their sports bag. Let's go!", 
