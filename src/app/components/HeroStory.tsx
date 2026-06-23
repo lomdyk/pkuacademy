@@ -480,7 +480,7 @@ export const HeroStory = () => {
 
               <AnimatedShip
                 ref={mobileShipRef}
-                className="relative w-48 sm:w-64 aspect-square opacity-80 z-[7]"
+                className="relative w-48 sm:w-64 aspect-square z-[7]"
                 style={{
                   filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
                 }}
