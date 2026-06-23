@@ -222,6 +222,15 @@ export const BackpackGame = ({
           <motion.button
             ref={backpackRef}
             onClick={handleDropToBackpack}
+            onDragEnter={(e) => { e.preventDefault(); setBackpackHovered(true); }}
+            onDragOver={(e) => { e.preventDefault(); }}
+            onDragLeave={() => setBackpackHovered(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setBackpackHovered(false);
+              const id = e.dataTransfer.getData("text/plain");
+              if (id) handleDropItemToBackpack(id);
+            }}
             onMouseEnter={() => setBackpackHovered(true)}
             onMouseLeave={() => setBackpackHovered(false)}
             animate={shakeBackpack ? { x: [0, -8, 8, -8, 8, 0] } : selected ? { scale: [1, 1.05, 1] } : {}}
@@ -260,6 +269,15 @@ export const BackpackGame = ({
           <motion.button
             ref={quarantineRef}
             onClick={handleDropToQuarantine}
+            onDragEnter={(e) => { e.preventDefault(); setQuarantineHovered(true); }}
+            onDragOver={(e) => { e.preventDefault(); }}
+            onDragLeave={() => setQuarantineHovered(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setQuarantineHovered(false);
+              const id = e.dataTransfer.getData("text/plain");
+              if (id) handleDropItemToQuarantine(id);
+            }}
             onMouseEnter={() => setQuarantineHovered(true)}
             onMouseLeave={() => setQuarantineHovered(false)}
             animate={selected ? { scale: [1, 1.05, 1] } : {}}
@@ -322,29 +340,15 @@ export const BackpackGame = ({
               {items.map((item) => (
                 <motion.button
                   key={item.id}
-                  layout
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSelectItem(item.id)}
                   onMouseEnter={() => soundEngine.hoverNote()}
-                  drag
-                  dragSnapToOrigin
-                  whileDrag={{ scale: 1.1, zIndex: 50, cursor: "grabbing" }}
-                  onDragEnd={(e, info) => {
-                    const checkOverlap = (ref: React.RefObject<HTMLButtonElement | null>) => {
-                      if (!ref.current) return false;
-                      const rect = ref.current.getBoundingClientRect();
-                      return info.point.x >= rect.left && info.point.x <= rect.right &&
-                             info.point.y >= rect.top && info.point.y <= rect.bottom;
-                    };
-                    
-                    if (checkOverlap(backpackRef)) {
-                      handleDropItemToBackpack(item.id);
-                    } else if (checkOverlap(quarantineRef)) {
-                      handleDropItemToQuarantine(item.id);
-                    }
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("text/plain", item.id);
                   }}
                   className={`
                     relative flex flex-col items-center p-2 md:p-3 rounded-xl border-2 transition-colors duration-200 cursor-grab active:cursor-grabbing
