@@ -41,31 +41,31 @@ const INITIAL_ITEMS: FoodItem[] = [
 const FoodItemCard = React.memo(({ 
   item, 
   isSelected, 
-  onSelect, 
+  onSelect,
+  onDrag,
+  onDragEnd,
   t 
 }: { 
   item: FoodItem, 
   isSelected: boolean, 
-  onSelect: (id: string) => void, 
+  onSelect: (id: string) => void,
+  onDrag: (e: any, info: any) => void,
+  onDragEnd: (id: string, info: any) => void,
   t: any 
 }) => {
   return (
-    <motion.div
+    <motion.button
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
       whileTap={{ scale: 0.95 }}
-    >
-      <button
-        onClick={() => onSelect(item.id)}
-        onMouseEnter={() => soundEngine.hoverNote()}
-        draggable
-        onDragStart={(e) => {
-          e.dataTransfer.setData("text/plain", item.id);
-        }}
-        onDragEnd={(e) => {
-          e.preventDefault();
-        }}
+      drag
+      dragSnapToOrigin
+      whileDrag={{ scale: 1.1, zIndex: 50, cursor: "grabbing" }}
+      onDrag={onDrag}
+      onDragEnd={(e, info) => onDragEnd(item.id, info)}
+      onClick={() => onSelect(item.id)}
+      onMouseEnter={() => soundEngine.hoverNote()}
         className={`
           relative flex flex-col items-center p-2 md:p-3 rounded-xl border-2 transition-colors duration-200 cursor-grab active:cursor-grabbing
           ${isSelected
@@ -93,8 +93,7 @@ const FoodItemCard = React.memo(({
             <ChevronDown className="w-3 h-3 text-[#050a18]" />
           </motion.div>
         )}
-      </button>
-    </motion.div>
+    </motion.button>
   );
 });
 
@@ -134,7 +133,20 @@ export const BackpackGame = ({
     setSelected((prev) => (prev === id ? null : id));
   }, []);
 
-  const handleDropItemToBackpack = (id: string) => {
+  const removeItem = useCallback((id: string) => {
+    setItems((prev) => {
+      const next = prev.filter((i) => i.id !== id);
+      if (next.length === 0) {
+        setTimeout(() => {
+          confetti({ particleCount: 150, spread: 100, origin: { x: 0.5, y: 0.5 }, colors: ["#22d3ee", "#34d399", "#a78bfa", "#f59e0b"] });
+          setIsCompleted(true);
+        }, 800);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleDropItemToBackpack = useCallback((id: string) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
 
@@ -162,14 +174,9 @@ export const BackpackGame = ({
         setShakeBackpack(false);
       }, 1500);
     }
-    if (selected === id) setSelected(null);
-  };
+  }, [items, showMessage, t, removeItem]);
 
-  const handleDropToBackpack = () => {
-    if (selected) handleDropItemToBackpack(selected);
-  };
-
-  const handleDropItemToQuarantine = (id: string) => {
+  const handleDropItemToQuarantine = useCallback((id: string) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
 
@@ -186,25 +193,41 @@ export const BackpackGame = ({
       metricsActions.recordMistake('m1');
       showMessage(t("game.bp.msg.safeToTrash"), "error");
     }
-    if (selected === id) setSelected(null);
+  }, [items, showMessage, t, removeItem]);
+
+  const checkOverlap = useCallback((ref: React.RefObject<HTMLButtonElement | null>, point: { x: number, y: number }) => {
+    if (!ref.current) return false;
+    const rect = ref.current.getBoundingClientRect();
+    return point.x >= rect.left && point.x <= rect.right &&
+           point.y >= rect.top && point.y <= rect.bottom;
+  }, []);
+
+  const handleDrag = useCallback((e: any, info: any) => {
+    const isOverBackpack = checkOverlap(backpackRef, info.point);
+    const isOverQuarantine = checkOverlap(quarantineRef, info.point);
+    
+    setBackpackHovered((prev) => prev !== isOverBackpack ? isOverBackpack : prev);
+    setQuarantineHovered((prev) => prev !== isOverQuarantine ? isOverQuarantine : prev);
+  }, [checkOverlap]);
+
+  const handleDragEnd = useCallback((id: string, info: any) => {
+    setBackpackHovered(false);
+    setQuarantineHovered(false);
+    if (checkOverlap(backpackRef, info.point)) {
+      handleDropItemToBackpack(id);
+    } else if (checkOverlap(quarantineRef, info.point)) {
+      handleDropItemToQuarantine(id);
+    }
+  }, [checkOverlap, handleDropItemToBackpack, handleDropItemToQuarantine]);
+
+  const handleDropToBackpack = () => {
+    if (selected) handleDropItemToBackpack(selected);
   };
 
   const handleDropToQuarantine = () => {
     if (selected) handleDropItemToQuarantine(selected);
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => {
-      const next = prev.filter((i) => i.id !== id);
-      if (next.length === 0) {
-        setTimeout(() => {
-          confetti({ particleCount: 150, spread: 100, origin: { x: 0.5, y: 0.5 }, colors: ["#22d3ee", "#34d399", "#a78bfa", "#f59e0b"] });
-          setIsCompleted(true);
-        }, 800);
-      }
-      return next;
-    });
-  };
 
   const handleRestart = () => {
     setItems(INITIAL_ITEMS);
@@ -282,15 +305,6 @@ export const BackpackGame = ({
           <motion.button
             ref={backpackRef}
             onClick={handleDropToBackpack}
-            onDragEnter={(e) => { e.preventDefault(); setBackpackHovered(true); }}
-            onDragOver={(e) => { e.preventDefault(); }}
-            onDragLeave={() => setBackpackHovered(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setBackpackHovered(false);
-              const id = e.dataTransfer.getData("text/plain");
-              if (id) handleDropItemToBackpack(id);
-            }}
             onMouseEnter={() => setBackpackHovered(true)}
             onMouseLeave={() => setBackpackHovered(false)}
             animate={shakeBackpack ? { x: [0, -8, 8, -8, 8, 0] } : selected ? { scale: [1, 1.05, 1] } : {}}
@@ -329,15 +343,6 @@ export const BackpackGame = ({
           <motion.button
             ref={quarantineRef}
             onClick={handleDropToQuarantine}
-            onDragEnter={(e) => { e.preventDefault(); setQuarantineHovered(true); }}
-            onDragOver={(e) => { e.preventDefault(); }}
-            onDragLeave={() => setQuarantineHovered(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setQuarantineHovered(false);
-              const id = e.dataTransfer.getData("text/plain");
-              if (id) handleDropItemToQuarantine(id);
-            }}
             onMouseEnter={() => setQuarantineHovered(true)}
             onMouseLeave={() => setQuarantineHovered(false)}
             animate={selected ? { scale: [1, 1.05, 1] } : {}}
@@ -403,6 +408,8 @@ export const BackpackGame = ({
                   item={item}
                   isSelected={selected === item.id}
                   onSelect={handleSelectItem}
+                  onDrag={handleDrag}
+                  onDragEnd={handleDragEnd}
                   t={t}
                 />
               ))}
