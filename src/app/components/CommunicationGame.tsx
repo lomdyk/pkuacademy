@@ -8,7 +8,7 @@ import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
 
-import npcGif from "../../imports/alien_1.gif";
+import npcGif from "../../imports/npc.gif";
 import lunaGif from "../../imports/luNA-ezgif.com-crop.gif";
 import boGif from "../../imports/bo-ezgif.com-crop.gif";
 import elaGif from "../../imports/ela-ezgif.com-crop.gif";
@@ -684,7 +684,7 @@ export const CommunicationGame = ({
               </AnimatePresence>
             </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
     </div>
   );
