@@ -198,8 +198,12 @@ export const BackpackGame = ({
   const checkOverlap = useCallback((ref: React.RefObject<HTMLButtonElement | null>, point: { x: number, y: number }) => {
     if (!ref.current) return false;
     const rect = ref.current.getBoundingClientRect();
-    return point.x >= rect.left && point.x <= rect.right &&
-           point.y >= rect.top && point.y <= rect.bottom;
+    const left = rect.left + window.scrollX;
+    const right = rect.right + window.scrollX;
+    const top = rect.top + window.scrollY;
+    const bottom = rect.bottom + window.scrollY;
+    return point.x >= left && point.x <= right &&
+           point.y >= top && point.y <= bottom;
   }, []);
 
   const handleDrag = useCallback((e: any, info: any) => {
