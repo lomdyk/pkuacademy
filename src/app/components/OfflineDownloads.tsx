@@ -41,18 +41,7 @@ const Card: React.FC<CardProps> = ({ index, icon: Icon, tone, titleKey, descKey,
       style={{ perspective: "1000px" }}
     >
       <div
-        className="h-full transition-transform duration-200 ease-out"
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -5;
-          const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
-          e.currentTarget.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0px)";
-        }}
+        className="h-full"
         onMouseEnter={() => soundEngine.cardHover(index)}
       >
         <div

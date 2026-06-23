@@ -151,21 +151,10 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                 }}
               >
                 <div
-                  className="glass-panel !transition-none w-full h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-14 p-6 md:p-12 transition-transform duration-200 ease-out"
+                  className="glass-panel w-full h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-14 p-6 md:p-12"
                   style={{
                     borderColor: a.rgba(0.4),
                     boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 40px ${a.rgba(0.1)}`,
-                  }}
-                  onMouseMove={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -5;
-                    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
-                    e.currentTarget.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
                   }}
                 >
                 {/* GIANT Character GIF */}
