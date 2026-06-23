@@ -12,6 +12,12 @@ import { useLang } from "../utils/i18n";
 import { scrollState } from "../store/rocketAnimation";
 import { useSnapshot } from 'valtio';
 
+import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
+import pizzaImg from "../../imports/Untitled_(1).png";
+import formulaImg from "../../imports/Untitled.png";
+import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.png";
+import carrotImg from "../../imports/морковь_ОНА_ДОЛЖНА_202604161845_(1).png";
+
 const AdminProgressDisplay = () => {
   const snap = useSnapshot(scrollState);
   return (
@@ -161,6 +167,15 @@ export const HeroStory = () => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
   const mobileShipRef = useRef<HTMLDivElement>(null);
+  const mobileShipContainerRef = useRef<HTMLDivElement>(null);
+  
+  // 2D Mobile Food Refs
+  const pizzaRef = useRef<HTMLImageElement>(null);
+  const cheeseRef = useRef<HTMLImageElement>(null);
+  const appleRef = useRef<HTMLImageElement>(null);
+  const formulaRef = useRef<HTMLImageElement>(null);
+  const carrotRef = useRef<HTMLImageElement>(null);
+  const blockIconRef = useRef<HTMLDivElement>(null);
 
   const [isMobileScreen, setIsMobileScreen] = React.useState(
     typeof window !== 'undefined' ? window.innerWidth < 768 : false
@@ -265,6 +280,94 @@ export const HeroStory = () => {
         repeat: 3,
         ease: "rough({ template: none.out, strength: 1, points: 20, taper: none, randomize: true, clamp: false })"
       }, 0.4);
+
+      // --- MOBILE: HEAVY FOOD PHASE (0.395 - 0.547) ---
+      const heavyStart = 0.395;
+      const heavyEnd = 0.547;
+      
+      // Set initial positions for pizza and cheese
+      gsap.set([pizzaRef.current, cheeseRef.current], { scale: 0, opacity: 0, rotation: 0 });
+      gsap.set(pizzaRef.current, { x: -200, y: -50 });
+      gsap.set(cheeseRef.current, { x: 200, y: 50 });
+      gsap.set(blockIconRef.current, { opacity: 0, scale: 0 });
+
+      // Fly in
+      tl.to([pizzaRef.current, cheeseRef.current], {
+        scale: 1,
+        opacity: 1,
+        x: (index) => index === 0 ? -50 : 50, // Fly close to ship but not center
+        y: 0,
+        rotation: (index) => index === 0 ? 180 : -180,
+        duration: 0.05,
+        ease: "power2.out"
+      }, heavyStart);
+
+      // Ship shakes & turns red ("YUCK")
+      tl.to(mobileShipRef.current, {
+        x: "+=15", rotation: "+=10", filter: "sepia(1) hue-rotate(-50deg) saturate(3) drop-shadow(0 0 20px rgba(239,68,68,0.8))",
+        duration: 0.05, yoyo: true, repeat: 2, ease: "rough({ strength: 2, points: 10, randomize: true })"
+      }, heavyStart + 0.02);
+
+      // Block icon appears
+      tl.to(blockIconRef.current, { opacity: 1, scale: 1.5, duration: 0.02 }, heavyStart + 0.02);
+
+      // Bounce away
+      tl.to([pizzaRef.current, cheeseRef.current], {
+        x: (index) => index === 0 ? -300 : 300,
+        y: (index) => index === 0 ? -200 : 200,
+        rotation: (index) => index === 0 ? -360 : 360,
+        scale: 0.5,
+        opacity: 0,
+        duration: 0.06,
+        ease: "power2.in"
+      }, heavyStart + 0.08);
+
+      // Ship recovers
+      tl.to(mobileShipRef.current, {
+        x: 0, rotation: 0, filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
+        duration: 0.05
+      }, heavyStart + 0.08);
+      
+      tl.to(blockIconRef.current, { opacity: 0, scale: 0, duration: 0.02 }, heavyStart + 0.08);
+
+      // --- MOBILE: FORMULA POWER PHASE (0.548 - 0.689) ---
+      const formStart = 0.548;
+      
+      // Set initial positions for good food
+      gsap.set([appleRef.current, formulaRef.current, carrotRef.current], { scale: 0, opacity: 0, rotation: 0 });
+      gsap.set(appleRef.current, { x: -200, y: -100 });
+      gsap.set(formulaRef.current, { x: 200, y: -50 });
+      gsap.set(carrotRef.current, { x: -100, y: 150 });
+
+      // Fly in
+      tl.to([appleRef.current, formulaRef.current, carrotRef.current], {
+        scale: 0.8,
+        opacity: 1,
+        x: (index) => index === 0 ? -60 : (index === 1 ? 60 : -30),
+        y: (index) => index === 0 ? -30 : (index === 1 ? -20 : 50),
+        rotation: 45,
+        duration: 0.05,
+        ease: "power2.out"
+      }, formStart);
+
+      // Ship glows green/cyan
+      tl.to(mobileShipRef.current, {
+        filter: "drop-shadow(0 0 60px rgba(52,211,153,0.8)) brightness(1.2)",
+        scale: 1.1,
+        duration: 0.05
+      }, formStart + 0.02);
+
+      // Foods get absorbed (scale to 0, move to center)
+      tl.to([appleRef.current, formulaRef.current, carrotRef.current], {
+        x: 0, y: 0, scale: 0, rotation: 360, opacity: 0,
+        duration: 0.05, ease: "power2.in"
+      }, formStart + 0.06);
+
+      // Happy boost bounce
+      tl.to(mobileShipRef.current, {
+        y: "-=30", scale: 1, filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35)) brightness(1)",
+        duration: 0.05, ease: "bounce.out"
+      }, formStart + 0.1);
     }
 
     const zoomStart = 0.08 + (STORY_PANELS.length - 1) * panelDur + 0.05;
@@ -360,13 +463,29 @@ export const HeroStory = () => {
 
         {/* 2D Ship specifically for mobile to save battery */}
         {isMobileScreen && (
-          <div ref={mobileShipRef} className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
-            <AnimatedShip
-              className="relative w-48 sm:w-64 aspect-square opacity-80"
-              style={{
-                filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
-              }}
-            />
+          <div ref={mobileShipContainerRef} className="absolute inset-0 flex items-center justify-center pointer-events-none z-[5]">
+            <div className="relative">
+              {/* Bad Foods */}
+              <img ref={pizzaRef} src={pizzaImg} alt="Pizza" className="absolute top-1/2 left-1/2 -ml-8 -mt-8 w-16 h-16 object-contain z-[6]" />
+              <img ref={cheeseRef} src={cheeseImg} alt="Cheese" className="absolute top-1/2 left-1/2 -ml-8 -mt-8 w-16 h-16 object-contain z-[6]" />
+              
+              {/* Good Foods */}
+              <img ref={appleRef} src={appleImg} alt="Apple" className="absolute top-1/2 left-1/2 -ml-8 -mt-8 w-16 h-16 object-contain z-[6]" />
+              <img ref={formulaRef} src={formulaImg} alt="Formula" className="absolute top-1/2 left-1/2 -ml-8 -mt-8 w-16 h-20 object-contain z-[6]" />
+              <img ref={carrotRef} src={carrotImg} alt="Carrot" className="absolute top-1/2 left-1/2 -ml-8 -mt-8 w-16 h-16 object-contain z-[6]" />
+
+              <div ref={blockIconRef} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 text-6xl drop-shadow-lg z-[8]">
+                🚫
+              </div>
+
+              <AnimatedShip
+                ref={mobileShipRef}
+                className="relative w-48 sm:w-64 aspect-square opacity-80 z-[7]"
+                style={{
+                  filter: "drop-shadow(0 0 40px rgba(56,189,248,0.35))",
+                }}
+              />
+            </div>
           </div>
         )}
       </div>
