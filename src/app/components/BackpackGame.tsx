@@ -294,7 +294,6 @@ export const BackpackGame = ({
       className="relative w-full flex flex-col py-12 md:py-16"
     >
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/[0.02] to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#050a18] to-transparent" />
       </div>
 
