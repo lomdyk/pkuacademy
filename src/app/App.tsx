@@ -29,7 +29,7 @@ import { soundEngine } from "./utils/audioEngine";
 
 gsap.registerPlugin(ScrollTrigger);
 
-import sortingImg from "../imports/sorting.png";
+import sortingImg from "../imports/image_29.png";
 import talkImg from "../imports/talk.png";
 import sportImg from "../imports/sport.png";
 import personalertImg from "../imports/personalert.png";
