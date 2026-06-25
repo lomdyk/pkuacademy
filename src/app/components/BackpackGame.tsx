@@ -14,8 +14,8 @@ import medcardImg from "../../imports/medcard.png";
 import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
 import formulaImg from "../../imports/Untitled.png";
 import pizzaImg from "../../imports/Untitled_(1).png";
-import closedBackpackImg from "../../imports/bag_1.png";
-import openedBackpackImg from "../../imports/bag_2.png";
+import closedBackpackImg from "../../imports/closed.png";
+import openedBackpackImg from "../../imports/opened.png";
 import closedBoxImg from "../../imports/closedbox.png";
 import openedBoxImg from "../../imports/openedbox.png";
 
