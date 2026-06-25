@@ -14,8 +14,8 @@ import medcardImg from "../../imports/medcard.png";
 import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
 import formulaImg from "../../imports/Untitled.png";
 import pizzaImg from "../../imports/Untitled_(1).png";
-import closedBackpackImg from "../../imports/closed.png";
-import openedBackpackImg from "../../imports/opened.png";
+import closedBackpackImg from "../../imports/bag_1.png";
+import openedBackpackImg from "../../imports/bag_2.png";
 import closedBoxImg from "../../imports/closedbox.png";
 import openedBoxImg from "../../imports/openedbox.png";
 
@@ -339,7 +339,7 @@ export const BackpackGame = ({
             <img 
               src={backpackHovered || backpackGlow === "success" ? openedBackpackImg : closedBackpackImg} 
               alt="Backpack"
-              className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${backpackGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : backpackGlow === "warning" ? "drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" : ""}`}
+              className={`w-20 h-20 md:w-28 md:h-28 mb-2 object-contain object-bottom transition-transform duration-300 ${backpackGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : backpackGlow === "warning" ? "drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" : ""}`}
             />
             <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>{t("game.bp.backpack")}</span>
             <span className="font-['Space_Grotesk'] text-[10px] text-cyan-300/60 mt-1 tracking-wider">{t("game.bp.cleanEnergy")}</span>
@@ -375,7 +375,7 @@ export const BackpackGame = ({
             <img 
               src={quarantineHovered || quarantineGlow === "success" ? openedBoxImg : closedBoxImg} 
               alt="Trash"
-              className={`w-16 h-16 md:w-20 md:h-20 mb-2 object-contain transition-transform duration-300 ${quarantineGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : ""}`}
+              className={`w-20 h-20 md:w-28 md:h-28 mb-2 object-contain object-bottom transition-transform duration-300 ${quarantineGlow === "success" ? "scale-110 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" : ""}`}
             />
             <span className="font-['Space_Grotesk'] text-white text-sm md:text-base tracking-wider" style={{ fontWeight: 700 }}>{t("game.bp.trash")}</span>
             <span className="font-['Space_Grotesk'] text-[10px] text-amber-300/60 mt-1 tracking-wider">{t("game.bp.highProtein")}</span>
