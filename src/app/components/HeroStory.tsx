@@ -414,10 +414,10 @@ export const HeroStory = () => {
             `}</style>
             
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-[6]">
-              <img src={gameBg1} className="absolute top-[25%] right-[10%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-1 opacity-80" />
-              <img src={gameBg2} className="absolute bottom-[25%] left-[5%] w-24 h-24 sm:w-32 sm:h-32 object-contain animate-float-2 opacity-80" />
-              <img src={gameBg3} className="absolute top-[15%] left-[10%] w-24 h-24 sm:w-32 sm:h-32 object-contain animate-float-3 opacity-90" />
-              <img src={formulaImg} className="absolute bottom-[18%] right-[15%] w-24 h-24 sm:w-32 sm:h-32 object-contain animate-float-4 opacity-90" />
+              <img src={gameBg1} className="absolute top-[12%] right-[5%] w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float-1" />
+              <img src={gameBg2} className="absolute top-[45%] left-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-2" />
+              <img src={gameBg3} className="absolute top-[8%] left-[8%] w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float-3" />
+              <img src={formulaImg} className="absolute top-[48%] right-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-4" />
             </div>
 
             <div className="relative">
