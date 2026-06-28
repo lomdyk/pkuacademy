@@ -57,25 +57,27 @@ export const HeroStory = () => {
     {
       accent: "#22d3ee",
       titleEl: (
-        <>
+        <div className="flex flex-col items-start gap-2">
           <span style={{
             background: "rgba(34,211,238,0.18)",
             border: "1px solid rgba(34,211,238,0.5)",
-            borderRadius: "10px",
-            padding: "2px 14px",
+            borderRadius: "9999px",
+            padding: "4px 16px",
             color: "#22d3ee",
             textShadow: "0 0 20px rgba(34,211,238,0.6)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "12px",
-            whiteSpace: "normal",
-            textAlign: "left",
-            lineHeight: "1.2"
+            gap: "8px",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em"
           }}>
-            <Backpack className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
-            {t("pku.title")}
+            <Backpack className="w-5 h-5 shrink-0" />
+            {t("pku.step")}
           </span>
-        </>
+          <span style={{ color: "#22d3ee" }}>{t("pku.title")}</span>
+        </div>
       ),
       text: (
         <>
@@ -86,25 +88,27 @@ export const HeroStory = () => {
     {
       accent: "#a78bfa",
       titleEl: (
-        <>
+        <div className="flex flex-col items-start gap-2">
           <span style={{
             background: "rgba(167,139,250,0.18)",
             border: "1px solid rgba(167,139,250,0.5)",
-            borderRadius: "10px",
-            padding: "2px 14px",
+            borderRadius: "9999px",
+            padding: "4px 16px",
             color: "#a78bfa",
             textShadow: "0 0 20px rgba(167,139,250,0.5)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "12px",
-            whiteSpace: "normal",
-            textAlign: "left",
-            lineHeight: "1.2"
+            gap: "8px",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em"
           }}>
-            <Users className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
-            {t("fuel.heavy")}
+            <Users className="w-5 h-5 shrink-0" />
+            {t("fuel.heavy.step")}
           </span>
-        </>
+          <span style={{ color: "#a78bfa" }}>{t("fuel.heavy")}</span>
+        </div>
       ),
       text: (
         <>
@@ -115,25 +119,27 @@ export const HeroStory = () => {
     {
       accent: "#34d399",
       titleEl: (
-        <>
+        <div className="flex flex-col items-start gap-2">
           <span style={{
             background: "rgba(52,211,153,0.18)",
             border: "1px solid rgba(52,211,153,0.5)",
-            borderRadius: "10px",
-            padding: "2px 14px",
+            borderRadius: "9999px",
+            padding: "4px 16px",
             color: "#34d399",
             textShadow: "0 0 20px rgba(52,211,153,0.6)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "12px",
-            whiteSpace: "normal",
-            textAlign: "left",
-            lineHeight: "1.2"
+            gap: "8px",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em"
           }}>
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
-            {t("fuel.clean")}
+            <Zap className="w-5 h-5 shrink-0" />
+            {t("fuel.clean.step")}
           </span>
-        </>
+          <span style={{ color: "#34d399" }}>{t("fuel.clean")}</span>
+        </div>
       ),
       text: (
         <>

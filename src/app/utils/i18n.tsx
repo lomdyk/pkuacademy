@@ -61,17 +61,20 @@ export const TRANSLATIONS: Dict = {
     en: "Today is a big day! You and your sports team are preparing for a massive tournament.", 
     de: "Heute ist ein großer Tag! Du und dein Sport-Team bereiten sich auf ein großes Turnier vor." 
   },
-  "pku.title": { en: "Step 1: Preparation", de: "Schritt 1: Vorbereitung" },
+  "pku.step": { en: "Step 1", de: "Schritt 1" },
+  "pku.title": { en: "Preparation", de: "Vorbereitung" },
   "pku.desc": { 
     en: "A successful match starts before you even step on the field. The first step is packing your sports bag correctly. Having all the right equipment and fuel is key to victory.", 
     de: "Ein erfolgreiches Spiel beginnt, bevor du überhaupt den Platz betrittst. Der erste Schritt ist das richtige Packen deiner Sporttasche. Die richtige Ausrüstung und den richtigen Treibstoff zu haben, ist der Schlüssel zum Sieg." 
   },
-  "fuel.clean": { en: "Step 3: The Secret Weapon", de: "Schritt 3: Die Geheimwaffe" },
+  "fuel.clean.step": { en: "Step 3", de: "Schritt 3" },
+  "fuel.clean": { en: "The Secret Weapon", de: "Die Geheimwaffe" },
   "fuel.cleanDesc": { 
     en: "During intense training, your energy will drain quickly. Your sports formula is your secret weapon! Taking it during the match will keep your speed high and your reflexes sharp.", 
     de: "Während eines intensiven Trainings wird deine Energie schnell abnehmen. Deine Sportformel ist deine Geheimwaffe! Wenn du sie während des Spiels nimmst, bleiben deine Geschwindigkeit hoch und deine Reflexe scharf." 
   },
-  "fuel.heavy": { en: "Step 2: Team Spirit", de: "Schritt 2: Teamgeist" },
+  "fuel.heavy.step": { en: "Step 2", de: "Schritt 2" },
+  "fuel.heavy": { en: "Team Spirit", de: "Teamgeist" },
   "fuel.heavyDesc": { 
     en: "Being part of a team means communicating clearly. You will interact with teammates and face different social situations. Stay confident and communicate your needs like a true leader.", 
     de: "Teil eines Teams zu sein bedeutet, klar zu kommunizieren. Du wirst mit Teamkollegen interagieren und verschiedenen sozialen Situationen begegnen. Bleib selbstbewusst und kommuniziere deine Bedürfnisse wie eine echte Führungspersönlichkeit." 
