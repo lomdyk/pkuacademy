@@ -103,8 +103,8 @@ export const TRANSLATIONS: Dict = {
   "m2.tag": { en: "Mission 02 - The Stadium Tunnel", de: "Mission 02 - Der Stadiontunnel" },
   "m2.title": { en: "Social Trial", de: "Soziale Herausforderung" },
   "m2.dialogue": {
-    en: "\"Hey Captain, we are at the stadium! Watch out, a stranger from another team is walking through the tunnel offering distractions.\"",
-    de: "\"Hey Kapitän, wir sind am Stadion! Pass auf, ein Fremder aus einem anderen Team geht durch den Tunnel und bietet Ablenkungen an.\"",
+    en: "Hey Captain, we are at the stadium! Watch out, a stranger from another team is walking through the tunnel offering distractions.",
+    de: "Hey Kapitän, wir sind am Stadion! Pass auf, ein Fremder aus einem anderen Team geht durch den Tunnel und bietet Ablenkungen an.",
   },
   "m2.objective": {
     en: "You need to practice saying 'no, thank you'. Remember: stay focused on your training so you can join your team and have fun!",
@@ -166,20 +166,20 @@ export const TRANSLATIONS: Dict = {
   "crew.luna.name": { en: "Luna", de: "Luna" },
   "crew.luna.role": { en: "Quartermaster", de: "Ausrüsterin" },
   "crew.luna.line": {
-    en: "\"Hey Captain! I will help you pack the right equipment. We need your formula and your gear. Ready?\"",
-    de: "\"Hey Kapitän! Ich werde dir helfen, die richtige Ausrüstung einzupacken. Wir brauchen deine Formel und deine Ausrüstung. Bereit?\"",
+    en: "Hey Captain! I will help you pack the right equipment. We need your formula and your gear. Ready?",
+    de: "Hey Kapitän! Ich werde dir helfen, die richtige Ausrüstung einzupacken. Wir brauchen deine Formel und deine Ausrüstung. Bereit?",
   },
   "crew.bo.name": { en: "Bo", de: "Bo" },
   "crew.bo.role": { en: "Striker", de: "Stürmer" },
   "crew.bo.line": {
-    en: "\"You are our Captain! Just tell us the game plan and we have got your back on the field.\"",
-    de: "\"Du bist unser Kapitän! Sag uns einfach den Spielplan und wir decken dir auf dem Spielfeld den Rücken.\"",
+    en: "You are our Captain! Just tell us the game plan and we have got your back on the field.",
+    de: "Du bist unser Kapitän! Sag uns einfach den Spielplan und wir decken dir auf dem Spielfeld den Rücken.",
   },
   "crew.ela.name": { en: "Ela", de: "Ela" },
   "crew.ela.role": { en: "Sprint Lead", de: "Sprint-Leiterin" },
   "crew.ela.line": {
-    en: "\"On the track I push hard. But you bring the formula and we win this together!\"",
-    de: "\"Auf der Bahn gebe ich alles. Aber du bringst die Formel mit und wir gewinnen das gemeinsam!\"",
+    en: "On the track I push hard. But you bring the formula and we win this together!",
+    de: "Auf der Bahn gebe ich alles. Aber du bringst die Formel mit und wir gewinnen das gemeinsam!",
   },
   "crew.cta": { en: "Brief the Crew", de: "Team einweisen" },
 
