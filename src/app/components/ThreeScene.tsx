@@ -63,21 +63,6 @@ function ThrusterFlames({ targetRef }: { targetRef: React.MutableRefObject<THREE
     let ignition = Math.max(0.2, Math.min(p * 10, 1)); 
     let smokeIntensity = 0;
 
-    // Heavy phase: 0.395 - 0.547 (Matches UI panel 2 'Heavy Food')
-    if (p >= 0.395 && p <= 0.547) {
-      const hP = (p - 0.395) / 0.152;
-      if (hP < 0.2) {
-        ignition = THREE.MathUtils.lerp(1, 0.05, hP / 0.2); // Sputter out
-        smokeIntensity = hP / 0.2; // Smoke starts
-      } else if (hP > 0.8) {
-        ignition = THREE.MathUtils.lerp(0.05, 1, (hP - 0.8) / 0.2); // Reignite
-        smokeIntensity = 1 - ((hP - 0.8) / 0.2); // Smoke clears
-      } else {
-        ignition = 0.05; // Almost dead, just smoke/embers
-        smokeIntensity = 1.0; // Max smoke
-      }
-    }
-
     // HYPERJUMP effect: when p > 0.83, explode the flames!
     let hyperjumpMultiplier = 1;
     if (p > 0.83) {
@@ -344,16 +329,6 @@ function AnimatedModel() {
 
     // --- Apply Effects BEFORE lerping the actual mesh ---
     
-    // HEAVY FOOD "Sad/Sick" Effect (0.395 - 0.547)
-    if (p >= 0.395 && p <= 0.547) {
-      const hP = (p - 0.395) / 0.152;
-      // Sag downwards
-      targetPos.y -= 2.0 * Math.sin(hP * Math.PI); 
-      // Point the nose down (sadness)
-      const qSad = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, -0.4 * Math.sin(hP * Math.PI)));
-      targetQuat.multiplyQuaternions(targetQuat, qSad);
-    }
-
     // Smooth dampening during real scroll
     target.position.lerp(targetPos, 5 * delta);
     target.quaternion.slerp(targetQuat, 5 * delta);
@@ -365,14 +340,6 @@ function AnimatedModel() {
       target.position.x += (Math.random() - 0.5) * intensity;
       target.position.y += (Math.random() - 0.5) * intensity;
       target.position.z += (Math.random() - 0.5) * intensity;
-    }
-
-    // HEAVY FOOD Shake Effect
-    if (p >= 0.395 && p <= 0.547) {
-      // Mild engine sputter shake
-      const shakeIntensity = 0.05;
-      target.position.x += (Math.random() - 0.5) * shakeIntensity;
-      target.position.y += (Math.random() - 0.5) * shakeIntensity;
     }
 
     // Interactive Mouse Parallax (Tilts the whole ship towards the mouse)
