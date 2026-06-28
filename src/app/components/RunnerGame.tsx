@@ -20,8 +20,6 @@ const PLAYER_SIZE = 84;
 const GRAVITY = 2600;
 const JUMP_V = 950;
 const BASE_SPEED = 360;
-const BOOST_SPEED = 600;
-const POWER_DURATION = 5;
 const OBSTACLE_IMGS = [cheeseImg, pizzaImg];
 
 
@@ -68,7 +66,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [state, setState] = useState<GameState>("idle");
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
-  const [powerLeft, setPowerLeft] = useState(0);
+  const [pheLevel, setPheLevel] = useState(0);
   const [encouragement, setEncouragement] = useState("");
 
   const stateRef = useRef<GameState>("idle");
@@ -80,7 +78,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const particlesRef = useRef<Particle[]>([]);
   const idRef = useRef(0);
   const spawnTimerRef = useRef(0);
-  const powerTimerRef = useRef(0);
+  const pheLevelRef = useRef(0);
   const distanceRef = useRef(0);
 
   useEffect(() => { stateRef.current = state; }, [state]);
@@ -114,11 +112,11 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     playerYRef.current = 0;
     velYRef.current = 0;
     spawnTimerRef.current = 0.9;
-    powerTimerRef.current = 0;
+    pheLevelRef.current = 0;
     distanceRef.current = 0;
     lastTimeRef.current = null;
     setScore(0);
-    setPowerLeft(0);
+    setPheLevel(0);
     setState("playing");
   }, []);
 
@@ -198,8 +196,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       const dt = Math.min((t - last) / 1000, 0.05);
       lastTimeRef.current = t;
 
-      const invincible = powerTimerRef.current > 0;
-      const speed = invincible ? BOOST_SPEED : BASE_SPEED;
+      const speed = BASE_SPEED;
 
       // physics
       velYRef.current -= GRAVITY * dt;
@@ -210,9 +207,12 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       distanceRef.current += speed * dt;
       const newScore = Math.floor(distanceRef.current / 10);
 
-      // power
-      if (powerTimerRef.current > 0) {
-        powerTimerRef.current = Math.max(0, powerTimerRef.current - dt);
+      // phe increase
+      let gameOver = false;
+      pheLevelRef.current = Math.min(100, pheLevelRef.current + 3 * dt);
+      if (pheLevelRef.current >= 100) {
+        gameOver = true;
+        metricsActions.recordMistake('m3');
       }
 
       // spawn
@@ -220,7 +220,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       if (spawnTimerRef.current <= 0) {
         spawnEntity();
         // Increased min gap to prevent impossible double-jumps
-        const min = invincible ? 0.45 : 1.1;
+        const min = 1.1;
         spawnTimerRef.current = min + Math.random() * 0.7;
       }
 
@@ -230,8 +230,6 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }
 
       // update entities
-      let gameOver = false;
-      let powerHit = false;
       const surviving: Entity[] = [];
       for (const e of entitiesRef.current) {
         e.x -= speed * dt;
@@ -242,15 +240,17 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         }
         if (collides(playerYRef.current, e)) {
           if (e.kind === "powerup") {
-            powerHit = true;
+            pheLevelRef.current = Math.max(0, pheLevelRef.current - 40);
             soundEngine.clickBubble();
             e.node?.remove();
             continue;
-          } else if (!invincible) {
-            gameOver = true;
-            metricsActions.recordMistake('m3');
-            soundEngine.clickThunk();
           } else {
+            pheLevelRef.current = Math.min(100, pheLevelRef.current + 25);
+            soundEngine.clickThunk();
+            metricsActions.recordMistake('m3');
+            if (pheLevelRef.current >= 100) {
+              gameOver = true;
+            }
             // Эффект разрушения на 4 куска (разрыв)!
             if (e.node) e.node.remove();
             
@@ -315,14 +315,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }
       particlesRef.current = survivingParticles;
 
-      if (powerHit) powerTimerRef.current = POWER_DURATION;
-
       setScore((p) => (p !== newScore ? newScore : p));
-      setPowerLeft((p) => {
-        const v = powerTimerRef.current;
-        if (v === 0 && p !== 0) return 0;
-        return Math.abs(p - v) > 0.05 ? v : p;
-      });
+      setPheLevel((p) => Math.abs(p - pheLevelRef.current) > 0.5 ? pheLevelRef.current : p);
 
       if (gameOver) {
         setBest((b) => Math.max(b, newScore));
@@ -334,8 +328,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return () => cancelAnimationFrame(rafId);
   }, []);
 
-  const invincible = powerLeft > 0;
-  const energyPct = Math.max(0, Math.min(1, powerLeft / POWER_DURATION)) * 100;
+  const isFoggy = pheLevel > 40;
+  const fogAmount = isFoggy ? (pheLevel - 40) / 6 : 0;
   const { t } = useLang();
 
   const handleTap = (e: React.PointerEvent) => {
@@ -368,20 +362,18 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
           <div className="flex-1 min-w-[180px] max-w-[260px] ml-auto">
             <div className="flex items-center gap-2 mb-1">
-              <Zap className={`w-3.5 h-3.5 ${invincible ? "text-emerald-300" : "text-white/30"}`} />
+              <Zap className={`w-3.5 h-3.5 ${pheLevel < 50 ? "text-emerald-300" : "text-red-400"}`} />
               <span className="text-[10px] uppercase tracking-[0.18em] text-white/50">{t("runner.energy")}</span>
-              {invincible && (
-                <span className="text-[10px] text-emerald-300 ml-auto tabular-nums">{powerLeft.toFixed(1)}s</span>
-              )}
+              <span className={`text-[10px] ml-auto tabular-nums ${pheLevel < 50 ? "text-emerald-300" : "text-red-400"}`}>{Math.round(pheLevel)}%</span>
             </div>
             <div className="h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
               <motion.div
                 className="h-full rounded-full"
                 style={{
-                  background: "linear-gradient(90deg,#34d399,#10b981,#22d3ee)",
-                  boxShadow: invincible ? "0 0 14px #34d399, 0 0 28px #10b98180" : "none",
+                  background: pheLevel < 50 ? "linear-gradient(90deg,#34d399,#10b981,#22d3ee)" : "linear-gradient(90deg,#ef4444,#dc2626)",
+                  boxShadow: pheLevel < 50 ? "0 0 14px #34d399" : "0 0 14px #ef4444",
                 }}
-                animate={{ width: `${energyPct}%` }}
+                animate={{ width: `${pheLevel}%` }}
                 transition={{ type: "tween", duration: 0.15 }}
               />
             </div>
@@ -401,6 +393,14 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               "inset 0 0 80px rgba(34,211,238,0.08), 0 30px 80px -40px rgba(34,211,238,0.4)",
           }}
         >
+          {/* Fog wrapper */}
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              filter: isFoggy ? `blur(${fogAmount}px) grayscale(${fogAmount * 10}%)` : "none",
+              transition: "filter 0.3s",
+            }}
+          >
           {/* starfield decoration */}
           <div
             className="absolute inset-0 opacity-30 pointer-events-none"
@@ -447,18 +447,6 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               willChange: "transform",
             }}
           >
-            {invincible && (
-              <div
-                ref={playerGlowRef}
-                className="absolute inset-[-18px] rounded-full pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(circle, rgba(52,211,153,0.55) 0%, rgba(52,211,153,0) 70%)",
-                  filter: "blur(6px)",
-                  animation: "runner-pulse-aura 0.8s ease-in-out infinite",
-                }}
-              />
-            )}
             <img
               ref={playerImgRef}
               src={runnerGif}
@@ -466,9 +454,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               draggable={false}
               className="relative w-full h-full object-contain"
               style={{
-                filter: invincible
-                  ? "none"
-                  : "drop-shadow(0 8px 14px rgba(0,0,0,0.6))",
+                filter: "drop-shadow(0 8px 14px rgba(0,0,0,0.6))",
               }}
             />
           </div>
@@ -478,6 +464,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               {t("runner.tap")}
             </div>
           )}
+          </div>
 
           <AnimatePresence>
             {state === "idle" && (

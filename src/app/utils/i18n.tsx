@@ -211,12 +211,12 @@ export const TRANSLATIONS: Dict = {
   // Runner overlays
   "runner.ready": { en: "Ready, Champion?", de: "Bereit, Champion?" },
   "runner.intro": {
-    en: "Avoid the cheese and pizza on the track. Catch the green formula bottle for Super Sprint Mode.",
-    de: "Weiche Käse und Pizza auf der Laufbahn aus. Fang die grüne Formel-Flasche für den Super-Sprint-Modus.",
+    en: "Running without fuel breaks down muscles, causing your Phe Level to rise automatically! Avoid heavy protein on the track, and catch formula to clear your mind.",
+    de: "Laufen ohne Energie baut Muskeln ab, wodurch dein Phe-Spiegel automatisch steigt! Vermeide schweres Protein und fang die Formel, um einen klaren Kopf zu behalten.",
   },
   "runner.distance": { en: "Distance", de: "Distanz" },
   "runner.best": { en: "Best", de: "Bester" },
-  "runner.energy": { en: "Stamina", de: "Ausdauer" },
+  "runner.energy": { en: "Phe Level", de: "Phe-Spiegel" },
   "runner.tap": { en: "Tap / Space to Jump", de: "Tippen / Leertaste zum Springen" },
   "runner.bestRun": { en: "Best run", de: "Bester Lauf" },
   "runner.distanceLabel": { en: "Distance", de: "Distanz" },
