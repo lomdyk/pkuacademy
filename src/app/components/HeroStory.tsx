@@ -67,10 +67,12 @@ export const HeroStory = () => {
             textShadow: "0 0 20px rgba(34,211,238,0.6)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "8px",
-            whiteSpace: "nowrap"
+            gap: "12px",
+            whiteSpace: "normal",
+            textAlign: "left",
+            lineHeight: "1.2"
           }}>
-            <Backpack className="w-6 h-6 sm:w-8 sm:h-8" />
+            <Backpack className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
             {t("pku.title")}
           </span>
         </>
@@ -94,10 +96,12 @@ export const HeroStory = () => {
             textShadow: "0 0 20px rgba(167,139,250,0.5)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "8px",
-            whiteSpace: "nowrap"
+            gap: "12px",
+            whiteSpace: "normal",
+            textAlign: "left",
+            lineHeight: "1.2"
           }}>
-            <Users className="w-6 h-6 sm:w-8 sm:h-8" />
+            <Users className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
             {t("fuel.heavy")}
           </span>
         </>
@@ -121,10 +125,12 @@ export const HeroStory = () => {
             textShadow: "0 0 20px rgba(52,211,153,0.6)",
             display: "inline-flex",
             alignItems: "center",
-            gap: "8px",
-            whiteSpace: "nowrap"
+            gap: "12px",
+            whiteSpace: "normal",
+            textAlign: "left",
+            lineHeight: "1.2"
           }}>
-            <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
+            <Zap className="w-6 h-6 sm:w-8 sm:h-8 shrink-0" />
             {t("fuel.clean")}
           </span>
         </>
