@@ -319,9 +319,7 @@ export const HeroStory = () => {
     // Zoom in the 2D ship at the end
     if (isMobile) {
       tl.to(mobileShipRef.current, {
-        scale: 10,
-        y: 500,
-        opacity: 0,
+        scale: 15,
         duration: 0.1,
         ease: "power2.in",
       }, zoomStart);
