@@ -86,8 +86,8 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
     // Bring in CTA at the very end. The stack remains visible!
     const ctaStart = 0.5 + (CREW.length - 1) * cardDur * overlap + cardDur;
     tl.fromTo(ctaRef.current,
-      { opacity: 0, y: 50, scale: 0.8 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(2)", pointerEvents: "auto" },
+      { autoAlpha: 0, y: 50, scale: 0.8 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.8, ease: "back.out(2)" },
       ctaStart
     );
 
@@ -200,7 +200,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
         </div>
 
         {/* CTA */}
-        <div ref={ctaRef} className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 pointer-events-none z-[20]" style={{ opacity: 0 }}>
+        <div ref={ctaRef} className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 pointer-events-auto z-[20]" style={{ visibility: 'hidden', opacity: 0 }}>
           <GhostButton tone="cyan" size="lg" icon={<Gamepad2 className="w-5 h-5" />} onClick={onContinue}>
             {t("btn.enterLocker")}
           </GhostButton>
