@@ -190,7 +190,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                     className="text-white/80 text-lg md:text-2xl leading-relaxed"
                     
                   >
-                    "{t(c.lineKey)}"
+                    {t(c.lineKey)}
                   </p>
                 </div>
                 </div>

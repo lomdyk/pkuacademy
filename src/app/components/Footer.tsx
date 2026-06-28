@@ -393,7 +393,7 @@ export const Footer = ({
                       lineHeight: 1.8,
                       }}
                   >
-                    "{t(story.quoteKey)}"
+                    {t(story.quoteKey)}
                   </p>
                   <div
                     className="mt-6 h-0.5 rounded-full"

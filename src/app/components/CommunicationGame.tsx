@@ -665,7 +665,7 @@ export const CommunicationGame = ({
                             style={{ color: "#22d3ee80", }}>{copy.bossAnswer}</p>
                           <p className="text-slate-300 text-sm italic"
                             style={{ lineHeight: 1.7 }}>
-                            "{scenario.options.find((o) => o.grade === "boss")?.text}"
+                            {scenario.options.find((o) => o.grade === "boss")?.text}
                           </p>
                         </motion.div>
                       )}
