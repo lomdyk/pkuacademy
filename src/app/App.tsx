@@ -285,9 +285,13 @@ function AppInner() {
 
           <div id="crew-greeting">
             <CrewGreeting onContinue={() => {
-              const m1 = document.getElementById("mission-1");
-              if (m1) {
-                m1.scrollIntoView({ behavior: "smooth" });
+              if ((window as any).lenis) {
+                (window as any).lenis.scrollTo("#mission-1", { immediate: false, duration: 1.5 });
+              } else {
+                const m1 = document.getElementById("mission-1");
+                if (m1) {
+                  m1.scrollIntoView({ behavior: "smooth" });
+                }
               }
             }} />
           </div>
