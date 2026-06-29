@@ -152,7 +152,7 @@ export const MissionPrologue: React.FC<Props> = ({
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 grid-rows-1 w-full min-h-[140px]">
+      <div className="grid grid-cols-1 grid-rows-1 w-full min-h-[90px] md:min-h-[140px]">
         <AnimatePresence mode="wait">
           {step === 0 ? (
             <motion.div
@@ -229,7 +229,7 @@ export const MissionPrologue: React.FC<Props> = ({
   return (
     <>
       <section ref={sectionRef} className="relative w-full px-4 md:px-8 py-8 md:py-24">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-4 md:gap-16 items-center pb-8 md:pb-20">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-4 md:gap-16 items-center pb-24 md:pb-20">
           {imageSide === "left" ? (
             <>
               <div className="md:order-1">{Image}</div>
