@@ -43,7 +43,7 @@ const RevealText = ({ children, delay = 0 }: { children: React.ReactNode; delay?
   <motion.div
     initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
     whileInView={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
-    viewport={{ once: true, margin: "-60px" }}
+    viewport={{ once: true, margin: "0px" }}
     transition={{ duration: 0.65, delay, ease: [0.23, 1, 0.32, 1] }}
   >
     {children}

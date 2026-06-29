@@ -94,7 +94,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center pointer-events-none">
+    <section ref={containerRef} className="relative w-full h-[100dvh] overflow-hidden flex items-center justify-center pointer-events-none">
       
       <div className="relative z-10 w-full max-w-6xl px-4 flex flex-col items-center justify-center h-full">
         

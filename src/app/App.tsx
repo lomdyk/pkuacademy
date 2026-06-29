@@ -232,7 +232,7 @@ function AppInner() {
         </div>
 
         {/* Game Content */}
-        <div className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center pt-16 pb-10">
+        <div className="relative z-10 w-full min-h-[100dvh] flex flex-col items-center justify-center pt-16 pb-10">
           {GameComponent}
         </div>
       </div>
@@ -241,7 +241,7 @@ function AppInner() {
 
   return (
     <div
-      className="bg-[#050a18] min-h-screen text-white selection:bg-cyan-500/30 selection:text-cyan-200 relative overflow-clip w-full"
+      className="bg-[#050a18] min-h-[100dvh] text-white selection:bg-cyan-500/30 selection:text-cyan-200 relative overflow-clip w-full"
       style={{ fontFamily: "'Space Grotesk', sans-serif" }}
     >
       <h1 className="sr-only">{t("app.title")}</h1>
