@@ -1,15 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { AnimatedShip } from "./AnimatedShip";
 import { GhostButton } from "./ui/GhostButton";
 import {
   Heart, BookOpen, Users, Lightbulb, Shield,
-  ChevronRight, Sparkles, Brain, Apple, FlaskConical, RefreshCcw, RotateCcw
+  ChevronRight, Sparkles, Brain, Apple, FlaskConical, RefreshCcw, RotateCcw, PenLine
 } from "lucide-react";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
 import { metricsState, metricsActions } from "../store/metricsStore";
 import { TESTING_MODE } from "../utils/config";
+import { SubmitLogModal } from "./SubmitLogModal";
 
 // ─── PKU Facts ────────────────────────────────────────────────────────────────
 
@@ -219,6 +220,152 @@ const FlipCard = ({
   );
 };
 
+// ─── Logs Marquee ────────────────────────────────────────────────────────────
+
+const LogsMarquee = () => {
+  const { t } = useLang();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+
+  // Duplicating the array multiple times to ensure enough length for infinite scrolling
+  const stories = [...HERO_STORIES, ...HERO_STORIES, ...HERO_STORIES, ...HERO_STORIES];
+  
+  // Cards are 356px wide + 24px gap = 380px. A set of 3 cards = 1140px.
+  const SET_WIDTH = HERO_STORIES.length * 380;
+
+  useEffect(() => {
+    let animationId: number;
+    let lastTime = performance.now();
+    
+    const scroll = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      if (scrollRef.current && !isPaused && !isDragging) {
+        // Move by ~1px per frame (60fps) but using delta to stay smooth
+        scrollRef.current.scrollLeft += (delta * 0.05); 
+
+        // Infinite loop logic: When we scrolled past 2 sets, jump back 1 set
+        if (scrollRef.current.scrollLeft >= SET_WIDTH * 2) {
+          scrollRef.current.scrollLeft -= SET_WIDTH;
+        }
+      }
+      animationId = requestAnimationFrame(scroll);
+    };
+    
+    animationId = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(animationId);
+  }, [isPaused, isDragging]);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    startXRef.current = e.pageX - (scrollRef.current?.offsetLeft || 0);
+    scrollLeftRef.current = scrollRef.current?.scrollLeft || 0;
+  };
+
+  const onMouseUp = () => setIsDragging(false);
+  const onMouseLeave = () => {
+    setIsDragging(false);
+    setIsPaused(false);
+  };
+  
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startXRef.current) * 1.5; // Drag speed multiplier
+    scrollRef.current.scrollLeft = scrollLeftRef.current - walk;
+  };
+
+  return (
+    <div
+      ref={scrollRef}
+      className="flex overflow-x-auto overflow-y-hidden select-none w-full"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none", cursor: isDragging ? "grabbing" : "grab" }}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={onMouseLeave}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
+      {/* 24px gap is achieved using gap-6. px-6 gives padding around. */}
+      <div className="flex gap-6 py-8 px-6 min-w-max">
+        {stories.map((story, i) => {
+          const colors = ["#a78bfa", "#22d3ee", "#34d399"];
+          const color = colors[i % colors.length];
+
+          return (
+            <div
+              key={i}
+              className="glass-panel p-6 sm:p-8 shrink-0 flex flex-col transition-all duration-300"
+              style={{
+                width: "356px",
+                backgroundImage: `linear-gradient(135deg, ${color}10, rgba(255,255,255,0.02))`,
+                borderColor: `${color}25`,
+                boxShadow: `0 4px 24px ${color}12`,
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.borderColor = `${color}45`;
+                (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${color}22`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.borderColor = `${color}25`;
+                (e.currentTarget as HTMLDivElement).style.boxShadow = `0 4px 24px ${color}12`;
+              }}
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: `${color}18`,
+                    border: `1.5px solid ${color}35`,
+                    boxShadow: `0 0 16px ${color}18`
+                  }}
+                >
+                  <BookOpen className="w-5 h-5" style={{ color }} />
+                </div>
+                <span
+                  className="text-sm sm:text-base tracking-wide"
+                  style={{
+                    color: `${color}`,
+                    fontWeight: 600
+                  }}
+                >
+                  {t(story.nameKey)}
+                </span>
+              </div>
+              <p
+                className="text-slate-200 text-base sm:text-lg italic leading-relaxed flex-1"
+                style={{ lineHeight: 1.8 }}
+              >
+                {t(story.quoteKey)}
+              </p>
+              <div
+                className="mt-6 h-0.5 rounded-full"
+                style={{
+                  background: `linear-gradient(90deg, ${color}50, transparent)`,
+                  width: "60%"
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <style>{`
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </div>
+  );
+};
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export const Footer = ({ 
@@ -231,8 +378,11 @@ export const Footer = ({
   isPostTestCompleted?: boolean
 }) => {
   const { t } = useLang();
+  const [showSubmitLog, setShowSubmitLog] = useState(false);
+  
   return (
-    <footer className="relative w-full text-white overflow-hidden">
+    <>
+      <footer className="relative w-full text-white overflow-hidden">
 
       {/* ═══ SUCCESS ══════════════════════════════════════════════════════════ */}
       <section className="relative z-10 py-24 px-6 flex flex-col items-center text-center border-b border-white/[0.05]">
@@ -330,82 +480,26 @@ export const Footer = ({
           </div>
         </div>
 
-        {/* Sticky stacking container */}
-        <div className="relative max-w-2xl mx-auto px-4 sm:px-6" style={{ minHeight: "600px" }}>
-          {HERO_STORIES.map((story, i) => {
-            const colors = ["#a78bfa", "#22d3ee", "#34d399"];
-            const color = colors[i % colors.length];
-
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: i * 0.15, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                style={{
-                  position: "sticky",
-                  top: `${80 + i * 24}px`,
-                  zIndex: HERO_STORIES.length - i,
-                  marginBottom: i < HERO_STORIES.length - 1 ? "24px" : "0",
-                }}
-              >
-                <div
-                  className="glass-panel p-6 sm:p-8 transition-all duration-300"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${color}10, rgba(255,255,255,0.02))`,
-                    borderColor: `${color}25`,
-                    boxShadow: `0 4px 24px ${color}12`,
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = `${color}45`;
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${color}22`;
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = `${color}25`;
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 4px 24px ${color}12`;
-                  }}
-                >
-                  <div className="flex items-center gap-3 mb-5">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center"
-                      style={{
-                        background: `${color}18`,
-                        border: `1.5px solid ${color}35`,
-                        boxShadow: `0 0 16px ${color}18`
-                      }}
-                    >
-                      <BookOpen className="w-5 h-5" style={{ color }} />
-                    </div>
-                    <span
-                      className="text-sm sm:text-base tracking-wide"
-                      style={{
-                        color: `${color}`,
-                        fontWeight: 600
-                      }}
-                    >
-                      {t(story.nameKey)}
-                    </span>
-                  </div>
-                  <p
-                    className="text-slate-200 text-base sm:text-lg italic leading-relaxed"
-                    style={{
-                      lineHeight: 1.8,
-                      }}
-                  >
-                    {t(story.quoteKey)}
-                  </p>
-                  <div
-                    className="mt-6 h-0.5 rounded-full"
-                    style={{
-                      background: `linear-gradient(90deg, ${color}50, transparent)`,
-                      width: "60%"
-                    }}
-                  />
-                </div>
-              </motion.div>
-            );
-          })}
+        {/* Infinite Marquee Container */}
+        <div className="relative w-full mt-10">
+          <LogsMarquee />
+        </div>
+        
+        <div className="mt-12 flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+          >
+            <GhostButton 
+              onClick={() => setShowSubmitLog(true)} 
+              className="px-8"
+              icon={<PenLine className="w-4 h-4" />}
+            >
+              {t("submitLog.openModal")}
+            </GhostButton>
+          </motion.div>
         </div>
       </section>
 
@@ -550,5 +644,10 @@ export const Footer = ({
         </div>
       </section>
     </footer>
+
+      {showSubmitLog && (
+        <SubmitLogModal onClose={() => setShowSubmitLog(false)} />
+      )}
+    </>
   );
 };

@@ -57,22 +57,22 @@ const SCENARIOS: Scenario[] = [
     ],
     options: [
       {
-        text: "Nah, I'm good. I'm on a high-performance diet — keeps my focus 100% sharp. That stuff would just make me feel slow. I know my setup.",
+        text: "No thanks. My tummy-team needs something else so I can get strong. I brought my own food!",
         grade: "boss",
-        feedback: "No disease mentioned. You sound like an athlete who knows their body. That's genuinely cool — not weird.",
+        feedback: "Great! You took charge and explained that your body just needs something else.",
       },
       {
         text: "I can't eat it. I have a condition and protein is basically toxic for me.",
         grade: "medium",
-        feedback: "Technically true, but 'toxic' and 'condition' can make people uncomfortable around you. Keep it light and confident instead.",
+        feedback: "True, but 'toxic' and 'condition' can make people uncomfortable around you. Keep it simple and confident instead.",
       },
       {
         text: "Sorry... my mom said no. Please don't be mad at me.",
         grade: "wrong",
-        feedback: "This puts you in a victim position. You're not asking for permission — you're making a smart choice. Own it.",
+        feedback: "Instead of saying 'mom said no', be proud of your own special food!",
       },
     ],
-    bossExplain: "Frame it as performance, not restriction. You're not missing out — you're optimizing.",
+    bossExplain: "Explain it simply: your body needs something different to be strong.",
   },
   {
     id: "B",
@@ -87,9 +87,9 @@ const SCENARIOS: Scenario[] = [
     ],
     options: [
       {
-        text: "It's just a concentrated nutrient mix. Yeah, tastes a bit weird — but it keeps my energy stable so I don't crash mid-day. My secret to staying sharp.",
+        text: "That's my magic potion! It gives me important building blocks so I can run as fast as a champion.",
         grade: "boss",
-        feedback: "Honest about the smell, but you flip the frame to benefits. People respect someone who knows exactly what they're putting in their body.",
+        feedback: "Awesome! Calling it a magic potion makes it sound cool, and it really does give you the building blocks you need!",
       },
       {
         text: "It's my medical formula. I have to drink it or I'll end up in the hospital.",
@@ -97,12 +97,12 @@ const SCENARIOS: Scenario[] = [
         feedback: "Too dramatic. It makes people feel bad for asking. You don't need to scare anyone — just be matter-of-fact.",
       },
       {
-        text: "It's my magic potion. It gives me superpowers from another dimension.",
+        text: "It smells bad but I drink it because I have to.",
         grade: "wrong",
-        feedback: "In a real match, other players will just laugh at this. Weird metaphors create distance. Be real — real is actually cooler.",
+        feedback: "Don't be ashamed of your fuel! Be proud of it.",
       },
     ],
-    bossExplain: "Acknowledge the weird taste honestly, then redirect to the benefit. Confidence + honesty = respect.",
+    bossExplain: "Calling it a magic potion is fun and perfectly explains how it helps you grow strong.",
   },
   {
     id: "C",
@@ -117,29 +117,29 @@ const SCENARIOS: Scenario[] = [
     ],
     options: [
       {
-        text: "It's custom-made for how my body works. My system processes things differently, so I have my own setup to stay at 100%. Pretty standard once you know about it.",
+        text: "My body needs special food. The little construction workers in my tummy need it so I grow big and strong!",
         grade: "boss",
-        feedback: "\"Custom-made\" and \"my own setup\" sound modern and intentional — not medical. You shut down the 'faking it' accusation without being defensive.",
+        feedback: "Perfect explanation! It's easy for kids to understand and shows you know exactly how your body works.",
       },
       {
         text: "I have Phenylketonuria. My body can't process amino acids, so I need this specific pasta.",
         grade: "medium",
-        feedback: "Correct facts, but most people will zone out at 'Phenylketonuria'. Keep the message short and strong — details only if they actually ask.",
+        feedback: "Correct facts, but most kids will zone out at 'Phenylketonuria'. Keep the message short and fun — details only if they actually ask.",
       },
       {
-        text: "It's special bread because I was born different and my body can't handle normal food.",
+        text: "I was born different and my body is broken.",
         grade: "wrong",
-        feedback: "\"Born different\" invites pity or teasing. You're not different in a bad way — you have a specific setup. Frame it as that.",
+        feedback: "You are not broken! Your tummy just works a bit differently. Focus on how your food makes you strong.",
       },
     ],
-    bossExplain: "\"Custom setup\" sounds like something a pro athlete or biohacker would say. Unique, not broken.",
+    bossExplain: "The 'construction worker' story is a great way to explain PKU to other kids without using confusing medical words.",
   },
 ];
 
 // ─── Grade config ─────────────────────────────────────────────────────────────
 
 const GRADE_CONFIG = {
-  boss:   { label: "THE BOSS",     color: "#22d3ee", icon: Zap,          bg: "rgba(34,211,238,0.08)",   border: "rgba(34,211,238,0.3)"  },
+  boss:   { label: "Super!",       color: "#22d3ee", icon: Zap,          bg: "rgba(34,211,238,0.08)",   border: "rgba(34,211,238,0.3)"  },
   medium: { label: "Almost there", color: "#f59e0b", icon: CheckCircle2, bg: "rgba(245,158,11,0.07)",   border: "rgba(245,158,11,0.3)"  },
   wrong:  { label: "Try again",    color: "#f87171", icon: XCircle,      bg: "rgba(248,113,113,0.07)",  border: "rgba(248,113,113,0.25)" },
 };
@@ -154,11 +154,11 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       context: "Pizza-Druck vor dem Match",
       npcMessages: ["Hey, nimm ein Stück! Beste Fleisch-Pizza im Stadion 🍕", "Komm schon — nur ein Bissen vor dem Finale!"],
       options: [
-        { ...SCENARIOS[0].options[0], text: "Danke, ich bleibe bei meinem Sport-Treibstoff. Damit bleibt mein Fokus bei 100% und ich bin auf dem Feld schnell. Ich kenne mein Setup.", feedback: "Stark: Du klingst wie ein:e Athlet:in, der/die den eigenen Körper kennt — nicht wie jemand, der etwas verpasst." },
-        { ...SCENARIOS[0].options[1], text: "Ich kann das nicht essen. Ich habe PKU und zu viel Protein ist schlecht für mich.", feedback: "Sachlich richtig, aber für andere Kinder klingt es schnell schwer. Kurz, ruhig und sportlich funktioniert oft besser." },
-        { ...SCENARIOS[0].options[2], text: "Sorry... meine Eltern erlauben es nicht. Bitte sei nicht sauer.", feedback: "Das macht dich kleiner als du bist. Du fragst nicht um Erlaubnis — du triffst eine kluge Kapitäns-Entscheidung." },
+        { ...SCENARIOS[0].options[0], text: "Nein danke. Mein Bauch-Team braucht was anderes, damit ich stark werde. Ich hab mein eigenes Essen dabei!", feedback: "Super! Du hast cool erklärt, dass dein Körper einfach etwas anderes braucht." },
+        { ...SCENARIOS[0].options[1], text: "Ich darf das nicht essen. Ich habe PKU und Protein ist giftig für mich.", feedback: "Sachlich richtig, aber 'giftig' kann andere erschrecken. Bleib entspannt und selbstbewusst." },
+        { ...SCENARIOS[0].options[2], text: "Meine Mama hat gesagt, ich darf das nicht essen. Bitte sei nicht sauer.", feedback: "Versteck dich nicht hinter deiner Mama. Sei stolz auf dein eigenes Spezial-Essen!" },
       ],
-      bossExplain: "Rahme es als Leistung statt Verzicht: Du optimierst deinen Körper für die Galaktischen Spiele.",
+      bossExplain: "Erkläre einfach und selbstbewusst, dass dein Körper anderes Essen braucht, um stark zu sein.",
     },
     {
       ...SCENARIOS[1],
@@ -166,11 +166,11 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       context: "Der seltsame Drink",
       npcMessages: ["Whoa, was IST das denn? 🧃", "Riecht irgendwie komisch. Ist das so ein komischer Sport-Drink?"],
       options: [
-        { ...SCENARIOS[1].options[0], text: "Das ist mein konzentrierter Nährstoff-Mix. Ja, schmeckt speziell — aber er hält meine Energie stabil, damit ich im Training nicht abstürze.", feedback: "Perfekt: ehrlich über den Geschmack, dann direkt zum Nutzen. Das klingt souverän und sportlich." },
-        { ...SCENARIOS[1].options[1], text: "Das ist meine medizinische Formel. Ohne sie lande ich vielleicht im Krankenhaus.", feedback: "Zu dramatisch für diese Situation. Du musst niemanden erschrecken — ruhig erklären reicht." },
-        { ...SCENARIOS[1].options[2], text: "Das ist mein Zaubertrank. Er gibt mir Superkräfte aus einer anderen Dimension.", feedback: "Witzig, aber im echten Spiel kann das Distanz schaffen. Echt und kurz ist cooler." },
+        { ...SCENARIOS[1].options[0], text: "Das ist mein Zaubertrank! Er gibt mir wichtige Bausteine, damit ich so schnell rennen kann wie ein Champion.", feedback: "Genial! Zaubertrank klingt cool und es stimmt: Er gibt dir genau die Bausteine, die dir fehlen!" },
+        { ...SCENARIOS[1].options[1], text: "Das ist meine medizinische Formel. Wenn ich die nicht trinke, muss ich ins Krankenhaus.", feedback: "Zu dramatisch. Du musst niemanden erschrecken — erkläre es einfach ganz cool." },
+        { ...SCENARIOS[1].options[2], text: "Das ist nur Medizin, weil ich krank bin.", feedback: "Du bist nicht krank, dein Körper braucht nur einen anderen Treibstoff. Sei stolz auf deinen Zaubertrank!" },
       ],
-      bossExplain: "Erst normalisieren, dann Benefit nennen: Energie, Fokus, Teamleistung.",
+      bossExplain: "Zaubertrank ist ein tolles Wort! Es erklärt super, wie die Formel dir hilft, stark zu werden.",
     },
     {
       ...SCENARIOS[2],
@@ -178,11 +178,11 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       context: "Anderes Team-Lunch",
       npcMessages: ["Warum sieht DEIN Essen anders aus? 👀", "Tust du nur so, damit du Extra-Essen bekommst?"],
       options: [
-        { ...SCENARIOS[2].options[0], text: "Das ist für mein Körper-System gemacht. Ich verarbeite manche Stoffe anders, also habe ich mein eigenes Setup, um bei 100% zu bleiben.", feedback: "Sehr gut: 'Setup' klingt modern und selbstbestimmt. Du erklärst es ohne Verteidigung." },
-        { ...SCENARIOS[2].options[1], text: "Ich habe Phenylketonurie. Mein Körper verarbeitet Aminosäuren anders, deshalb brauche ich diese Pasta.", feedback: "Richtig, aber sehr fachlich. Für Freund:innen reicht zuerst die kurze Version — Details nur, wenn sie fragen." },
-        { ...SCENARIOS[2].options[2], text: "Das ist Spezialbrot, weil ich anders geboren wurde und normales Essen nicht vertrage.", feedback: "'Anders geboren' kann Mitleid oder Witze auslösen. Du bist nicht kaputt — du hast ein spezielles Sport-Setup." },
+        { ...SCENARIOS[2].options[0], text: "Mein Körper braucht spezielles Essen. Die kleinen Bauarbeiter in meinem Bauch brauchen das, damit ich groß und stark werde!", feedback: "Perfekte Erklärung! Andere Kinder verstehen das sofort und sehen, dass du genau weißt, wie dein Körper funktioniert." },
+        { ...SCENARIOS[2].options[1], text: "Ich habe Phenylketonurie. Mein Körper verarbeitet Aminosäuren anders, deshalb brauche ich diese Nudeln.", feedback: "Richtig, aber für andere Kinder oft zu schwer. Nutze lieber lustige Vergleiche." },
+        { ...SCENARIOS[2].options[2], text: "Ich bin anders geboren und mein Körper ist kaputt.", feedback: "Dein Körper ist nicht kaputt! Er funktioniert nur ein bisschen anders. Zeig ihnen, wie stark dich dein Essen macht." },
       ],
-      bossExplain: "Custom Setup klingt wie Profi-Sport: einzigartig, geplant und stark.",
+      bossExplain: "Die 'Bauarbeiter'-Geschichte ist der beste Weg, anderen Kindern PKU zu erklären, ohne schwere Arzt-Wörter zu benutzen.",
     },
   ];
 };

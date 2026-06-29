@@ -103,12 +103,12 @@ export const TRANSLATIONS: Dict = {
   "m2.tag": { en: "Mission 02 - The Stadium Tunnel", de: "Mission 02 - Der Stadiontunnel" },
   "m2.title": { en: "Social Trial", de: "Soziale Herausforderung" },
   "m2.dialogue": {
-    en: "Hey Captain, we are at the stadium! Watch out, a stranger from another team is walking through the tunnel offering distractions.",
-    de: "Hey Kapitän, wir sind am Stadion! Pass auf, ein Fremder aus einem anderen Team geht durch den Tunnel und bietet Ablenkungen an.",
+    en: "Hey Captain, we are at the stadium! Watch out, a stranger from another team is walking through the tunnel asking awkward questions about your food.",
+    de: "Hey Kapitän, wir sind am Stadion! Pass auf, ein Fremder aus einem anderen Team geht durch den Tunnel und stellt unangenehme Fragen zu deinem Essen.",
   },
   "m2.objective": {
-    en: "You need to practice saying 'no, thank you'. Remember: stay focused on your training so you can join your team and have fun!",
-    de: "Du musst üben, 'Nein, danke' zu sagen. Denk dran: Konzentriere dich auf dein Training, damit du in deinem Team mitspielen und Spaß haben kannst!",
+    en: "Practice explaining your magic potion with confidence. Frame it as your special advantage, not a restriction!",
+    de: "Übe, deinen Zaubertrank selbstbewusst zu erklären. Präsentiere ihn als deinen besonderen Vorteil, nicht als Einschränkung!",
   },
   "m2.cta": { en: "Meet the Team >", de: "Team treffen >" },
   "m2.warning": { en: "Wait! Someone is trying to distract us. We need to figure out what to say!", de: "Warte! Jemand versucht, uns abzulenken. Wir müssen überlegen, was wir sagen!" },
@@ -122,8 +122,8 @@ export const TRANSLATIONS: Dict = {
     de: "Kapitän, nutze deine Formel-Kraft! Vermeide die Hindernisse—wenn du sie triffst, verlierst du Geschwindigkeit und Fokus. Fange deine Formel-Flaschen, um deine Ausdauer aufrechtzuerhalten!",
   },
   "m3.objective": {
-    en: "Listen to your body! Catch your sports formula during the run to keep your mind sharp, but avoid the obstacles on the track!",
-    de: "Höre auf deinen Körper! Fange deine Sportformel während des Laufs, um deinen Geist scharf zu halten, aber vermeide die Hindernisse auf der Strecke!",
+    en: "Listen to your body! Catch your sports formula during the run to keep your mind sharp, but avoid the high-protein obstacles on the track!",
+    de: "Höre auf deinen Körper! Fange deine Sportformel während des Laufs, um deinen Geist scharf zu halten, aber vermeide die proteinreichen Hindernisse auf der Strecke!",
   },
   "m3.cta": { en: "Sprint with Crew >", de: "Mit Team sprinten >" },
   "m3.warning": { en: "Captain, the match is starting! We need to step onto the field!", de: "Kapitän, das Spiel beginnt! Wir müssen aufs Feld gehen!" },
@@ -140,21 +140,6 @@ export const TRANSLATIONS: Dict = {
   "ui.scrollSkip": { en: "Scroll to skip to next section", de: "Scrolle, um zum nächsten Abschnitt zu springen" },
   "ui.timeTo": { en: "Time for", de: "Zeit fürs" },
   "ui.train": { en: "Training", de: "Training" },
-  "log.1.author": { en: "Captain Nova", de: "Kapitän Nova" },
-  "log.1.text": {
-    en: "Always drink your formula before a big match. It provides the essential energy to keep your muscles strong and mind sharp! Never skip it if you want to win.",
-    de: "Trinke deine Formel immer vor einem großen Spiel. Sie liefert die essenzielle Energie, um deine Muskeln stark und deinen Geist scharf zu halten! Lass sie niemals aus, wenn du gewinnen willst."
-  },
-  "log.2.author": { en: "Captain Leo", de: "Kapitän Leo" },
-  "log.2.text": {
-    en: "Someone offered me distractions once. I just told them I have my own training goals. Now they cheer for me on the field!",
-    de: "Jemand hat mir einmal Ablenkungen angeboten. Ich habe ihnen einfach gesagt, dass ich meine eigenen Trainingsziele habe. Jetzt feuern sie mich auf dem Spielfeld an!"
-  },
-  "log.3.author": { en: "Captain Orion", de: "Kapitän Orion" },
-  "log.3.text": {
-    en: "Keep lots of water and essential gear in your bag. Proper hydration is perfect for quick stamina during half time.",
-    de: "Bewahre viel Wasser und wichtige Ausrüstung in deiner Tasche auf. Richtige Flüssigkeitszufuhr ist perfekt für schnelle Ausdauer in der Halbzeit."
-  },
 
   // ── Crew greeting ──────────────────────────────────────────
   "crew.tag": { en: "Meet Your Crew", de: "Lerne dein Team kennen" },
@@ -277,12 +262,22 @@ export const TRANSLATIONS: Dict = {
   "fact.5.text": { en: "With the right preparation, there are no physical limits for you. You can participate in any sport your peers do, join the team, and most importantly—have fun!", de: "Mit der richtigen Vorbereitung gibt es für dich keine körperlichen Grenzen. Du kannst an jedem Sport teilnehmen, den deine Freunde machen, dem Team beitreten und vor allem – Spaß haben!" },
 
   // Footer Logs
-  "hero.0.name": { en: "Locker Room Notes #1", de: "Kabinen-Notizen #1" },
+  "hero.0.name": { en: "Captain's Log #1", de: "Kapitänslogbuch #1" },
   "hero.0.quote": { en: "Managing PKU doesn't make you different — it makes you disciplined. Every meal is a choice, and every good choice fuels your sports journey.", de: "PKU zu managen macht dich nicht anders – es macht dich diszipliniert. Jede Mahlzeit ist eine Entscheidung, und jede gute Entscheidung treibt deine sportliche Reise an." },
-  "hero.1.name": { en: "Locker Room Notes #2", de: "Kabinen-Notizen #2" },
-  "hero.1.quote": { en: "Someone offered me protein snacks once. I just told them I have my own special sports fuel. Now they cheer for me when I drink it!", de: "Jemand hat mir einmal Protein-Snacks angeboten. Ich habe ihnen einfach gesagt, dass ich meinen eigenen speziellen Sporttreibstoff habe. Jetzt feuern sie mich an, wenn ich ihn trinke!" },
-  "hero.2.name": { en: "Locker Room Notes #3", de: "Kabinen-Notizen #3" },
+  "hero.1.name": { en: "Captain's Log #2", de: "Kapitänslogbuch #2" },
+  "hero.1.quote": { en: "Someone offered me protein snacks once. I just told them I have my own magic potion. Now they cheer for me when I drink it!", de: "Jemand hat mir einmal Protein-Snacks angeboten. Ich habe ihnen einfach gesagt, dass ich meinen eigenen Zaubertrank habe. Jetzt feuern sie mich an, wenn ich ihn trinke!" },
+  "hero.2.name": { en: "Captain's Log #3", de: "Kapitänslogbuch #3" },
   "hero.2.quote": { en: "Keep lots of low-Phe fruits in your bag. Apples and bananas are perfect for quick stamina during half time.", de: "Bewahre viele fruktosereiche Früchte in deiner Tasche auf. Äpfel und Bananen sind perfekt für schnelle Ausdauer in der Halbzeit." },
+
+  // Submit Log Modal
+  "submitLog.openModal": { en: "Write Your Captain's Log", de: "Schreibe dein Kapitänslogbuch" },
+  "submitLog.title": { en: "Submit your Captain's Log", de: "Reiche dein Kapitänslogbuch ein" },
+  "submitLog.intro": { en: "Share your own sports journey and tips. The best logs will be added to the Galactic Sports Crew website!", de: "Teile deine eigene sportliche Reise und Tipps. Die besten Logs werden der Galactic Sports Crew-Website hinzugefügt!" },
+  "submitLog.name": { en: "Captain Name", de: "Kapitänsname" },
+  "submitLog.message": { en: "Your tip or story", de: "Dein Tipp oder deine Geschichte" },
+  "submitLog.submit": { en: "Send My Story", de: "Meine Geschichte senden" },
+  "submitLog.success": { en: "Log submitted!", de: "Logbuch eingereicht!" },
+  "submitLog.successSub": { en: "Thank you! We will review your log and it might be added soon.", de: "Danke! Wir werden dein Logbuch prüfen und vielleicht wird es bald hinzugefügt." },
 
   // Footer Tips
   "tip.0": { en: "Always carry your sports formula when you go out to train", de: "Trage deine Sport-Formel immer bei dir, wenn du zum Training gehst" },
