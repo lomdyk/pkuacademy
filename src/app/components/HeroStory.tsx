@@ -234,7 +234,7 @@ export const HeroStory = () => {
 
     // Move the 'Scroll to begin' down and shrink it so it stays visible as an indicator
     tl.to(scrollHintRef.current, {
-      top: "90%",
+      top: "95%",
       scale: 0.7,
       opacity: 0.5,
       duration: 0.1,
