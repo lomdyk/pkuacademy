@@ -3,6 +3,10 @@ import { motion, animate, useMotionValue, useTransform } from "motion/react";
 import { useProgress } from "@react-three/drei";
 import { useLang } from "../utils/i18n";
 
+// Automatically grab all 2D assets for mobile preloading
+const assetModules = import.meta.glob('../assets/**/*.{png,jpg,jpeg,svg,gif}', { eager: true, import: 'default' });
+const PRELOAD_ASSETS = Object.values(assetModules) as string[];
+
 export const Preloader = () => {
   const { progress: realProgress } = useProgress();
   const { t } = useLang();
@@ -36,18 +40,36 @@ export const Preloader = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Simulate progress on mobile because 3D assets are not loaded
+  // Preload 2D assets on mobile since 3D assets are not loaded
   useEffect(() => {
     if (!isMobileScreen) return;
-    let val = 0;
+    
+    if (PRELOAD_ASSETS.length === 0) {
+      setSimulatedProgress(100);
+      return;
+    }
+
+    let loaded = 0;
+    let fallbackProgress = 0;
+
+    // Fallback interval to ensure we don't get stuck if images fail to load
     const interval = setInterval(() => {
-      val += Math.random() * 15 + 5;
-      if (val >= 100) {
-        val = 100;
-        clearInterval(interval);
-      }
-      setSimulatedProgress(val);
-    }, 150);
+      fallbackProgress += 5;
+      const actualProgress = (loaded / PRELOAD_ASSETS.length) * 100;
+      setSimulatedProgress(Math.max(actualProgress, Math.min(fallbackProgress, 100)));
+      if (fallbackProgress >= 100) clearInterval(interval);
+    }, 400);
+
+    PRELOAD_ASSETS.forEach(src => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        loaded++;
+        const actualProgress = (loaded / PRELOAD_ASSETS.length) * 100;
+        setSimulatedProgress(Math.max(actualProgress, Math.min(fallbackProgress, 100)));
+      };
+      img.src = src;
+    });
+
     return () => clearInterval(interval);
   }, [isMobileScreen]);
 

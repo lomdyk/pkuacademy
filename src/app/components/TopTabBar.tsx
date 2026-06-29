@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "motion/react";
 import { Backpack, MessageCircle, Rocket, Sparkles, Download, BookOpen } from "lucide-react";
+import logoUrl from "../../assets/logo.svg";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
 
@@ -74,18 +75,13 @@ export const TopTabBar: React.FC<Props> = () => {
           boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5), inset 0 0 24px rgba(255,255,255,0.02)",
         }}
       >
-        {/* Brand dot */}
-        <div className="hidden sm:flex items-center gap-2 pl-1 pr-1">
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: accent, boxShadow: `0 0 10px ${accent}`, transition: "background 0.4s, box-shadow 0.4s" }}
+        {/* Brand Logo */}
+        <div className="hidden sm:flex items-center pl-1 pr-3 border-r border-white/10 mr-1">
+          <img 
+            src={logoUrl} 
+            alt="PKU Logo" 
+            className="h-7 w-auto drop-shadow-[0_0_12px_rgba(34,211,238,0.4)]" 
           />
-          <span
-            className="text-[10px] uppercase tracking-[0.28em] text-white/55"
-            
-          >
-            PKU
-          </span>
         </div>
 
         {/* Single morphing stage label */}
