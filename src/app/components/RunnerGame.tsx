@@ -201,6 +201,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     let rafId = 0;
     let lastRenderedScore = -1;
     let lastRenderedPhe = -1;
+    let visualPhe = 0;
     const loop = (t: number) => {
       rafId = requestAnimationFrame(loop);
       if (stateRef.current !== "playing") {
@@ -337,6 +338,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         }
       }
 
+      visualPhe += (pheLevelRef.current - visualPhe) * 10 * dt;
+
       const displayPhe = Math.round(pheLevelRef.current);
       if (displayPhe !== lastRenderedPhe) {
         lastRenderedPhe = displayPhe;
@@ -346,13 +349,16 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           pheTextRef.current.className = `text-[10px] ml-auto tabular-nums ${isHealthy ? "text-emerald-300" : "text-red-400"}`;
         }
         if (pheBarRef.current) {
-          pheBarRef.current.style.width = `${displayPhe}%`;
           pheBarRef.current.style.background = isHealthy ? "linear-gradient(90deg,#34d399,#10b981,#22d3ee)" : "linear-gradient(90deg,#ef4444,#dc2626)";
           pheBarRef.current.style.boxShadow = isHealthy ? "0 0 14px #34d399" : "0 0 14px #ef4444";
         }
         if (zapIconRef.current) {
           zapIconRef.current.setAttribute("class", `lucide lucide-zap w-3.5 h-3.5 ${isHealthy ? "text-emerald-300" : "text-red-400"}`);
         }
+      }
+
+      if (pheBarRef.current) {
+        pheBarRef.current.style.width = `${visualPhe}%`;
       }
 
       if (fogRef.current) {
@@ -410,7 +416,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <div className="h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
               <div
                 ref={pheBarRef}
-                className="h-full rounded-full transition-[width] duration-150"
+                className="h-full rounded-full"
                 style={{
                   width: "0%",
                   background: "linear-gradient(90deg,#34d399,#10b981,#22d3ee)",
