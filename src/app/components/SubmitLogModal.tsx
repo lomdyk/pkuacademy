@@ -4,6 +4,7 @@ import { useLang } from '../utils/i18n';
 import { GhostButton } from './ui/GhostButton';
 import { soundEngine } from '../utils/audioEngine';
 import { Send } from 'lucide-react';
+import medalImg from "../../imports/medal.png";
 
 interface SubmitLogModalProps {
   onClose: () => void;
@@ -60,8 +61,9 @@ export const SubmitLogModal: React.FC<SubmitLogModalProps> = ({ onClose }) => {
 
         {showSuccess ? (
           <div className="flex flex-col items-center justify-center py-10">
-            <div className="w-20 h-20 bg-cyan-500/20 border border-cyan-500/50 rounded-full flex items-center justify-center text-4xl mb-6 shadow-[0_0_30px_rgba(34,211,238,0.4)]">
-              🚀
+            <div className="w-24 h-24 flex items-center justify-center mb-6 relative">
+              <div className="absolute inset-0 bg-yellow-400/20 rounded-full blur-xl" />
+              <img src={medalImg} alt="Success Medal" className="w-24 h-24 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)] relative z-10" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2 text-center">{t("submitLog.success")}</h2>
             <p className="text-cyan-400 text-center">{t("submitLog.successSub")}</p>
