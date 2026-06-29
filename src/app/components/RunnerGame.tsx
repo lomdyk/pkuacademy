@@ -64,9 +64,12 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const playerImgRef = useRef<HTMLImageElement>(null);
 
   const [state, setState] = useState<GameState>("idle");
-  const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
-  const [pheLevel, setPheLevel] = useState(0);
+  const scoreTextRef = useRef<HTMLSpanElement>(null);
+  const pheTextRef = useRef<HTMLSpanElement>(null);
+  const pheBarRef = useRef<HTMLDivElement>(null);
+  const fogRef = useRef<HTMLDivElement>(null);
+  const zapIconRef = useRef<SVGSVGElement>(null);
   const [encouragement, setEncouragement] = useState("");
 
   const stateRef = useRef<GameState>("idle");
@@ -115,8 +118,18 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     pheLevelRef.current = 0;
     distanceRef.current = 0;
     lastTimeRef.current = null;
-    setScore(0);
-    setPheLevel(0);
+    if (scoreTextRef.current) scoreTextRef.current.innerText = "00000";
+    if (pheTextRef.current) {
+      pheTextRef.current.innerText = "0%";
+      pheTextRef.current.className = "text-[10px] ml-auto tabular-nums text-emerald-300";
+    }
+    if (pheBarRef.current) {
+      pheBarRef.current.style.width = "0%";
+      pheBarRef.current.style.background = "linear-gradient(90deg,#34d399,#10b981,#22d3ee)";
+      pheBarRef.current.style.boxShadow = "0 0 14px #34d399";
+    }
+    if (fogRef.current) fogRef.current.style.filter = "none";
+    if (zapIconRef.current) zapIconRef.current.setAttribute("class", "lucide lucide-zap w-3.5 h-3.5 text-emerald-300");
     setState("playing");
   }, []);
 
@@ -186,6 +199,8 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   // main loop
   useEffect(() => {
     let rafId = 0;
+    let lastRenderedScore = -1;
+    let lastRenderedPhe = -1;
     const loop = (t: number) => {
       rafId = requestAnimationFrame(loop);
       if (stateRef.current !== "playing") {
@@ -315,8 +330,36 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }
       particlesRef.current = survivingParticles;
 
-      setScore((p) => (p !== newScore ? newScore : p));
-      setPheLevel((p) => Math.abs(p - pheLevelRef.current) > 0.5 ? pheLevelRef.current : p);
+      if (newScore !== lastRenderedScore) {
+        lastRenderedScore = newScore;
+        if (scoreTextRef.current) {
+          scoreTextRef.current.innerText = String(newScore).padStart(5, "0");
+        }
+      }
+
+      const displayPhe = Math.round(pheLevelRef.current);
+      if (displayPhe !== lastRenderedPhe) {
+        lastRenderedPhe = displayPhe;
+        const isHealthy = displayPhe < 50;
+        if (pheTextRef.current) {
+          pheTextRef.current.innerText = `${displayPhe}%`;
+          pheTextRef.current.className = `text-[10px] ml-auto tabular-nums ${isHealthy ? "text-emerald-300" : "text-red-400"}`;
+        }
+        if (pheBarRef.current) {
+          pheBarRef.current.style.width = `${displayPhe}%`;
+          pheBarRef.current.style.background = isHealthy ? "linear-gradient(90deg,#34d399,#10b981,#22d3ee)" : "linear-gradient(90deg,#ef4444,#dc2626)";
+          pheBarRef.current.style.boxShadow = isHealthy ? "0 0 14px #34d399" : "0 0 14px #ef4444";
+        }
+        if (zapIconRef.current) {
+          zapIconRef.current.setAttribute("class", `lucide lucide-zap w-3.5 h-3.5 ${isHealthy ? "text-emerald-300" : "text-red-400"}`);
+        }
+      }
+
+      if (fogRef.current) {
+        const isFoggy = pheLevelRef.current > 40;
+        const fogAmount = isFoggy ? (pheLevelRef.current - 40) / 6 : 0;
+        fogRef.current.style.filter = isFoggy ? `blur(${fogAmount}px) grayscale(${fogAmount * 10}%)` : "none";
+      }
 
       if (gameOver) {
         setBest((b) => Math.max(b, newScore));
@@ -328,8 +371,6 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return () => cancelAnimationFrame(rafId);
   }, []);
 
-  const isFoggy = pheLevel > 40;
-  const fogAmount = isFoggy ? (pheLevel - 40) / 6 : 0;
   const { t } = useLang();
 
   const handleTap = (e: React.PointerEvent) => {
@@ -352,7 +393,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <div className="flex items-center gap-2 md:gap-3">
             <div className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 backdrop-blur-md">
               <span className="text-[10px] uppercase tracking-[0.18em] text-white/50 mr-2">{t("runner.distance")}</span>
-              <span className="text-cyan-200 tabular-nums">{String(score).padStart(5, "0")}</span>
+              <span ref={scoreTextRef} className="text-cyan-200 tabular-nums">00000</span>
             </div>
             <div className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 backdrop-blur-md flex items-center gap-1.5">
               <Trophy className="w-3.5 h-3.5 text-amber-300" />
@@ -362,19 +403,19 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
           <div className="flex-1 min-w-[180px] max-w-[260px] ml-auto">
             <div className="flex items-center gap-2 mb-1">
-              <Zap className={`w-3.5 h-3.5 ${pheLevel < 50 ? "text-emerald-300" : "text-red-400"}`} />
+              <Zap ref={zapIconRef} className="w-3.5 h-3.5 text-emerald-300" />
               <span className="text-[10px] uppercase tracking-[0.18em] text-white/50">{t("runner.energy")}</span>
-              <span className={`text-[10px] ml-auto tabular-nums ${pheLevel < 50 ? "text-emerald-300" : "text-red-400"}`}>{Math.round(pheLevel)}%</span>
+              <span ref={pheTextRef} className="text-[10px] ml-auto tabular-nums text-emerald-300">0%</span>
             </div>
             <div className="h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
-              <motion.div
-                className="h-full rounded-full"
+              <div
+                ref={pheBarRef}
+                className="h-full rounded-full transition-[width] duration-150"
                 style={{
-                  background: pheLevel < 50 ? "linear-gradient(90deg,#34d399,#10b981,#22d3ee)" : "linear-gradient(90deg,#ef4444,#dc2626)",
-                  boxShadow: pheLevel < 50 ? "0 0 14px #34d399" : "0 0 14px #ef4444",
+                  width: "0%",
+                  background: "linear-gradient(90deg,#34d399,#10b981,#22d3ee)",
+                  boxShadow: "0 0 14px #34d399",
                 }}
-                animate={{ width: `${pheLevel}%` }}
-                transition={{ type: "tween", duration: 0.15 }}
               />
             </div>
           </div>
@@ -395,9 +436,10 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         >
           {/* Fog wrapper */}
           <div 
+            ref={fogRef}
             className="absolute inset-0 pointer-events-none"
             style={{
-              filter: isFoggy ? `blur(${fogAmount}px) grayscale(${fogAmount * 10}%)` : "none",
+              filter: "none",
               transition: "filter 0.3s",
             }}
           >
@@ -494,7 +536,7 @@ export const RunnerGame: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 </div>
                 <div className="text-emerald-300 uppercase tracking-[0.3em] text-xs mb-2">{t(encouragement)}</div>
                 <h3 className="text-white mb-1" style={{ fontWeight: 700, fontSize: "32px" }}>
-                  {t("runner.distanceLabel")}: <span className="text-cyan-300 tabular-nums">{score}</span>
+                  {t("runner.distanceLabel")}: <span className="text-cyan-300 tabular-nums">{Math.floor(distanceRef.current / 10)}</span>
                 </h3>
                 <p className="text-white/50 mb-3 text-sm">{t("runner.bestRun")}: <span className="text-amber-200 tabular-nums">{best}</span></p>
                 <p className="text-white/60 mb-5 text-center font-['Space_Grotesk']">{t("game.wellDone")}</p>
