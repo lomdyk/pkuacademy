@@ -356,7 +356,7 @@ export const HeroStory = () => {
 
       <div className="absolute inset-0 z-[10] flex flex-col justify-end md:justify-center items-center md:items-start px-6 md:px-14 lg:px-24 pt-16 pb-28 sm:pb-32 md:py-0 pointer-events-none">
         {/* Text panels — bottom on mobile, left on desktop */}
-        <div className="relative w-full md:w-1/2 flex items-center min-h-[200px] sm:min-h-[220px] md:min-h-0 md:h-full justify-center md:justify-start text-center md:text-left">
+        <div className="relative w-full md:w-1/2 flex items-center min-h-[200px] sm:min-h-[220px] md:min-h-0 md:h-full justify-center md:justify-start text-left">
           {STORY_PANELS.map((panel, i) => (
             <div
               key={i}
