@@ -232,13 +232,14 @@ export const HeroStory = () => {
       },
     });
 
-    // Move the 'Scroll to begin' down and shrink it so it stays visible as an indicator
+    // Move the 'Scroll to begin' down and shrink it until it disappears completely
+    // This prevents it from overlapping the story text panels
     tl.to(scrollHintRef.current, {
-      top: "90%",
-      scale: 0.7,
-      opacity: 0.5,
-      duration: 0.1,
-      ease: "power2.out",
+      top: "120%",
+      scale: 0.5,
+      opacity: 0,
+      duration: 0.15,
+      ease: "power2.in",
     }, 0);
 
     // Story panels
