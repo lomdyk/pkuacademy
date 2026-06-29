@@ -60,7 +60,7 @@ export const HeroStory = () => {
     {
       accent: "#22d3ee",
       titleEl: (
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-start gap-4">
           <span style={{
             background: "rgba(34,211,238,0.18)",
             border: "1px solid rgba(34,211,238,0.5)",
@@ -91,7 +91,7 @@ export const HeroStory = () => {
     {
       accent: "#a78bfa",
       titleEl: (
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-start gap-4">
           <span style={{
             background: "rgba(167,139,250,0.18)",
             border: "1px solid rgba(167,139,250,0.5)",
@@ -122,7 +122,7 @@ export const HeroStory = () => {
     {
       accent: "#34d399",
       titleEl: (
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col items-start gap-4">
           <span style={{
             background: "rgba(52,211,153,0.18)",
             border: "1px solid rgba(52,211,153,0.5)",
@@ -366,7 +366,7 @@ export const HeroStory = () => {
             >
               <div className="w-full max-w-lg">
                 <h2
-                  className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl mb-4 tracking-tight text-white"
+                  className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl mb-1 tracking-tight text-white"
                   style={{
                     fontWeight: 700,
                     textShadow: `0 0 40px ${panel.accent}66`,
