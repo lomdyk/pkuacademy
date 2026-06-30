@@ -64,8 +64,8 @@ export const TRANSLATIONS: Dict = {
   "pku.step": { en: "Step 1", de: "Schritt 1" },
   "pku.title": { en: "Preparation", de: "Vorbereitung" },
   "pku.desc": { 
-    en: "A successful match starts before you even step on the field. The first step is packing your sports bag correctly. Having all the right equipment and fuel is key to victory.", 
-    de: "Ein erfolgreiches Spiel beginnt, bevor du überhaupt den Platz betrittst. Der erste Schritt ist das richtige Packen deiner Sporttasche. Die richtige Ausrüstung und den richtigen Treibstoff zu haben, ist der Schlüssel zum Sieg." 
+    en: "Whether it's a sports match, a school trip, or a birthday party, success starts with preparation. Packing your bag correctly with all the right equipment and fuel is key!", 
+    de: "Egal ob Sportfest, Schulausflug oder Geburtstagsparty – Erfolg beginnt mit der Vorbereitung. Die Tasche richtig mit Ausrüstung und Energie zu packen, ist der Schlüssel!" 
   },
   "fuel.clean.step": { en: "Step 3", de: "Schritt 3" },
   "fuel.clean": { en: "The Secret Weapon", de: "Die Geheimwaffe" },
@@ -88,8 +88,8 @@ export const TRANSLATIONS: Dict = {
   "m1.tag": { en: "Mission 01 - Pack with Luna", de: "Mission 01 - Mit Luna packen" },
   "m1.title": { en: "Pack the Team Backpack", de: "Den Team-Rucksack packen" },
   "m1.dialogue": {
-    en: "Captain, we can't play without proper preparation! Your sports equipment gives you an edge, and your formula builds strong muscles. Pack your gear and formula!",
-    de: "Kapitän, wir können nicht ohne richtige Vorbereitung spielen! Deine Sportausrüstung gibt dir einen Vorteil, und deine Formel baut starke Muskeln auf. Pack deine Ausrüstung und die Formel ein!",
+    en: "Captain, just like packing for school, travel, or a sleepover, we can't launch without preparation! Your formula gives you energy for any everyday situation. Pack your gear and formula!",
+    de: "Kapitän, genau wie beim Packen für die Schule, eine Reise oder eine Übernachtung, können wir nicht ohne Vorbereitung starten! Deine Formel gibt dir Energie für jede Alltagssituation. Pack deine Ausrüstung und die Formel ein!",
   },
   "m1.objective": {
     en: "Pack your sport bag! Send your gear and Formula to your bag. Throw unnecessary items into the trash bin.",
@@ -199,8 +199,8 @@ export const TRANSLATIONS: Dict = {
   // Runner overlays
   "runner.ready": { en: "Ready, Champion?", de: "Bereit, Champion?" },
   "runner.intro": {
-    en: "Running without fuel breaks down muscles, causing your Phe Level to rise automatically! Avoid heavy protein on the track, and catch formula to clear your mind.",
-    de: "Laufen ohne Energie baut Muskeln ab, wodurch dein Phe-Spiegel automatisch steigt! Vermeide schweres Protein und fang die Formel, um einen klaren Kopf zu behalten.",
+    en: "During physical exertion, like sports or active day trips, your body needs fuel! Running without it breaks down muscles, causing your Phe Level to rise. Avoid heavy protein on the track, and catch formula to clear your mind.",
+    de: "Bei körperlicher Anstrengung, wie beim Sport oder aktiven Ausflügen, braucht dein Körper Energie! Laufen ohne Treibstoff baut Muskeln ab, wodurch dein Phe-Spiegel steigt. Vermeide schweres Protein und fang die Formel, um einen klaren Kopf zu behalten.",
   },
   "runner.distance": { en: "Distance", de: "Distanz" },
   "runner.best": { en: "Best", de: "Bester" },
