@@ -4,7 +4,7 @@ import { AnimatedShip } from "./AnimatedShip";
 import { GhostButton } from "./ui/GhostButton";
 import {
   Heart, BookOpen, Users, Lightbulb, Shield,
-  ChevronRight, Sparkles, Brain, Apple, FlaskConical, RefreshCcw, RotateCcw, PenLine
+  ChevronRight, Sparkles, Brain, Apple, FlaskConical, RefreshCcw, RotateCcw, PenLine, Medal
 } from "lucide-react";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
@@ -397,7 +397,7 @@ export const Footer = ({
             className="w-16 h-16 rounded-2xl border flex items-center justify-center"
             style={{ background: "rgba(34,211,238,0.1)", borderColor: "rgba(34,211,238,0.2)", boxShadow: "0 0 32px rgba(34,211,238,0.15)" }}
           >
-            <Sparkles className="w-8 h-8 text-cyan-400" />
+            <Medal className="w-8 h-8 text-cyan-400" />
           </div>
           <h2
             className="text-3xl md:text-5xl tracking-tight text-white"
