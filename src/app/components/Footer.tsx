@@ -11,6 +11,7 @@ import { soundEngine } from "../utils/audioEngine";
 import { metricsState, metricsActions } from "../store/metricsStore";
 import { TESTING_MODE } from "../utils/config";
 import { SubmitLogModal } from "./SubmitLogModal";
+import medalImg from "../../imports/medal.png";
 
 // ─── PKU Facts ────────────────────────────────────────────────────────────────
 
@@ -393,12 +394,14 @@ export const Footer = ({
           transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           className="flex flex-col items-center gap-5"
         >
-          <div
-            className="w-16 h-16 rounded-2xl border flex items-center justify-center"
-            style={{ background: "rgba(34,211,238,0.1)", borderColor: "rgba(34,211,238,0.2)", boxShadow: "0 0 32px rgba(34,211,238,0.15)" }}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", bounce: 0.5 }}
           >
-            <Medal className="w-8 h-8 text-cyan-400" />
-          </div>
+            <img src={medalImg} alt="Mission Complete Medal" className="w-24 h-24 drop-shadow-[0_0_20px_rgba(250,204,21,0.6)]" />
+          </motion.div>
           <h2
             className="text-3xl md:text-5xl tracking-tight text-white"
             style={{ fontWeight: 700, }}
