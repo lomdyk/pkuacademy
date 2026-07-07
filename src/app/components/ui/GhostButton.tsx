@@ -54,7 +54,7 @@ export const GhostButton: React.FC<Props> = ({
   const padding = isSm ? "px-3 py-1.5" : "px-8 py-4";
   const textSize = isSm ? "text-[10px]" : "text-sm";
   const caseCls = isSm ? "uppercase tracking-[0.18em]" : "tracking-tight";
-  const restBg = isSm ? "transparent" : t.hoverBg;
+  const restBg = isSm ? "rgba(0,0,0,0.4)" : t.hoverBg;
   return (
     <button
       {...rest}
@@ -80,7 +80,7 @@ export const GhostButton: React.FC<Props> = ({
         soundEngine.clickPop();
         if (rest.onClick) rest.onClick(e);
       }}
-      className={`relative inline-flex items-center gap-2 rounded-full transition-[box-shadow,background-color,border-color,color] duration-200 ${padding} ${textSize} ${caseCls} ${className}`}
+      className={`relative inline-flex items-center gap-2 rounded-full backdrop-blur-md transition-[box-shadow,background-color,border-color,color] duration-200 ${padding} ${textSize} ${caseCls} ${className}`}
       style={{
         fontWeight: 600,
         border: `1px solid ${hover ? t.glow : t.border}`,
