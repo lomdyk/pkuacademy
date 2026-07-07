@@ -246,10 +246,10 @@ export const MissionPrologue: React.FC<Props> = ({
         {/* Global Scroll Progress Circle at the bottom of the viewport */}
         <div 
           ref={progressContainerRef}
-          className="absolute bottom-4 md:bottom-8 left-0 w-full z-10 pointer-events-none flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 transition-opacity duration-300 px-4"
+          className="absolute bottom-4 md:bottom-8 left-0 w-full z-10 pointer-events-none flex flex-row items-center justify-center gap-3 transition-opacity duration-300 px-4"
           style={{ opacity: scrollProgress >= 0.8 && scrollProgress < 0.99 ? 1 : 0 }}
         >
-          <svg className="w-5 h-5 -rotate-90 transform shrink-0" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 md:w-6 md:h-6 -rotate-90 transform shrink-0" viewBox="0 0 20 20">
             <circle
               cx="10" cy="10" r="8"
               fill="none"
@@ -267,7 +267,7 @@ export const MissionPrologue: React.FC<Props> = ({
               strokeLinecap="round"
             />
           </svg>
-          <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 text-center max-w-[220px] md:max-w-none leading-tight md:leading-normal">
+          <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 text-left max-w-[220px] md:max-w-none leading-tight md:leading-normal">
             {t("ui.scrollSkip")}
           </div>
         </div>
