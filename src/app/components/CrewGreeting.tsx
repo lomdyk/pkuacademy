@@ -151,19 +151,19 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                 }}
               >
                 <div
-                  className="glass-panel w-full h-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-14 p-6 md:p-12"
+                  className="glass-panel w-full h-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-14 px-6 pt-6 pb-24 md:p-12"
                   style={{
                     borderColor: a.rgba(0.4),
                     boxShadow: `0 30px 60px -15px rgba(0,0,0,0.8), inset 0 0 40px ${a.rgba(0.1)}`,
                   }}
                 >
                 {/* GIANT Character GIF */}
-                <div className="relative w-48 h-48 md:w-80 md:h-80 shrink-0 flex items-center justify-center">
+                <div className="relative w-32 h-32 md:w-80 md:h-80 shrink-0 flex items-center justify-center">
                   <img
                     src={c.gif}
                     alt={t(c.nameKey)}
                     draggable={false}
-                    className="block w-full h-full object-contain select-none filter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)] scale-[1.4] md:scale-[1.8]"
+                    className="block w-full h-full object-contain select-none filter drop-shadow-[0_0_25px_rgba(255,255,255,0.2)] scale-[1.5] md:scale-[1.8]"
                     onLoad={() => ScrollTrigger.refresh()}
                   />
                 </div>
@@ -177,7 +177,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                     {t(c.roleKey)}
                   </span>
                   <h3
-                    className="text-5xl md:text-7xl text-white mb-6 tracking-tight"
+                    className="text-4xl md:text-7xl text-white mb-4 md:mb-6 tracking-tight"
                     style={{
                       fontWeight: 800,
                       lineHeight: 1.1,
@@ -187,7 +187,7 @@ export const CrewGreeting: React.FC<Props> = ({ onContinue }) => {
                     {t(c.nameKey)}
                   </h3>
                   <p
-                    className="text-white/80 text-lg md:text-2xl leading-relaxed"
+                    className="text-white/80 text-base md:text-2xl leading-relaxed"
                     
                   >
                     {t(c.lineKey)}
