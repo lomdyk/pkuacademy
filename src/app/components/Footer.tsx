@@ -11,7 +11,7 @@ import { soundEngine } from "../utils/audioEngine";
 import { metricsState, metricsActions } from "../store/metricsStore";
 import { TESTING_MODE } from "../utils/config";
 import { SubmitLogModal } from "./SubmitLogModal";
-import medalImg from "../../imports/medal.png";
+import medalImg from "../../imports/medal.webp";
 
 // ─── PKU Facts ────────────────────────────────────────────────────────────────
 

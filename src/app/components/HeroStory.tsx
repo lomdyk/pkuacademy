@@ -12,14 +12,14 @@ import { useLang } from "../utils/i18n";
 import { scrollState } from "../store/rocketAnimation";
 import { useSnapshot } from 'valtio';
 
-import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
-import pizzaImg from "../../imports/Untitled_(1).png";
-import formulaImg from "../../imports/furmula.png";
-import gameBg1 from "../../imports/game_bg_1.png";
-import gameBg2 from "../../imports/game_bg_2.png";
-import gameBg3 from "../../imports/game_bg_3.png";
-import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.png";
-import waterbottleImg from "../../imports/waterbottle.png";
+import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).webp";
+import pizzaImg from "../../imports/Untitled_(1).webp";
+import formulaImg from "../../imports/furmula.webp";
+import gameBg1 from "../../imports/game_bg_1.webp";
+import gameBg2 from "../../imports/game_bg_2.webp";
+import gameBg3 from "../../imports/game_bg_3.webp";
+import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.webp";
+import waterbottleImg from "../../imports/waterbottle.webp";
 
 const AdminProgressDisplay = () => {
   const snap = useSnapshot(scrollState);

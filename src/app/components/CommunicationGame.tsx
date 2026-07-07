@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  MessageCircle, CheckCircle2, XCircle, ChevronRight, Sparkles, Star, Zap, RotateCcw
+  MessageCircle, CheckCircle2, XCircle, ChevronRight, Sparkles, Star, Zap, RotateCcw, AlertCircle
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { GhostButton } from "./ui/GhostButton";
@@ -12,7 +12,7 @@ import npcGif from "../../imports/npc.gif";
 import lunaGif from "../../imports/luNA-ezgif.com-crop.gif";
 import boGif from "../../imports/bo-ezgif.com-crop.gif";
 import elaGif from "../../imports/ela-ezgif.com-crop.gif";
-import medalImg from "../../imports/medal.png";
+import medalImg from "../../imports/medal.webp";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -57,14 +57,14 @@ const SCENARIOS: Scenario[] = [
     ],
     options: [
       {
-        text: "No thanks. My tummy-team needs something else so I can get strong. I brought my own food!",
+        text: "No thanks. My body needs something else so I can get strong. I brought my own food!",
         grade: "boss",
         feedback: "Great! You took charge and explained that your body just needs something else.",
       },
       {
         text: "I can't eat it. I have a condition and protein is basically toxic for me.",
         grade: "medium",
-        feedback: "True, but 'toxic' and 'condition' can make people uncomfortable around you. Keep it simple and confident instead.",
+        feedback: "True, but 'toxic' and 'condition' can make people uncomfortable around you. Keep it simple and confident instead. You can use these words later if they ask for more details.",
       },
       {
         text: "Sorry... my mom said no. Please don't be mad at me.",
@@ -94,7 +94,7 @@ const SCENARIOS: Scenario[] = [
       {
         text: "It's my medical formula. I have to drink it or I'll end up in the hospital.",
         grade: "medium",
-        feedback: "Too dramatic. It makes people feel bad for asking. You don't need to scare anyone — just be matter-of-fact.",
+        feedback: "Too dramatic, and you don't actually go to the hospital if you miss your formula once. It makes people feel bad for asking. Just be matter-of-fact.",
       },
       {
         text: "It smells bad but I drink it because I have to.",
@@ -117,7 +117,7 @@ const SCENARIOS: Scenario[] = [
     ],
     options: [
       {
-        text: "My body needs special food. The little construction workers in my tummy need it so I grow big and strong!",
+        text: "My body needs special food. That's nutritious and good to keep my body fuelled so I grow big and strong!",
         grade: "boss",
         feedback: "Perfect explanation! It's easy for kids to understand and shows you know exactly how your body works.",
       },
@@ -132,7 +132,7 @@ const SCENARIOS: Scenario[] = [
         feedback: "You are not broken! Your tummy just works a bit differently. Focus on how your food makes you strong.",
       },
     ],
-    bossExplain: "The 'construction worker' story is a great way to explain PKU to other kids without using confusing medical words.",
+    bossExplain: "Explaining that your food keeps your body fuelled is a great way to tell other kids about PKU without confusing medical words.",
   },
 ];
 
@@ -140,7 +140,7 @@ const SCENARIOS: Scenario[] = [
 
 const GRADE_CONFIG = {
   boss:   { label: "Super!",       color: "#22d3ee", icon: Zap,          bg: "rgba(34,211,238,0.08)",   border: "rgba(34,211,238,0.3)"  },
-  medium: { label: "Almost there", color: "#f59e0b", icon: CheckCircle2, bg: "rgba(245,158,11,0.07)",   border: "rgba(245,158,11,0.3)"  },
+  medium: { label: "Almost there", color: "#f59e0b", icon: AlertCircle, bg: "rgba(245,158,11,0.07)",   border: "rgba(245,158,11,0.3)"  },
   wrong:  { label: "Try again",    color: "#f87171", icon: XCircle,      bg: "rgba(248,113,113,0.07)",  border: "rgba(248,113,113,0.25)" },
 };
 
@@ -154,8 +154,8 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       context: "Pizza-Druck vor dem Match",
       npcMessages: ["Hey, nimm ein Stück! Beste Fleisch-Pizza im Stadion 🍕", "Komm schon — nur ein Bissen vor dem Finale!"],
       options: [
-        { ...SCENARIOS[0].options[0], text: "Nein danke. Mein Bauch-Team braucht was anderes, damit ich stark werde. Ich hab mein eigenes Essen dabei!", feedback: "Super! Du hast cool erklärt, dass dein Körper einfach etwas anderes braucht." },
-        { ...SCENARIOS[0].options[1], text: "Ich darf das nicht essen. Ich habe PKU und Protein ist giftig für mich.", feedback: "Sachlich richtig, aber 'giftig' kann andere erschrecken. Bleib entspannt und selbstbewusst." },
+        { ...SCENARIOS[0].options[0], text: "Nein danke. Mein Körper braucht was anderes, damit ich stark werde. Ich hab mein eigenes Essen dabei!", feedback: "Super! Du hast cool erklärt, dass dein Körper einfach etwas anderes braucht." },
+        { ...SCENARIOS[0].options[1], text: "Ich darf das nicht essen. Ich habe PKU und Protein ist giftig für mich.", feedback: "Sachlich richtig, aber 'giftig' kann andere erschrecken. Bleib entspannt und selbstbewusst. Du kannst diese Wörter später verwenden, wenn weiter gefragt wird." },
         { ...SCENARIOS[0].options[2], text: "Meine Mama hat gesagt, ich darf das nicht essen. Bitte sei nicht sauer.", feedback: "Versteck dich nicht hinter deiner Mama. Sei stolz auf dein eigenes Spezial-Essen!" },
       ],
       bossExplain: "Erkläre einfach und selbstbewusst, dass dein Körper anderes Essen braucht, um stark zu sein.",
@@ -167,7 +167,7 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       npcMessages: ["Whoa, was IST das denn? 🧃", "Riecht irgendwie komisch. Ist das so ein komischer Sport-Drink?"],
       options: [
         { ...SCENARIOS[1].options[0], text: "Das ist mein Zaubertrank! Er gibt mir wichtige Bausteine, damit ich so schnell rennen kann wie ein Champion.", feedback: "Genial! Zaubertrank klingt cool und es stimmt: Er gibt dir genau die Bausteine, die dir fehlen!" },
-        { ...SCENARIOS[1].options[1], text: "Das ist meine medizinische Formel. Wenn ich die nicht trinke, muss ich ins Krankenhaus.", feedback: "Zu dramatisch. Du musst niemanden erschrecken — erkläre es einfach ganz cool." },
+        { ...SCENARIOS[1].options[1], text: "Das ist meine medizinische Formel. Wenn ich die nicht trinke, muss ich ins Krankenhaus.", feedback: "Zu dramatisch, außerdem musst du nicht sofort ins Krankenhaus, wenn du die Formel einmal nicht nimmst. Du musst niemanden erschrecken — erkläre es einfach ganz cool." },
         { ...SCENARIOS[1].options[2], text: "Das ist nur Medizin, weil ich krank bin.", feedback: "Du bist nicht krank, dein Körper braucht nur einen anderen Treibstoff. Sei stolz auf deinen Zaubertrank!" },
       ],
       bossExplain: "Zaubertrank ist ein tolles Wort! Es erklärt super, wie die Formel dir hilft, stark zu werden.",
@@ -178,11 +178,11 @@ const localizeScenarios = (lang: "en" | "de"): Scenario[] => {
       context: "Anderes Team-Lunch",
       npcMessages: ["Warum sieht DEIN Essen anders aus? 👀", "Tust du nur so, damit du Extra-Essen bekommst?"],
       options: [
-        { ...SCENARIOS[2].options[0], text: "Mein Körper braucht spezielles Essen. Die kleinen Bauarbeiter in meinem Bauch brauchen das, damit ich groß und stark werde!", feedback: "Perfekte Erklärung! Andere Kinder verstehen das sofort und sehen, dass du genau weißt, wie dein Körper funktioniert." },
+        { ...SCENARIOS[2].options[0], text: "Mein Körper braucht spezielles Essen. Das ist nahrhaft und gut, um meinen Körper mit Energie zu versorgen, damit ich groß und stark werde!", feedback: "Perfekte Erklärung! Andere Kinder verstehen das sofort und sehen, dass du genau weißt, wie dein Körper funktioniert." },
         { ...SCENARIOS[2].options[1], text: "Ich habe Phenylketonurie. Mein Körper verarbeitet Aminosäuren anders, deshalb brauche ich diese Nudeln.", feedback: "Richtig, aber für andere Kinder oft zu schwer. Nutze lieber lustige Vergleiche." },
         { ...SCENARIOS[2].options[2], text: "Ich bin anders geboren und mein Körper ist kaputt.", feedback: "Dein Körper ist nicht kaputt! Er funktioniert nur ein bisschen anders. Zeig ihnen, wie stark dich dein Essen macht." },
       ],
-      bossExplain: "Die 'Bauarbeiter'-Geschichte ist der beste Weg, anderen Kindern PKU zu erklären, ohne schwere Arzt-Wörter zu benutzen.",
+      bossExplain: "Zu erklären, dass dein Essen deinen Körper mit Energie versorgt, ist der beste Weg, anderen Kindern PKU zu erklären, ohne schwere Arzt-Wörter zu benutzen.",
     },
   ];
 };

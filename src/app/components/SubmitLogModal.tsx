@@ -4,7 +4,7 @@ import { useLang } from '../utils/i18n';
 import { GhostButton } from './ui/GhostButton';
 import { soundEngine } from '../utils/audioEngine';
 import { Send } from 'lucide-react';
-import medalImg from "../../imports/medal.png";
+import medalImg from "../../imports/medal.webp";
 
 interface SubmitLogModalProps {
   onClose: () => void;

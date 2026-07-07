@@ -29,10 +29,10 @@ import { soundEngine } from "./utils/audioEngine";
 
 gsap.registerPlugin(ScrollTrigger);
 
-import sortingImg from "../imports/image_29.png";
-import talkImg from "../imports/talk.png";
-import sportImg from "../imports/sport.png";
-import personalertImg from "../imports/personalert.png";
+import sortingImg from "../imports/image_29.webp";
+import talkImg from "../imports/talk.webp";
+import sportImg from "../imports/sport.webp";
+import personalertImg from "../imports/personalert.webp";
 
 type Scene = "main" | "backpack" | "communication" | "runner";
 

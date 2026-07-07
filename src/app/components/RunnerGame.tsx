@@ -4,13 +4,13 @@ import { Play, RotateCcw, Zap, Trophy } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
-import medalImg from "../../imports/medal.png";
+import medalImg from "../../imports/medal.webp";
 import { metricsActions } from "../store/metricsStore";
 
 import runnerGif from "../../imports/ezgif.com-crop.gif";
-import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
-import pizzaImg from "../../imports/Untitled_(1).png";
-import formulaImg from "../../imports/furmula.png";
+import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).webp";
+import pizzaImg from "../../imports/Untitled_(1).webp";
+import formulaImg from "../../imports/furmula.webp";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const GAME_HEIGHT = 440;

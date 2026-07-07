@@ -6,18 +6,18 @@ import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
 import { metricsActions } from "../store/metricsStore";
-import medalImg from "../../imports/medal.png";
+import medalImg from "../../imports/medal.webp";
 
-import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.png";
-import waterbottleImg from "../../imports/waterbottle.png";
-import medcardImg from "../../imports/medcard.png";
-import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).png";
-import formulaImg from "../../imports/furmula.png";
-import pizzaImg from "../../imports/Untitled_(1).png";
-import closedBackpackImg from "../../imports/closed.png";
-import openedBackpackImg from "../../imports/opened.png";
-import closedBoxImg from "../../imports/closedbox.png";
-import openedBoxImg from "../../imports/openedbox.png";
+import appleImg from "../../imports/яблоко_plasticine-style___202604161826-removebg-preview.webp";
+import waterbottleImg from "../../imports/waterbottle.webp";
+import nutsImg from "../../imports/nuts.webp";
+import cheeseImg from "../../imports/сыр_ОНА_ДОЛЖНА_202604161846_(1).webp";
+import formulaImg from "../../imports/furmula.webp";
+import pizzaImg from "../../imports/Untitled_(1).webp";
+import closedBackpackImg from "../../imports/closed.webp";
+import openedBackpackImg from "../../imports/opened.webp";
+import closedBoxImg from "../../imports/closedbox.webp";
+import openedBoxImg from "../../imports/openedbox.webp";
 
 type FoodType = "safe" | "unsafe";
 
@@ -32,7 +32,7 @@ interface FoodItem {
 const INITIAL_ITEMS: FoodItem[] = [
   { id: "apple", name: "Apple", img: appleImg, type: "safe", label: "Low-Phe fruit" },
   { id: "water", name: "Water Bottle", img: waterbottleImg, type: "safe", label: "Hydration" },
-  { id: "contact", name: "Emergency Card", img: medcardImg, type: "safe", label: "Contact Info" },
+  { id: "nuts", name: "Nuts", img: nutsImg, type: "unsafe", label: "High protein" },
   { id: "formula", name: "PKU Formula", img: formulaImg, type: "safe", label: "Clean energy" },
   { id: "cheese", name: "Cheese", img: cheeseImg, type: "unsafe", label: "High protein" },
   { id: "pizza", name: "Pizza", img: pizzaImg, type: "unsafe", label: "High protein" },
