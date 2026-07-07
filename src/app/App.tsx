@@ -232,7 +232,7 @@ function AppInner() {
         </div>
 
         {/* Game Content */}
-        <div className="relative z-10 w-full min-h-[100dvh] flex flex-col items-center justify-start pt-24 pb-12">
+        <div className="relative z-10 w-full min-h-[100dvh] flex flex-col items-center justify-start pt-14 pb-24">
           <div className="my-auto w-full flex flex-col">
             {GameComponent}
           </div>
