@@ -122,7 +122,7 @@ export const MissionPrologue: React.FC<Props> = ({
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
-      className="relative w-full max-w-md mx-auto"
+      className="relative w-full max-w-sm md:max-w-md mx-auto"
     >
       <motion.img
         src={image}
@@ -130,7 +130,7 @@ export const MissionPrologue: React.FC<Props> = ({
         draggable={false}
         animate={{ y: [0, -15, 0] }}
         transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
-        className="block w-full max-h-[30vh] sm:max-h-[35vh] md:h-[450px] md:max-h-none select-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+        className="block w-full max-h-[22vh] sm:max-h-[30vh] md:h-[450px] md:max-h-none select-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         style={{ objectFit: "contain" }}
         onLoad={() => ScrollTrigger.refresh()}
       />
@@ -143,16 +143,16 @@ export const MissionPrologue: React.FC<Props> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
-      className="flex flex-col items-start gap-5 max-w-xl"
+      className="flex flex-col items-start gap-3 md:gap-5 max-w-xl"
     >
       <div className="flex flex-col items-start leading-none tracking-tight">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
           {restTitle}{" "}
           <span style={{ color: a.color }}>{lastTitleWord}</span>
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 grid-rows-1 w-full min-h-[90px] md:min-h-[140px]">
+      <div className="grid grid-cols-1 grid-rows-1 w-full min-h-[70px] md:min-h-[140px]">
         <AnimatePresence mode="wait">
           {step === 0 ? (
             <motion.div
@@ -165,7 +165,7 @@ export const MissionPrologue: React.FC<Props> = ({
             >
               <div className="pl-0">
                 {speakerKey && (
-                  <span className="text-xs uppercase tracking-[0.2em] font-bold mb-2 block" style={{ color: a.color }}>
+                  <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mb-1 block" style={{ color: a.color }}>
                     {t(speakerKey)}
                   </span>
                 )}
@@ -173,7 +173,7 @@ export const MissionPrologue: React.FC<Props> = ({
                   text={`"${t(dialogueKey)}"`}
                   progress={Math.min(1, scrollProgress / 0.4)}
                   accentColor={a.color}
-                  className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] italic"
+                  className="text-[15px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] italic"
                 />
               </div>
             </motion.div>
@@ -187,14 +187,14 @@ export const MissionPrologue: React.FC<Props> = ({
               className="col-start-1 row-start-1 w-full"
             >
               <div className="pl-0">
-                <span className="text-xs uppercase tracking-[0.2em] font-bold text-white/30 mb-2 block">
+                <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold text-white/30 mb-1 block">
                   {t("ui.objective")}
                 </span>
                 <ScrollRevealText 
                   text={t(objectiveKey)}
                   progress={Math.min(1, Math.max(0, scrollProgress - 0.55) / 0.25)}
                   accentColor={a.color}
-                  className="text-[18px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
+                  className="text-[15px] md:text-[22px] font-['Space_Grotesk'] leading-[1.6] text-white/80"
                 />
               </div>
             </motion.div>
@@ -202,7 +202,7 @@ export const MissionPrologue: React.FC<Props> = ({
         </AnimatePresence>
       </div>
       
-      <div className="pt-2 w-full max-w-sm relative min-h-[60px] flex items-center">
+      <div className="pt-1 w-full max-w-sm relative min-h-[50px] md:min-h-[60px] flex items-center">
         <AnimatePresence>
           {step === 1 && (
             <motion.div
@@ -228,8 +228,8 @@ export const MissionPrologue: React.FC<Props> = ({
 
   return (
     <>
-      <section ref={sectionRef} className="relative w-full px-4 md:px-8 py-8 md:py-24">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-4 md:gap-16 items-center pb-24 md:pb-20">
+      <section ref={sectionRef} className="relative w-full px-4 md:px-8 py-2 md:py-24 flex flex-col justify-center min-h-[100dvh]">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-4 md:gap-16 items-center">
           {imageSide === "left" ? (
             <>
               <div className="md:order-1">{Image}</div>
