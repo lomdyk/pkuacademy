@@ -297,7 +297,7 @@ export const BackpackGame = ({
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#050a18] to-transparent" />
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 gap-6 md:gap-8">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start mt-4 mb-4 md:my-auto px-4 gap-6 md:gap-8">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
