@@ -390,15 +390,15 @@ export const CommunicationGame = ({
   }
 
   return (
-    <div className="relative w-full flex flex-col items-center px-4 py-10 md:py-14">
+    <div className="relative w-full flex flex-col items-center px-4 py-6 md:py-10">
       {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-8 md:mb-12"
+        className="text-center mb-6 md:mb-10"
       >
-        <h2 className="text-3xl sm:text-4xl md:text-6xl tracking-tighter mb-4 text-white"
+        <h2 className="text-3xl sm:text-4xl md:text-6xl tracking-tighter mb-2 text-white"
           style={{ fontWeight: 800, }}>
           {copy.titleA} <span className="text-violet-400" style={{ textShadow: "0 0 32px rgba(167,139,250,0.6)" }}>{copy.titleB}</span>
         </h2>
@@ -410,13 +410,13 @@ export const CommunicationGame = ({
           {/* ── INTRO ── */}
           {phase === "intro" && (
             <motion.div key="intro" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-              className="flex flex-col items-center gap-12 md:gap-16">
+              className="flex flex-col items-center gap-8 md:gap-12">
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", duration: 0.8, bounce: 0.15 }}
-                className="flex flex-col items-center gap-6"
+                className="flex flex-col items-center gap-4 md:gap-6"
               >
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl scale-125 animate-pulse" />
@@ -439,7 +439,7 @@ export const CommunicationGame = ({
               </motion.div>
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-                className="text-center max-w-xl mx-auto space-y-5 px-4">
+                className="text-center max-w-xl mx-auto space-y-4 px-4">
                 <p className="text-lg md:text-xl text-slate-300" style={{ lineHeight: 1.6, fontWeight: 300, letterSpacing: "0.01em" }}>
                   {copy.intro1}
                 </p>
