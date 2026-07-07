@@ -419,9 +419,9 @@ export const CommunicationGame = ({
                 className="flex flex-col items-center gap-4 md:gap-6"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl scale-125 animate-pulse" />
+                  <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl scale-125" />
                   <div
-                    className="relative rounded-full overflow-hidden border border-amber-400/30 w-24 h-24 md:w-32 md:h-32 shadow-[0_0_40px_rgba(251,191,36,0.15)]"
+                    className="relative rounded-full overflow-hidden border border-amber-400/30 w-20 h-20 md:w-32 md:h-32 shadow-[0_0_40px_rgba(251,191,36,0.15)]"
                   >
                     <GifImg src={npcGif} alt="Nick" imgKey={imgKey}
                       className="w-full h-full object-cover object-center" />
@@ -432,7 +432,7 @@ export const CommunicationGame = ({
                   <h3 className="text-xl md:text-2xl uppercase" style={{ fontWeight: 800, color: "#fcd34d", letterSpacing: "0.15em" }}>
                     {t("npc.name")}
                   </h3>
-                  <p className="text-xs md:text-sm uppercase" style={{ color: "rgba(148,163,184,0.6)", fontWeight: 600, letterSpacing: "0.25em" }}>
+                  <p className="text-[10px] md:text-xs uppercase" style={{ color: "rgba(148,163,184,0.6)", fontWeight: 600, letterSpacing: "0.25em" }}>
                     {copy.nickRole}
                   </p>
                 </div>
@@ -471,8 +471,8 @@ export const CommunicationGame = ({
               transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
               className="flex flex-col gap-4"
             >
-              <div className="flex items-center justify-between px-1">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between px-1 gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {localizedScenarios.map((_, i) => (
                     <div key={i} className="h-1.5 rounded-full transition-all duration-300" style={{
                       width: i === scenarioIdx ? 24 : 8,
@@ -484,17 +484,17 @@ export const CommunicationGame = ({
                     {scenarioIdx + 1}/{localizedScenarios.length}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <div className="rounded-xl overflow-hidden border flex-shrink-0"
-                    style={{ width: 52, height: 52, borderColor: scenario.captainColor + "55" }}>
+                    style={{ width: 44, height: 44, borderColor: scenario.captainColor + "55" }}>
                     <GifImg src={scenario.captainGif} alt={scenario.captainName} imgKey={imgKey}
                       className="w-full h-full object-cover object-center" />
                   </div>
-                  <div>
-                    <p style={{ color: scenario.captainColor, fontWeight: 600, fontSize: 13 }}>
+                  <div className="min-w-0">
+                    <p className="truncate" style={{ color: scenario.captainColor, fontWeight: 600, fontSize: 13 }}>
                       {scenario.captainName}
                     </p>
-                    <p style={{ fontSize: 11, color: "rgba(148,163,184,0.6)" }}>
+                    <p className="leading-tight line-clamp-2" style={{ fontSize: 11, color: "rgba(148,163,184,0.6)" }}>
                       {scenario.contextEmoji} {scenario.context}
                     </p>
                   </div>
