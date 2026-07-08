@@ -413,9 +413,9 @@ export const HeroStory = () => {
             
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-[6]">
               <img src={gameBg1} className="absolute top-[12%] right-[5%] w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float-1" />
-              <img src={gameBg2} className="absolute top-[45%] left-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-2" />
+              <img src={gameBg2} className="absolute top-[34%] left-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-2" />
               <img src={gameBg3} className="absolute top-[8%] left-[8%] w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float-3" />
-              <img src={formulaImg} className="absolute top-[48%] right-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-4" />
+              <img src={formulaImg} className="absolute top-[36%] right-[2%] w-20 h-20 sm:w-28 sm:h-28 object-contain animate-float-4" />
             </div>
 
             <div className="relative">
