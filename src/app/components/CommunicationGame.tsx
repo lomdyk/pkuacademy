@@ -416,12 +416,12 @@ export const CommunicationGame = ({
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", duration: 0.8, bounce: 0.15 }}
-                className="flex flex-col items-center gap-4 md:gap-6"
+                className="flex flex-col items-center gap-4 md:gap-6 bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-md w-full max-w-sm mx-auto shadow-2xl"
               >
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-amber-400/20 blur-2xl scale-125" />
                   <div
-                    className="relative rounded-full overflow-hidden border border-amber-400/30 w-20 h-20 md:w-32 md:h-32 shadow-[0_0_40px_rgba(251,191,36,0.15)]"
+                    className="relative rounded-full overflow-hidden border border-amber-400/30 w-20 h-20 md:w-32 md:h-32 shadow-[0_0_40px_rgba(251,191,36,0.15)] bg-slate-900/50"
                   >
                     <GifImg src={npcGif} alt="Nick" imgKey={imgKey}
                       className="w-full h-full object-cover object-center" />
