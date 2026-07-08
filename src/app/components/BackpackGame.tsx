@@ -74,15 +74,15 @@ const FoodItemCard = React.memo(({
           }
         `}
       >
-        <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+        <div className="w-14 h-14 md:w-20 md:h-20 flex items-center justify-center">
           <img
             src={item.img}
             alt={item.name}
             className="max-w-full max-h-full object-contain drop-shadow-lg pointer-events-none"
           />
         </div>
-        <span className="text-[11px] text-white/80 font-['Space_Grotesk'] mt-1">{t(`food.${item.id}.name`)}</span>
-        <span className={`text-[9px] font-['Space_Grotesk'] mt-0.5 text-white/40`}>
+        <span className="text-[10px] md:text-[11px] text-white/80 font-['Space_Grotesk'] mt-1 text-center leading-tight">{t(`food.${item.id}.name`)}</span>
+        <span className={`text-[8px] md:text-[9px] font-['Space_Grotesk'] mt-0.5 text-white/40 text-center leading-tight`}>
           {t(`food.${item.id}.label`)}
         </span>
         {isSelected && (
@@ -408,9 +408,9 @@ export const BackpackGame = ({
         </div>
       </div>
 
-      <div className="relative z-20 pt-2 px-4">
+      <div className="relative z-20 pt-2 px-2 md:px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-3 p-4 bg-white/[0.03] backdrop-blur-md border border-white/[0.06] rounded-2xl">
+          <div className="grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-3 p-2 md:p-4 bg-white/[0.03] backdrop-blur-md border border-white/[0.06] rounded-2xl">
             <AnimatePresence>
               {items.map((item) => (
                 <FoodItemCard
