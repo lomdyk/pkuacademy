@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
-import { Backpack, Shield, AlertTriangle, CheckCircle2, ChevronDown, RotateCcw } from "lucide-react";
+import { Backpack, Shield, AlertTriangle, CheckCircle2, ChevronDown, RotateCcw, Timer } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
@@ -48,6 +48,9 @@ const ITEMS_POOLS = {
   training: [
     { id: "apple", name: "Apple", img: appleImg, type: "safe", label: "Low-Phe fruit" },
     { id: "water", name: "Water Bottle", img: waterbottleImg, type: "safe", label: "Hydration" },
+    { id: "crakers", name: "Crackers", img: crakersImg, type: "safe", label: "Low-Phe snack" },
+    { id: "muffin", name: "Low-Protein Muffin", img: muffinImg, type: "safe", label: "Energy" },
+    { id: "gummies", name: "Fruit Gummies", img: gummiesImg, type: "safe", label: "Quick energy" },
     { id: "nuts", name: "Nuts", img: nutsImg, type: "unsafe", label: "High protein" },
     { id: "formula", name: "PKU Formula", img: formulaImg, type: "safe", label: "Clean energy" },
     { id: "cheese", name: "Cheese", img: cheeseImg, type: "unsafe", label: "High protein" },
@@ -160,7 +163,8 @@ export const BackpackGame = ({
   const [backpackHovered, setBackpackHovered] = useState(false);
   const [quarantineGlow, setQuarantineGlow] = useState<"neutral" | "success">("neutral");
   const [quarantineHovered, setQuarantineHovered] = useState(false);
-  const { t } = useLang();
+  const [timerKey, setTimerKey] = useState(0);
+  const { t, lang } = useLang();
 
   useEffect(() => {
     if (isCompleted) onComplete();
@@ -276,14 +280,20 @@ export const BackpackGame = ({
   };
 
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     const pool = ITEMS_POOLS[variant] || ITEMS_POOLS.training;
-    setItems(pool);
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setItems(shuffled);
     setSelected(null);
     setMessage(null);
     setIsCompleted(false);
     setScore(0);
-  };
+    setTimerKey(k => k + 1);
+  }, [variant]);
 
   if (isCompleted) {
     return (
@@ -465,6 +475,75 @@ export const BackpackGame = ({
 
       <div className="relative z-20 pt-2 px-2 md:px-4">
         <div className="max-w-4xl mx-auto">
+          {/* Progress bar timer styled like TopTabBar */}
+          {!isCompleted && (
+            <div className="mb-4 flex justify-center">
+              <div
+                className="pointer-events-auto flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2 rounded-full border backdrop-blur-xl w-full max-w-lg"
+                style={{
+                  background: "rgba(8,12,28,0.55)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5), inset 0 0 24px rgba(255,255,255,0.02)",
+                }}
+              >
+                {/* Icon */}
+                <div className="flex-1 min-w-0 flex items-center gap-3">
+                  <div
+                    className="flex items-center justify-center w-8 h-8 rounded-full border shrink-0"
+                    style={{
+                      borderColor: "#22d3ee66",
+                      background: "#22d3ee14",
+                      boxShadow: "0 0 14px #22d3ee40, inset 0 0 10px #22d3ee10",
+                    }}
+                  >
+                    <Timer className="w-4 h-4 text-cyan-400" />
+                  </div>
+
+                  {/* Text & Bar */}
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <span
+                        className="text-[11px] md:text-xs truncate"
+                        style={{
+                          fontWeight: 600,
+                          color: "#fff",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {lang === "de" ? "Zeit-Challenge" : "Time Challenge"}
+                      </span>
+                      <span
+                        className="hidden sm:inline text-[10px] uppercase tracking-[0.22em] tabular-nums shrink-0 text-cyan-400/80"
+                      >
+                        {lang === "de" ? "BEEILE DICH!" : "HURRY UP!"}
+                      </span>
+                    </div>
+
+                    <div className="mt-1.5 h-1 rounded-full overflow-hidden bg-white/[0.06] border border-white/[0.05]">
+                      <motion.div
+                        key={timerKey}
+                        className="h-full rounded-full"
+                        style={{
+                          background: "#22d3ee",
+                          boxShadow: "0 0 10px rgba(34,211,238,0.8)",
+                        }}
+                        initial={{ width: "100%" }}
+                        animate={{ width: "0%" }}
+                        transition={{ duration: 30, ease: "linear" }}
+                        onAnimationComplete={() => {
+                          if (!isCompleted) {
+                            handleRestart();
+                            showMessage("Time's up! Let's try again.", "error");
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="glass-panel grid grid-cols-3 md:flex md:flex-wrap justify-center gap-2 md:gap-3 p-2 md:p-4">
             <AnimatePresence>
               {items.map((item) => (
