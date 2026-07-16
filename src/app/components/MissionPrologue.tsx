@@ -332,7 +332,10 @@ export const MissionPrologue: React.FC<Props> = ({
                       icon={<Gamepad2 className="w-6 h-6"/>} 
                       onClick={() => { setShowOverlay(false); onStart('overlay'); }}
                     >
-                      {t(ctaKey)}
+                      <div className="flex items-center gap-1.5">
+                        {t(ctaKey)}
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
                     </GhostButton>
                   </div>
                   

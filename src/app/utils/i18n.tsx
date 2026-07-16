@@ -110,7 +110,7 @@ export const TRANSLATIONS: Dict = {
     en: "Practice handling social situations involving food. Whether declining a pizza or explaining your formula, communicate your PKU diet proudly. It is your advantage, not a restriction!",
     de: "Übe den Umgang mit sozialen Situationen rund ums Essen. Egal ob du eine Pizza ablehnst oder deine Formel erklärst, kommuniziere deine PKU-Diät mit Stolz. Sie ist dein Vorteil, keine Einschränkung!",
   },
-  "m2.cta": { en: "Meet the Team >", de: "Team treffen >" },
+  "m2.cta": { en: "Meet the Team", de: "Team treffen" },
   "m2.warning": { en: "Wait! Someone is trying to distract us. We need to figure out what to say!", de: "Warte! Jemand versucht, uns abzulenken. Wir müssen überlegen, was wir sagen!" },
   "m2.speaker": { en: "Ela", de: "Ela" },
 
@@ -125,7 +125,7 @@ export const TRANSLATIONS: Dict = {
     en: "Listen to your body! Catch your sports formula during the run to keep your mind sharp, but avoid the high-protein obstacles on the track!",
     de: "Höre auf deinen Körper! Fange deine Sportformel während des Laufs, um deinen Geist scharf zu halten, aber vermeide die proteinreichen Hindernisse auf der Strecke!",
   },
-  "m3.cta": { en: "Sprint with Crew >", de: "Mit Team sprinten >" },
+  "m3.cta": { en: "Sprint with Crew", de: "Mit Team sprinten" },
   "m3.warning": { en: "Captain, the match is starting! We need to step onto the field!", de: "Kapitän, das Spiel beginnt! Wir müssen aufs Feld gehen!" },
   "m3.speaker": { en: "Bo", de: "Bo" },
 

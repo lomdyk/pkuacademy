@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Gamepad2, X } from "lucide-react";
+import { Gamepad2, X, ChevronRight } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { useLang } from "../utils/i18n";
 import { soundEngine } from "../utils/audioEngine";
@@ -80,7 +80,10 @@ export const BonusPrologue = ({
             }}
             className="w-full sm:w-auto px-8 py-4 text-lg"
           >
-            {btn}
+            <div className="flex items-center gap-1.5">
+              {btn}
+              <ChevronRight className="w-4 h-4" />
+            </div>
           </GhostButton>
         </motion.div>
       </div>
