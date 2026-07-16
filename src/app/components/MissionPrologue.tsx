@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Gamepad2, X } from "lucide-react";
+import { Gamepad2, X, ChevronRight } from "lucide-react";
 import { GhostButton } from "./ui/GhostButton";
 import { ScrollRevealText } from "./ui/ScrollRevealText";
 import { useLang } from "../utils/i18n";
@@ -217,7 +217,10 @@ export const MissionPrologue: React.FC<Props> = ({
                 icon={<Gamepad2 className="w-5 h-5" />}
                 onClick={() => onStart('text_button')}
               >
-                {t(ctaKey)}
+                <div className="flex items-center gap-1.5">
+                  {t(ctaKey)}
+                  <ChevronRight className="w-4 h-4" />
+                </div>
               </GhostButton>
             </motion.div>
           )}
